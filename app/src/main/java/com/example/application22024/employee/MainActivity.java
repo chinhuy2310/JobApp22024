@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 if (position == 3) {
                     // Làm mới toàn bộ các trang khi nhấn vào tab cuối cùng
                     refreshAllFragments(adapter);
+                    viewPager.setCurrentItem(viewPager.getCurrentItem(), false);
                 } else {
                     // Chuyển đến trang tương ứng
                     viewPager.setCurrentItem(position, true);
