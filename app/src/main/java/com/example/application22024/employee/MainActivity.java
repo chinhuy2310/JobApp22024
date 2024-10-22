@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 
@@ -53,38 +54,20 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
 
-        int[] tabIcons = {R.drawable.ic_home, R.drawable.ic_taikhoan, R.drawable.ic_bookmark, R.drawable.ic_refresh};
+        int[] tabIcons = {R.drawable.ic_home, R.drawable.ic_taikhoan, R.drawable.ic_bookmark, R.drawable.ic_menu};
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             // Xác định hình ảnh cho tab dựa trên vị trí
             tab.setIcon(tabIcons[position]);
         }).attach();
 
-        // Ngăn không cho vuốt đến trang cuối cùng
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                if (position == 2 && positionOffset > 0) {
-                    // Ngăn không cho cuộn sang trang thứ 4 (trang cuối)
-                    viewPager.setCurrentItem(2, true);
-                }
-            }
-        });
+        
 
         // Xử lý sự kiện khi nhấn vào tab cuối cùng (icon thứ 4)
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-
-                if (position == 3) {
-                    // Làm mới toàn bộ các trang khi nhấn vào tab cuối cùng
-                    refreshAllFragments(adapter);
-                    viewPager.setCurrentItem(viewPager.getCurrentItem(), false);
-                } else {
-                    // Chuyển đến trang tương ứng
                     viewPager.setCurrentItem(position, true);
-                }
             }
 
             @Override
@@ -98,17 +81,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public interface RefreshableFragment {
-        void refresh();
-    }
-    private void refreshAllFragments(ViewPagerAdapter adapter) {
-        for (int i = 0; i < adapter.getItemCount(); i++) {
-            // Lấy Fragment hiện tại và gọi phương thức refresh của nó
-            Fragment fragment = adapter.getFragment(i);
-            if (fragment instanceof RefreshableFragment) {
-                ((RefreshableFragment) fragment).refresh();
-            }
-        }
-    }
-
 }
