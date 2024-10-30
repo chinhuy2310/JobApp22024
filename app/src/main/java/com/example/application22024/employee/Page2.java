@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -107,29 +108,69 @@ public class Page2 extends Fragment {
         // Vô hiệu hóa chế độ nhập liệu cho EditText
         editTextDate.setFocusable(false);
         // Xử lý sự kiện khi nhấn vào EditText
-        editTextDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
+        editTextDate.setOnClickListener(v -> showDatePickerAlertDialog());
+
     }
 
     // Hiển thị DatePickerDialog
-    private void showDatePickerDialog() {
-        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd", Locale.getDefault());
-                editTextDate.setText(sdf.format(calendar.getTime()));
-            }
-        };
-        new DatePickerDialog(requireContext(), date, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+    private void showDatePickerAlertDialog() {
+        // Khởi tạo AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.date_picker_alert_dialog, null);
+        builder.setView(dialogView);
+
+        // Tìm các NumberPicker và nút OK trong dialog layout
+        NumberPicker yearPicker = dialogView.findViewById(R.id.yearPicker);
+        NumberPicker monthPicker = dialogView.findViewById(R.id.monthPicker);
+        NumberPicker dayPicker = dialogView.findViewById(R.id.dayPicker);
+
+        // Thiết lập giá trị cho NumberPicker
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        yearPicker.setMinValue(1900);
+        yearPicker.setMaxValue(currentYear);
+        yearPicker.setValue(currentYear);
+
+        monthPicker.setMinValue(1);
+        monthPicker.setMaxValue(12);
+
+        dayPicker.setMinValue(1);
+        dayPicker.setMaxValue(31);
+
+        // Cập nhật ngày tối đa khi thay đổi năm hoặc tháng
+        yearPicker.setOnValueChangedListener((picker, oldVal, newVal) -> updateDayPickerMax(dayPicker, yearPicker.getValue(), monthPicker.getValue()));
+        monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> updateDayPickerMax(dayPicker, yearPicker.getValue(), monthPicker.getValue()));
+
+        // Tạo AlertDialog và hiển thị
+        AlertDialog alertDialog = builder.create();
+
+        // Xử lý khi nhấn nút "OK"
+        dialogView.findViewById(R.id.confirmButton).setOnClickListener(v -> {
+            int selectedYear = yearPicker.getValue();
+            int selectedMonth = monthPicker.getValue();
+            int selectedDay = dayPicker.getValue();
+
+            // Cập nhật EditText với ngày đã chọn
+            String selectedDate = String.format(Locale.getDefault(), "%04d.%02d.%02d", selectedYear, selectedMonth, selectedDay);
+            editTextDate.setText(selectedDate);
+
+            // Đóng dialog
+            alertDialog.dismiss();
+        });
+
+        alertDialog.show();
     }
+
+
+    private void updateDayPickerMax(NumberPicker dayPicker, int year, int month) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);  // Calendar tháng bắt đầu từ 0
+        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        dayPicker.setMaxValue(maxDay);
+    }
+
+
+
 
 
     // Phương thức thêm TextWatcher vào EditText
