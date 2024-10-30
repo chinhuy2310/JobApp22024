@@ -1,6 +1,7 @@
 package com.example.application22024.employee;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,10 +27,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 
 public class Page2 extends Fragment {
-    private EditText editTextDate,editbirthday,editText,editText1,editText2,editText3;
+    private EditText editTextDate, editbirthday, editText, editText1, editText2, editText3;
     private Calendar calendar;
-    private TextView textView, textView1, textView2;
+    private TextView educationStatus, levelOfEducation;
     private boolean isEdited = false;
+    private int selectedGenderPosition = -1; // Vị trí ô giới tính được chọn
+    private int initialGenderPosition = -1; // Lưu trạng thái giới tính ban đầu
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,54 +57,79 @@ public class Page2 extends Fragment {
 //            // Hiển thị dialog
 //            builder.show();
 //        });
-        textView1 = view.findViewById(R.id.levelOfEducation);
-        textView1.setOnClickListener(v -> {
-            // Dữ liệu để hiển thị trong dialog
-            String[] items = {"대학", "고등", "..."};
 
-            // Tạo AlertDialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
-            builder.setItems(items, (dialog, which) -> {
-                // Cập nhật TextView khi người dùng chọn một mục
-                textView1.setText(items[which]);
-            });
-            // Hiển thị dialog
-            builder.show();
-        });
-        textView1.setText("Option 1");
+        //1
+        educationStatus = view.findViewById(R.id.educationStatus);
+        levelOfEducation = view.findViewById(R.id.levelOfEducation);
+        //2
+        educationStatus.setText("Option 2");
+        levelOfEducation.setText("Option 1");
+        //3
+        String previousEducationStatus = educationStatus.getText().toString();
+        String previousLevelOfEducation = levelOfEducation.getText().toString();
+        //4
+        educationStatus.setOnClickListener(v -> showBottomSheetDialog1(previousEducationStatus));
+        levelOfEducation.setOnClickListener(v -> showBottomSheetDialog2(previousLevelOfEducation));
 
 
-        textView = view.findViewById(R.id.educationStatus);
-        textView.setOnClickListener(v -> showBottomSheetDialog());
-        textView.setText("Option 2");
-
-
-        // xác nhận lưu thông tin khi có sự thay đổi
         editbirthday = view.findViewById(R.id.editbirthday);
         // Thêm TextWatcher cho các EditText
         addTextWatcher(editbirthday);
+
+
+        setupGenderClick(view, R.id.male, 0);
+        setupGenderClick(view, R.id.female, 1);
+        initialGenderPosition = selectedGenderPosition; // Ghi lại trạng thái ban đầu
+
         return view;
     }
 
-    private void showBottomSheetDialog() {
+
+//----------------------------------------------------------------------------------------
+
+
+    private void showBottomSheetDialog1(String previousValue) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
         ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"재학", "졸업", " ....."};
+        String[] items = {"재학", "졸업", " ....."}; // Các tùy chọn
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            textView.setText(items[position]);
+            String newValue = items[position];
+            educationStatus.setText(newValue);
+            if (!newValue.equals(previousValue)) {
+                isEdited = true; // Đánh dấu là đã thay đổi
+            }
             bottomSheetDialog.dismiss();
         });
 
         bottomSheetDialog.show();
     }
+    private void showBottomSheetDialog2(String previousValue) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
 
+        ListView listView = bottomSheetView.findViewById(R.id.listView);
+        String[] items = {"고등", "대학", "1학년", " ....."};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String newValue = items[position];
+            levelOfEducation.setText(newValue);
+            if (!newValue.equals(previousValue)) {
+                isEdited = true; // Đánh dấu là đã thay đổi
+            }
+            bottomSheetDialog.dismiss();
+        });
+
+        bottomSheetDialog.show();
+    }
     public void setupDatePicker(View view) {
         editTextDate = view.findViewById(R.id.editbirthday);
         calendar = Calendar.getInstance();
@@ -160,7 +188,6 @@ public class Page2 extends Fragment {
         alertDialog.show();
     }
 
-
     private void updateDayPickerMax(NumberPicker dayPicker, int year, int month) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
@@ -170,7 +197,7 @@ public class Page2 extends Fragment {
     }
 
 
-
+//--------------------------------------------------------------------------------------------
 
 
     // Phương thức thêm TextWatcher vào EditText
@@ -197,10 +224,49 @@ public class Page2 extends Fragment {
     public boolean isEdited() {
         return isEdited;
     }
+
     // Phương thức lưu thay đổi
     public void saveChanges() {
         // Xử lý lưu dữ liệu ở đây
         isEdited = false;  // Sau khi lưu, đánh dấu rằng không còn thay đổi nào nữa
     }
+//------------------------------------------------------------
+//chọn giới tính
+    private void setupGenderClick(View view, int itemId, int position) {
+        TextView cell = view.findViewById(itemId);
+        cell.setOnClickListener(v -> {
+            // Đặt lại màu cho ô giới tính đã chọn trước đó
+            if (selectedGenderPosition != -1) {
+                resetGenderColor(view, selectedGenderPosition);
+            }
+            // Cập nhật vị trí giới tính được chọn
+            selectedGenderPosition = position;
+            // So sánh giá trị mới với giá trị ban đầu
+            if (selectedGenderPosition != initialGenderPosition) {
+                isEdited = true;
+            }
+            // Thay đổi màu ô giới tính được chọn
+            cell.setBackgroundColor(Color.BLUE);
+            cell.setTextColor(Color.WHITE);
+        });
+    }
 
+    private void resetGenderColor(View view, int position) {
+        int itemId;
+        switch (position) {
+            case 0:
+                itemId = R.id.male;
+                break;
+            case 1:
+                itemId = R.id.female;
+                break;
+            default:
+                return;
+        }
+        TextView cell = view.findViewById(itemId);
+        // Khôi phục màu nền về drawable
+        cell.setBackgroundResource(R.drawable.border);
+        cell.setTextColor(Color.BLACK); // Màu chữ mặc định
+    }
+//-------------------------------------------------------------------
 }

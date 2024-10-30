@@ -121,7 +121,7 @@
             android:textColor="@color/black"/>
         <!-- Thẻ cuộn ngang thứ hai -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewHorizontal2"
+            android:id="@+id/recentJob"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="7"

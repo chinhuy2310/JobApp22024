@@ -20,27 +20,29 @@ public class First_Activity extends AppCompatActivity {
 
         // Tìm LinearLayout bằng ID
         LinearLayout employerLayout = findViewById(R.id.employer);
-
         // Thiết lập sự kiện OnClickListener
         employerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // Tạo Intent để chuyển sang Activity khác
-                Intent intent = new Intent(First_Activity.this, RegistrationActivity.class);
-                startActivity(intent); // Bắt đầu chuyển sang Activity khác
-            }
-        });
-
-        LinearLayout employeeLayout = findViewById(R.id.employee);
-        employeeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent intent = new Intent(First_Activity.this, LoginActivity.class);
+//                intent.putExtra("nextActivity", "Activity3"); // Chuyển đến Activity3 sau Activity2
+                intent.putExtra("nextActivity", "RMActivity");
                 startActivity(intent);
             }
         });
 
-        TextView linearLayout = findViewById(R.id.mytextview);
+
+        LinearLayout employeeLayout = findViewById(R.id.employee);
+        employeeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(First_Activity.this, LoginActivity.class);
+                intent.putExtra("nextActivity", "MainActivity");
+                startActivity(intent);
+            }
+        });
+
+        TextView linearLayout = findViewById(R.id.textview);
 
         // Tính toán 10% chiều cao màn hình
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();

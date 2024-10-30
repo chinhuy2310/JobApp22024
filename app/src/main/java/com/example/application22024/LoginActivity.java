@@ -9,6 +9,8 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.application22024.employee.MainActivity;
+import com.example.application22024.employer.RecruitmentManagementActivity;
+import com.example.application22024.employer.RegistrationActivity;
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -23,8 +25,17 @@ public class LoginActivity extends AppCompatActivity {
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Lấy thông tin từ Intent
+                String nextActivity = getIntent().getStringExtra("nextActivity");
+
+                Intent intent = null;
+
                 // Tạo Intent để chuyển sang Activity khác
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                if ("RMActivity".equals(nextActivity)) {
+                    intent = new Intent(LoginActivity.this, RecruitmentManagementActivity.class);
+                } else if ("MainActivity".equals(nextActivity)) {
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent); // Bắt đầu chuyển sang Activity khác
                 finish();

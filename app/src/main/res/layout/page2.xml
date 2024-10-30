@@ -9,8 +9,9 @@
         android:padding="16dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="150dp" />
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,17 +23,20 @@
             android:layout_height="wrap_content"
             android:text="기존정보"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginVertical="5dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="이름" />
+            android:text="이름"
+           />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/editName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,10 +46,11 @@
         <TableRow
             android:id="@+id/row1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
 
             <TextView
-                android:id="@+id/item1"
+                android:id="@+id/male"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -55,7 +60,7 @@
                 android:textColor="@android:color/black" />
 
             <TextView
-                android:id="@+id/item2"
+                android:id="@+id/female"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_weight="1"
@@ -73,7 +78,8 @@
         <EditText
             android:id="@+id/editbirthday"
             android:layout_width="200dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -81,22 +87,28 @@
             android:text="연락처" />
 
         <EditText
+            android:id="@+id/editPhoneNumber"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="number"
+            android:layout_marginBottom="10dp"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="이력사항"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -129,7 +141,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="경력사항" />
+            android:text="경력사항"
+            android:layout_marginVertical="15dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -137,14 +150,21 @@
             android:text="자기소개" />
 
         <EditText
+            android:id="@+id/editIntroduce"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/border"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -174,7 +194,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginVertical="15dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -210,7 +231,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginVertical="15dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -250,9 +272,8 @@
         </LinearLayout>
     </LinearLayout>
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="구직자의 이력서 및 기타 정보를 표시합니다."
-            android:textSize="24sp" />
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+             />
     </LinearLayout>
 </ScrollView>
