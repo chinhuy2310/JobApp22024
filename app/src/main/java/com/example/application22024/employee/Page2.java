@@ -109,6 +109,7 @@ public class Page2 extends Fragment {
 
         bottomSheetDialog.show();
     }
+
     private void showBottomSheetDialog2(String previousValue) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
@@ -130,6 +131,7 @@ public class Page2 extends Fragment {
 
         bottomSheetDialog.show();
     }
+
     public void setupDatePicker(View view) {
         editTextDate = view.findViewById(R.id.editbirthday);
         calendar = Calendar.getInstance();
@@ -230,7 +232,8 @@ public class Page2 extends Fragment {
         // Xử lý lưu dữ liệu ở đây
         isEdited = false;  // Sau khi lưu, đánh dấu rằng không còn thay đổi nào nữa
     }
-//------------------------------------------------------------
+
+    //------------------------------------------------------------
 //chọn giới tính
     private void setupGenderClick(View view, int itemId, int position) {
         TextView cell = view.findViewById(itemId);

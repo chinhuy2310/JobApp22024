@@ -7,10 +7,11 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.application22024.First_Activity;
 import com.example.application22024.R;
 
 public class RecruitmentManagementActivity extends AppCompatActivity {
-    Button addButton;
+    Button addButton,loguotButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,17 @@ public class RecruitmentManagementActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Sử dụng RecruitmentManagementActivity.this để tham chiếu đến Activity
                 Intent intent = new Intent(RecruitmentManagementActivity.this, RegistrationActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            }
+        });
+        loguotButton = findViewById(R.id.logout);
+        loguotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RecruitmentManagementActivity.this, First_Activity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa tất cả các hoạt động trước
                 startActivity(intent);
             }
         });

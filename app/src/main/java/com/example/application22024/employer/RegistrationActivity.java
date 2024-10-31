@@ -1,8 +1,10 @@
 package com.example.application22024.employer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -25,7 +27,7 @@ public class RegistrationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         // Ẩn toolbar mặc định
-        toolbar.setVisibility(View.GONE);
+//        toolbar.setVisibility(View.GONE);
 
         // Xử lý sự kiện quay lại từ toolbar
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
@@ -38,28 +40,34 @@ public class RegistrationActivity extends AppCompatActivity {
 
     // Phương thức để chuyển Fragment
     public void showNextFragment(Fragment fragment) {
-//        // Hiển thị toolbar cho Fragment thứ 2 và ẩn cho Fragment thứ 1
-//        if (fragment instanceof SecondStepFragment) {
-//            toolbar.setVisibility(View.VISIBLE); // Hiển thị toolbar cho Fragment thứ 2
-//        } else {
-//            toolbar.setVisibility(View.GONE); // Ẩn toolbar cho Fragment thứ 1
-//        }
-
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
 
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-//        // Cập nhật trạng thái toolbar khi quay lại
-//        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//        if (currentFragment instanceof FirstStepFragment) {
-//            toolbar.setVisibility(View.GONE); // Ẩn toolbar khi ở fragment đầu tiên
-//        } else {
-//            toolbar.setVisibility(View.VISIBLE); // Hiển thị toolbar khi ở fragment thứ hai
-//        }
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            // Nếu có fragment trong back stack, trở về fragment trước đó
+            getSupportFragmentManager().popBackStack();
+        } else {
+            // Nếu không còn fragment nào, hiển thị hộp thoại xác nhận thoát
+            new AlertDialog.Builder(this)
+                    .setMessage("Do you want to cancel the recruitment content?")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Khi nhấn OK, chuyển về RecruitmentManagementActivity
+                        Intent intent = new Intent(RegistrationActivity.this, RecruitmentManagementActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish(); // Kết thúc RegistrationActivity
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .setCancelable(true)
+                    .show();
+        }
     }
+
+
 }
