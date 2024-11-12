@@ -19,164 +19,114 @@
             android:layout_height="0dp"
             android:layout_weight="3"
             android:background="@drawable/bottom_border"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp">
-
+            android:paddingHorizontal="10dp"
+            android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Location"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
-
+                        android:textSize="14sp"
+                        android:text="Location"/>
                     <LinearLayout
-                        android:id="@+id/selectLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:padding="5dp"
-                            android:src="@drawable/ic_location" />
-
+                            android:src="@drawable/ic_location"/>
                         <TextView
-                            android:id="@+id/location"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:text="Jeonju,KR"
+                            android:layout_gravity="center"
                             android:textColor="@color/white"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:text="Jeoju,KR"/>
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_notification48" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notification48"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingHorizontal="5dp"
                     android:background="@drawable/custom_border2"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="5dp">
-
+                    android:gravity="center_vertical">
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="match_parent"
                         android:src="@drawable/ic_search" />
-
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:layout_weight="1"
-                        android:background="@null"
                         android:hint="Search anything..."
-                        android:maxLines="1"
-                        android:singleLine="true" />
+                        android:background="@null"
+                        android:layout_weight="1"/>
                 </LinearLayout>
-
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginLeft="10dp"
-                    android:background="@drawable/custom_border3"
-                    android:src="@drawable/ic_filter" />
+                    android:src="@drawable/ic_filter"
+                    android:background="@drawable/custom_border3"/>
             </LinearLayout>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="Suggested Jobs"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_marginRight="20dp"
-                android:background="@android:color/transparent"
-                android:clickable="true"
-                android:text="See all >>"
-                android:textColor="@color/textview_color"
-                android:textSize="12sp" />
-        </LinearLayout>
-        <!-- Thẻ cuộn ngang thứ nhất -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:layout_weight="7">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/SuggestedJob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#faf7fa"
-                android:minHeight="221dp"
-                android:padding="16dp" />
-        </LinearLayout>
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="Recent Jobs"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-        <!-- Thẻ cuộn ngang thứ hai -->
-        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="Suggested Jobs"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+        <!-- Thẻ cuộn ngang thứ nhất -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/SuggestedJob"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:layout_weight="7">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recentJob"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#faf7fa"
-                android:minHeight="221dp"
-                android:padding="16dp" />
-        </LinearLayout>
+            android:layout_weight="7"
+            android:background="#faf7fa"
+            android:padding="16dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:text="Recent Jobs"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+        <!-- Thẻ cuộn ngang thứ hai -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewHorizontal2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="7"
+            android:background="#faf7fa"
+            android:padding="16dp" />
 
     </LinearLayout>
 

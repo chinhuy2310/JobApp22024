@@ -22,6 +22,9 @@ public class Job {
         this.durationType = durationType;
     }
 
+
+
+
     // Getters
     public String getJobName() {
         return jobName;

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
+import com.example.application22024.employee.RegistrationEmployeeActivity;
 
 import java.util.Calendar;
 
@@ -40,7 +41,7 @@ public class SecondStepFragment extends Fragment {
 
         nextButton.setOnClickListener(v -> {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new ThirdStepFragment());
+            ((RegistrationEmployeeActivity) getActivity()).showNextFragment(new ThirdStepFragment());
         });
     }
 
