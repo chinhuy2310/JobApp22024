@@ -40,6 +40,8 @@
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"/>
         <activity android:name=".employer.RecruitmentManagementActivity"/>
         <activity android:name=".JobDetails"/>
+        <activity android:name=".RegisterActivity" />
+
     </application>
 
 </manifest>

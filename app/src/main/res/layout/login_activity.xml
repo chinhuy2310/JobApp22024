@@ -36,9 +36,10 @@
                 android:background="@drawable/custom_border"
                 android:layout_gravity="center_horizontal"/>
             <Button
+                android:id="@+id/registerbutton"
                 android:layout_width="150dp"
                 android:layout_height="35dp"
-                android:text="registe"
+                android:text="register"
                 android:background="@drawable/custom_border"
                 android:layout_gravity="center_horizontal"/>
         </LinearLayout>
