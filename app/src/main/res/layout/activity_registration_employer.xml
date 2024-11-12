@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".employer.RegistrationEmployerActivity"
+    android:orientation="vertical">
+
+  <androidx.appcompat.widget.Toolbar
+      android:id="@+id/register_employer_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/purple_500"
+      app:title="Register Employer"
+      app:titleTextColor="@color/white"
+      app:navigationIcon="@drawable/back"
+      />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:layout_marginLeft="30dp"
+          android:layout_marginRight="30dp"
+          android:layout_marginTop="45dp"
+          android:layout_gravity="center_horizontal|center_vertical"
+          >
+
+        <ImageView
+            android:id="@+id/register_employer_img"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:src="@drawable/upimg"
+            android:layout_marginTop="45dp">
+        </ImageView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="JOB KOREA"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal|center_vertical"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find Employees"
+            android:textSize="10dp"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal|center_vertical"
+            />
+
+        <EditText
+            android:id="@+id/register_employer_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input user account"
+            android:layout_marginTop="50dp"
+            />
+        <EditText
+            android:id="@+id/register_employer_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input password"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            />
+        <EditText
+            android:id="@+id/register_employer_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input user name"
+            android:layout_marginTop="10dp"
+            />
+
+        <EditText
+            android:id="@+id/register_employer_describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Describe your company"
+            android:layout_marginTop="10dp"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:minLines="5"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:background="@android:drawable/edit_text"
+            />
+        <EditText
+            android:id="@+id/register_employer_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input company type"
+            android:layout_marginTop="10dp"
+            />
+
+        <Button
+            android:id="@+id/register_employer_reg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="REGISTER EMPLOYER"
+            android:background="@color/purple_500"
+            android:textColor="@color/white"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
+
+      </LinearLayout>
+
+    </ScrollView>
+  </LinearLayout>

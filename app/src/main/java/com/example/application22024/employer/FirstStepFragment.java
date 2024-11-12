@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
+import com.example.application22024.employee.RegistrationEmployeeActivity;
 
 public class FirstStepFragment extends Fragment {
 
@@ -39,7 +39,7 @@ public class FirstStepFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new SecondStepFragment());
+            ((RegistrationEmployeeActivity) getActivity()).showNextFragment(new SecondStepFragment());
         });
 
 
