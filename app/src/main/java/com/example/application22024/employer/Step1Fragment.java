@@ -12,12 +12,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
 
-public class FirstStepFragment extends Fragment {
+public class Step1Fragment extends Fragment {
 
     private int selectedPosition = -1; // Vị trí ô được chọn
     private int selectedGenderPosition = -1; // Vị trí ô giới tính được chọn
@@ -39,7 +38,7 @@ public class FirstStepFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new SecondStepFragment());
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step2Fragment());
         });
 
 

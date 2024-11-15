@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <Button
-            android:id="@+id/add"
+            android:id="@+id/button_open_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="add"
-            android:layout_gravity="center"/>
-        <Button
-            android:id="@+id/logout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="logout"/>
+            android:text="menu" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="채용 공고와 지원 버튼을 누른 사람 수를 표시합니다. 지원 버튼을 누르면 이력서 또는 상세 정보가 표시됩니다."/>
+            android:text="로그인한 사용자의 회사 목록을 표시하고,
+ 특정 회사를 클릭하면 해당 회사의 채용 공고가 표시됩니다.
+  채용 담당자가 채용 공고를 게시하고자 할 때, 기존의 회사
+  목록에서 선택하거나 새로운 채용 공고를 등록할 수 있는 옵션이 제공됩니다."
+            android:textSize="20sp" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        app:menu="@menu/drawer_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>

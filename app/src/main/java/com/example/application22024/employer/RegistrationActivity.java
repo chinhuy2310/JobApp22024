@@ -2,15 +2,13 @@ package com.example.application22024.employer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
-import com.example.application22024.employer.FirstStepFragment;
-import com.example.application22024.employer.SecondStepFragment;
+
 import androidx.appcompat.widget.Toolbar;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -34,7 +32,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         // Hiển thị fragment đầu tiên khi Activity được khởi tạo
         if (savedInstanceState == null) {
-            showNextFragment(new FirstStepFragment());
+            showNextFragment(new Step1Fragment());
         }
     }
 

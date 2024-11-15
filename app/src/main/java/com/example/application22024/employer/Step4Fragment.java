@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
 
-public class FourthStepFragment extends Fragment {
+public class Step4Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class FourthStepFragment extends Fragment {
 
         Button nextButton = view.findViewById(R.id.button_post);
         nextButton.setOnClickListener(v -> {
-            // Chuyển sang một Activity khác (ví dụ: NewActivity)
+            // Chuyển sang một Activity khác
             Intent intent = new Intent(getActivity(), RecruitmentManagementActivity.class);
             startActivity(intent);
         });

@@ -16,7 +16,7 @@ import com.example.application22024.R;
 
 import java.util.Calendar;
 
-public class SecondStepFragment extends Fragment {
+public class Step2Fragment extends Fragment {
 
     private TextView textViewDate,buttonSelectDate;
     private Button nextButton;
@@ -40,7 +40,7 @@ public class SecondStepFragment extends Fragment {
 
         nextButton.setOnClickListener(v -> {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new ThirdStepFragment());
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step3Fragment());
         });
     }
 

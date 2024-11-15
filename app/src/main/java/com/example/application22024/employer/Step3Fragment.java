@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
 
-public class ThirdStepFragment extends Fragment {
+public class Step3Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class ThirdStepFragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new FourthStepFragment());
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step4Fragment());
         });
     }
 }

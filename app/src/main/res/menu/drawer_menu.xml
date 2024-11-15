@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/addRecruitment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:title="add Recruitment Announcement."
+        android:textStyle="bold" />
+    <item
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:title="add company"
+        android:textStyle="bold" />
+    <item
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:title="....."
+        android:textStyle="bold" />
+    <item
+        android:id="@+id/Logout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:title="Logout"
+        android:textStyle="bold"
+        android:icon="@drawable/ic_logout"/>
+</menu>

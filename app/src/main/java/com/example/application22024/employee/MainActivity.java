@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {}
         });
-
+        // kiểm tra thay đổi của page2 khi chuyển trang
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    // kiểm tra thay đổi của page2 khi chuyển trang
     private void checkForUnsavedChangesAndSwitch(int newPosition) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
         if (currentFragment instanceof Page2) {
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setCurrentItem(newPosition, true);
         }
     }
-
+    // hiển thị thông báo xác nhận lưu thông tin đã thay đổi khi chuyển trang
     private void showSaveAlertDialog(Page2 page2Fragment, int newPosition) {
         new AlertDialog.Builder(this)
                 .setTitle("Save?")
