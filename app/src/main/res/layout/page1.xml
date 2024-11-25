@@ -53,7 +53,7 @@
                             android:src="@drawable/ic_location" />
 
                         <TextView
-                            android:id="@+id/location"
+                            android:id="@+id/locationTextView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -81,7 +81,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border2"
+                    android:background="@drawable/border_rounded_small"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="5dp">
 

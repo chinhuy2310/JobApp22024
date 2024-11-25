@@ -1,5 +1,6 @@
 package com.example.application22024.employee;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -8,52 +9,73 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.application22024.DatabaseHelper;
+
+import com.example.application22024.MapActivity;
 import com.example.application22024.R;
 import com.example.application22024.adapter.JobAdapter;
 import com.example.application22024.model.Job;
+
+
 
 import java.util.List;
 
 public class Page1 extends Fragment {
 
     private RecyclerView recyclerView,recyclerView2;
-    private JobAdapter jobAdapter;
+    private JobAdapter jobAdapter,jobAdapter2;
     private DatabaseHelper databaseHelper;
     private LinearLayout selectLocation;
-    private TextView textViewLocation;
+
+    private static final int MAP_REQUEST_CODE = 1;
+
+    private TextView locationTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page1, container, false);
 
         selectLocation = view.findViewById(R.id.selectLocation);
-        textViewLocation = view.findViewById(R.id.location); // TextView để hiển thị địa chỉ
-        selectLocation.setOnClickListener(v -> openMap());
+        locationTextView = view.findViewById(R.id.locationTextView);
+        // TextView để hiển thị địa chỉ
+        selectLocation.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MapActivity.class);
+            startActivityForResult(intent, MAP_REQUEST_CODE);
+        });
+
 
         recyclerView = view.findViewById(R.id.SuggestedJob);
         recyclerView2 = view.findViewById(R.id.recentJob);
 
 
         databaseHelper = new DatabaseHelper(getContext());
-        List<Job> jobList = databaseHelper.getAllJobs();
 
-        jobAdapter = new JobAdapter(getContext(), jobList);
+        List<Job> suggestedJobList = databaseHelper.getAllJobs();
+        jobAdapter = new JobAdapter(getContext(), suggestedJobList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(jobAdapter);
+
+//        List<Job> recentJobList = databaseHelper.getRecentJobs();
+//        jobAdapter2 = new JobAdapter(getContext(), recentJobList);
+//        recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+//        recyclerView2.setAdapter(jobAdapter2);
 
         ViewPager2 viewPager = getActivity().findViewById(R.id.viewPager);
         setupRecyclerView(recyclerView, viewPager);
-        setupRecyclerView(recyclerView2, viewPager);
+//        setupRecyclerView(recyclerView2, viewPager);
         return view;
     }
 
 
     private void openMap() {
         // nhập vị trí cụ thể hoặc chọn trên bản đồ
+
     }
 
 
@@ -87,4 +109,14 @@ public class Page1 extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MAP_REQUEST_CODE && resultCode == getActivity().RESULT_OK && data != null) {
+            // Nhận vị trí từ bản đồ
+            String selectedLocation = data.getStringExtra("selected_location");
+            locationTextView.setText("Vị trí: " + selectedLocation);
+        }
+    }
 }

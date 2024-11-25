@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        android:title="add Recruitment Announcement."
+        android:title="New job posting"
         android:textStyle="bold" />
     <item
         android:layout_width="match_parent"

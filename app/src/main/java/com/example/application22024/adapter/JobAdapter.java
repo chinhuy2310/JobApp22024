@@ -14,6 +14,7 @@ import com.example.application22024.JobDetails;
 import com.example.application22024.R;
 import com.example.application22024.model.Job;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
@@ -23,7 +24,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     public JobAdapter(Context context, List<Job> jobList) {
         this.context = context;
-        this.jobList = jobList;
+        this.jobList = (jobList != null) ? jobList : new ArrayList<>();
+
     }
 
     @NonNull
@@ -56,10 +58,12 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         });
     }
 
+
     @Override
     public int getItemCount() {
-        return jobList.size();
+        return (jobList != null && !jobList.isEmpty()) ? jobList.size() : 0;
     }
+
 
     public static class JobViewHolder extends RecyclerView.ViewHolder {
 

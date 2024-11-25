@@ -23,7 +23,7 @@
             android:paddingLeft="10dp"
             android:layout_marginVertical="5dp"
             android:hint="지번,도로명,건물명을 입력하세요."
-            android:background="@drawable/border"/>
+            android:background="@drawable/border_square"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="35dp"
@@ -32,7 +32,7 @@
             android:paddingLeft="10dp"
             android:layout_marginVertical="5dp"
             android:hint="상세주소를 입력해주세요."
-            android:background="@drawable/border"/>
+            android:background="@drawable/border_square"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:padding="10dp"
-            android:background="@drawable/border"
+            android:background="@drawable/border_square"
             android:hint="해당 업무에 대한 상세한 내용을 작성해주세요."
             android:gravity="top"/>
         <Button
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/custom_border"
+            android:background="@drawable/border_rounded_large"
             android:text="Next" />
     </LinearLayout>
 

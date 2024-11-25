@@ -1,5 +1,6 @@
 package com.example.application22024.employer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -45,6 +46,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -56,7 +58,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setMessage("Do you want to cancel the recruitment content?")
                     .setPositiveButton("OK", (dialog, which) -> {
                         // Khi nhấn OK, chuyển về RecruitmentManagementActivity
-                        Intent intent = new Intent(RegistrationActivity.this, RecruitmentManagementActivity.class);
+                        Intent intent = new Intent(RegistrationActivity.this, EmployerMain.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish(); // Kết thúc RegistrationActivity

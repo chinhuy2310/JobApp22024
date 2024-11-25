@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/custom_border2"
+    android:background="@drawable/border_rounded_small"
     android:orientation="vertical"
     android:layout_margin="5dp"
     android:padding="5dp">
@@ -85,7 +85,7 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:background="@drawable/custom_border4"
+            android:background="@drawable/custom_border"
             android:text="Full-time"
             android:textColor="@color/black"/>
         <TextView
@@ -95,7 +95,7 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:background="@drawable/custom_border4"
+            android:background="@drawable/custom_border"
             android:text="Restaurant"
             android:textColor="@color/black"/>
         <TextView
@@ -105,7 +105,7 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:gravity="center"
-            android:background="@drawable/custom_border4"
+            android:background="@drawable/custom_border"
             android:text="1 year"
             android:textColor="@color/black"/>
     </LinearLayout>

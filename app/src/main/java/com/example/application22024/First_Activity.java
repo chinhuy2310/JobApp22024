@@ -26,7 +26,7 @@ public class First_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(First_Activity.this, LoginActivity.class);
 //                intent.putExtra("nextActivity", "Activity3"); // Chuyển đến Activity3 sau Activity2
-                intent.putExtra("nextActivity", "RMActivity");
+                intent.putExtra("userType", "Employer");
                 startActivity(intent);
             }
         });
@@ -37,7 +37,7 @@ public class First_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(First_Activity.this, LoginActivity.class);
-                intent.putExtra("nextActivity", "MainActivity");
+                intent.putExtra("userType", "Employee");
                 startActivity(intent);
             }
         });

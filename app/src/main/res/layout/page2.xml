@@ -1,9 +1,8 @@
-<FrameLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-<!-- Nội dung cuộn -->
+    <!-- Nội dung cuộn -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,12 +13,11 @@ android:layout_height="match_parent">
             android:orientation="vertical"
             android:padding="16dp">
 
-
-
             <ImageView
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:src="@drawable/ic_launcher_background" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,7 +61,7 @@ android:layout_height="match_parent">
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_weight="1"
-                        android:background="@drawable/border"
+                        android:background="@drawable/border_square"
                         android:gravity="center"
                         android:text="남"
                         android:textColor="@android:color/black" />
@@ -73,7 +71,7 @@ android:layout_height="match_parent">
                         android:layout_width="0dp"
                         android:layout_height="35dp"
                         android:layout_weight="1"
-                        android:background="@drawable/border"
+                        android:background="@drawable/border_square"
                         android:gravity="center"
                         android:text="여"
                         android:textColor="@android:color/black" />
@@ -120,6 +118,7 @@ android:layout_height="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -162,7 +161,7 @@ android:layout_height="match_parent">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_square"
                     android:minHeight="100dp"
                     android:padding="10dp" />
             </LinearLayout>
@@ -291,7 +290,7 @@ android:layout_height="match_parent">
     </ScrollView>
 
 
-<!-- TextView cố định -->
+    <!-- TextView cố định -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

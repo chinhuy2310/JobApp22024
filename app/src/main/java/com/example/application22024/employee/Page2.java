@@ -1,6 +1,5 @@
 package com.example.application22024.employee;
 
-import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application22024.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -268,7 +266,7 @@ public class Page2 extends Fragment {
         }
         TextView cell = view.findViewById(itemId);
         // Khôi phục màu nền về drawable
-        cell.setBackgroundResource(R.drawable.border);
+        cell.setBackgroundResource(R.drawable.border_square);
         cell.setTextColor(Color.BLACK); // Màu chữ mặc định
     }
 //-------------------------------------------------------------------

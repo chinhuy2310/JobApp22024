@@ -22,7 +22,7 @@
             android:layout_marginVertical="5dp"
             android:paddingHorizontal="5dp"
             android:hint="회사명을 입력해주세요."
-            android:background="@drawable/border"/>
+            android:background="@drawable/border_square"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:background="@drawable/border"
+            android:background="@drawable/border_square"
             android:hint="대표자 성함을 입력하세요."
             android:paddingHorizontal="5dp"
             android:layout_marginVertical="5dp"/>
@@ -47,7 +47,7 @@
             <EditText
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/border"
+                android:background="@drawable/border_square"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
             <EditText
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/border"
+                android:background="@drawable/border_square"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_border"
+            android:background="@drawable/border_rounded_large"
             android:paddingHorizontal="15dp"
             android:orientation="horizontal">
             <ImageView
@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/custom_border"
+            android:background="@drawable/border_rounded_large"
             android:text="공고 등록" />
     </LinearLayout>
 

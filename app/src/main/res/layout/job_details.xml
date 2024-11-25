@@ -240,7 +240,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/custom_border2"
+                            android:background="@drawable/border_rounded_small"
                             android:hint="월급"
                             android:paddingHorizontal="5dp" />
 
@@ -345,7 +345,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
-                    android:background="@drawable/border"
+                    android:background="@drawable/border_square"
                     android:minHeight="70dp"
                     android:padding="10dp" />
             </LinearLayout>
