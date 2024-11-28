@@ -56,8 +56,8 @@ public class Page1 extends Fragment {
 
         databaseHelper = new DatabaseHelper(getContext());
 
-        List<Job> suggestedJobList = databaseHelper.getAllJobs();
-        jobAdapter = new JobAdapter(getContext(), suggestedJobList);
+//        List<Job> suggestedJobList = databaseHelper.getAllJobs();
+//        jobAdapter = new JobAdapter(getContext(), suggestedJobList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(jobAdapter);
 

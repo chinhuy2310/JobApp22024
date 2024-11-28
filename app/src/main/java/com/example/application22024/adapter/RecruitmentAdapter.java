@@ -41,9 +41,9 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
         Job recruitment = recruitmentList.get(position);
 
         // Bind data to the views
-        holder.jobTitleTextView.setText(recruitment.getJobName());
+        holder.jobTitleTextView.setText(recruitment.getTitle());
         holder.salaryTextView.setText(recruitment.getSalary());
-        holder.locationTextView.setText(recruitment.getLocation());
+        holder.locationTextView.setText(recruitment.getWorkLocation());
 //        Log.e("RecruitmentData", "Job: " + recruitment.getJobName());
 
         // Xử lý sự kiện click để chuyển sang trang chi tiết của công việc

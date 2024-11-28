@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application22024.JobDetails;
 import com.example.application22024.R;
+import com.example.application22024.model.Company;
 import com.example.application22024.model.Job;
 
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     private List<Job> jobList;
     private Context context;
-
     public JobAdapter(Context context, List<Job> jobList) {
         this.context = context;
         this.jobList = (jobList != null) ? jobList : new ArrayList<>();
@@ -40,20 +40,21 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         Job job = jobList.get(position);
 
         // Set data to views
-        holder.jobName.setText(job.getJobName());
-        holder.employerName.setText(job.getEmployerName());
-        holder.location.setText(job.getLocation());
-        holder.jobType.setText(job.getJobType());
-        holder.workplaceType.setText(job.getWorkplaceType());
-        holder.duration.setText(job.getDuration());
+        holder.jobName.setText(job.getTitle());
+        holder.employerName.setText(job.getCompany() != null ? job.getCompany().getCompanyName() : "N/A");
+        holder.location.setText(job.getWorkLocation());
+        holder.jobType.setText(job.getWorkType());
+        holder.workplaceType.setText(job.getWorkField());
+        holder.duration.setText(job.getWorkPeriod());
         holder.salary.setText(job.getSalary());
-        holder.durationType.setText(job.getDurationType());
+        holder.durationType.setText(job.getSalaryType());
 
         // Set other views such as image or bookmark (optional)
         // Thiết lập OnClickListener cho mỗi mục
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, JobDetails.class);
 //            intent.putExtra("job_id", job.getId()); // Gửi ID của job (hoặc thông tin cần thiết khác)
+            intent.putExtra("userType", "Employee");
             context.startActivity(intent);
         });
     }

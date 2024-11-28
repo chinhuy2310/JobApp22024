@@ -1,260 +1,174 @@
-//package com.example.application22024.model;
-//
-//public class Job {
-//    private int jobID;               // ID công việc
-//    private int companyID;           // ID công ty
-//    private String title;            // Tiêu đề công việc
-//    private String companyName;      // Tên công ty
-//    private int salary;              // Lương
-//    private String workDays;         // Số ngày làm việc trong tuần
-//    private String workHoursStart;   // Thời gian bắt đầu làm việc
-//    private String workHoursEnd;     // Thời gian kết thúc làm việc
-//    private String recruitmentEnd;   // Ngày kết thúc tuyển dụng
-//    private String recruitmentGender; // Giới tính yêu cầu
-//    private int recruitmentCount;    // Số lượng tuyển dụng
-//    private String workType;         // Loại hình công việc
-//    private String workPeriod;       // Thời gian làm việc
-//    private String workLocation;     // Địa điểm làm việc
-//    private String details;          // Chi tiết công việc
-//    private String companyContact;   // Số điện thoại công ty
-//
-//    public Job(String jobName, String employerName, String location, String jobType, String workplaceType, String duration, int salary, String durationType) {
-//        this.title = jobName;
-//        this.companyName = employerName;
-//        this.workLocation = location;
-//        this.workType = jobType;
-//        this.workLocation = workplaceType;
-//        this.workPeriod = duration;
-//        this.salary = salary;
-//        this.workType = durationType;
-//    }
-//    // Getter và Setter
-//    public int getJobID() {
-//        return jobID;
-//    }
-//
-//    public void setJobID(int jobID) {
-//        this.jobID = jobID;
-//    }
-//
-//    public int getCompanyID() {
-//        return companyID;
-//    }
-//
-//    public void setCompanyID(int companyID) {
-//        this.companyID = companyID;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public String getCompanyName() {
-//        return companyName;
-//    }
-//
-//    public void setCompanyName(String companyName) {
-//        this.companyName = companyName;
-//    }
-//
-//    public int getSalary() {
-//        return salary;
-//    }
-//
-//    public void setSalary(int salary) {
-//        this.salary = salary;
-//    }
-//
-//    public String getWorkDays() {
-//        return workDays;
-//    }
-//
-//    public void setWorkDays(String workDays) {
-//        this.workDays = workDays;
-//    }
-//
-//    public String getWorkHoursStart() {
-//        return workHoursStart;
-//    }
-//
-//    public void setWorkHoursStart(String workHoursStart) {
-//        this.workHoursStart = workHoursStart;
-//    }
-//
-//    public String getWorkHoursEnd() {
-//        return workHoursEnd;
-//    }
-//
-//    public void setWorkHoursEnd(String workHoursEnd) {
-//        this.workHoursEnd = workHoursEnd;
-//    }
-//
-//    public String getRecruitmentEnd() {
-//        return recruitmentEnd;
-//    }
-//
-//    public void setRecruitmentEnd(String recruitmentEnd) {
-//        this.recruitmentEnd = recruitmentEnd;
-//    }
-//
-//    public String getRecruitmentGender() {
-//        return recruitmentGender;
-//    }
-//
-//    public void setRecruitmentGender(String recruitmentGender) {
-//        this.recruitmentGender = recruitmentGender;
-//    }
-//
-//    public int getRecruitmentCount() {
-//        return recruitmentCount;
-//    }
-//
-//    public void setRecruitmentCount(int recruitmentCount) {
-//        this.recruitmentCount = recruitmentCount;
-//    }
-//
-//    public String getWorkType() {
-//        return workType;
-//    }
-//
-//    public void setWorkType(String workType) {
-//        this.workType = workType;
-//    }
-//
-//    public String getWorkPeriod() {
-//        return workPeriod;
-//    }
-//
-//    public void setWorkPeriod(String workPeriod) {
-//        this.workPeriod = workPeriod;
-//    }
-//
-//    public String getWorkLocation() {
-//        return workLocation;
-//    }
-//
-//    public void setWorkLocation(String workLocation) {
-//        this.workLocation = workLocation;
-//    }
-//
-//    public String getDetails() {
-//        return details;
-//    }
-//
-//    public void setDetails(String details) {
-//        this.details = details;
-//    }
-//
-//    public String getCompanyContact() {
-//        return companyContact;
-//    }
-//
-//    public void setCompanyContact(String companyContact) {
-//        this.companyContact = companyContact;
-//    }
-//}
 package com.example.application22024.model;
 
-
 public class Job {
-    private String jobName;
-    private String employerName;
-    private String location;
-    private String jobType;
-    private String workplaceType;
-    private String duration;
-    private String salary;
-    private String durationType;
+    private int job_id;
+    private int company_id;
+    private String postDate;
+    private String Title;
+    private Integer Salary;
+    private String SalaryType;
+    private String WorkHoursStart;
+    private String WorkHoursEnd;
+    private String can_negotiable_time;
+    private String RecruitmentEnd;
+    private String recruitmentGender;
+    private Integer RecruitmentCount;
+    private String WorkType;
+    private String WorkField;
+    private String WorkDays;
+    private String WorkPeriod;
+    private String can_negotiable_days;
+    private String WorkLocation;
+    private String Details;
+    private String CompanyContact;
+    private Company company;
 
-    public Job(String jobName, String employerName, String location, String jobType, String workplaceType, String duration, String salary, String durationType) {
-        this.jobName = jobName;
-        this.employerName = employerName;
-        this.location = location;
-        this.jobType = jobType;
-        this.workplaceType = workplaceType;
-        this.duration = duration;
-        this.salary = salary;
-        this.durationType = durationType;
-    }
-    // Constructor cho trường hợp chỉ lấy 3 cột (jobTitle, location, salary)
-    public Job(String jobTitle, String location, String salary) {
-        this.jobName = jobTitle;
-        this.location = location;
-        this.salary = salary;
-        // Các trường khác có thể để null hoặc mặc định
-        this.employerName = "";
-        this.jobType = "";
-        this.duration = "";
-        this.workplaceType = "";
-        this.durationType = "";
-    }
-    // Getters
-    public String getJobName() {
-        return jobName;
+    public Company getCompany() {
+        return company;
     }
 
-    public String getEmployerName() {
-        return employerName;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public String getLocation() {
-        return location;
+    // Getters and Setters
+    public int getJobId() {
+        return job_id;
+    }
+    public void setJobId(int jobId) {
+        this.job_id = jobId;
     }
 
-    public String getJobType() {
-        return jobType;
+    public int getCompanyId() {
+        return company_id;
+    }
+    public void setCompanyId(int companyId) {
+        this.company_id = companyId;
     }
 
-    public String getWorkplaceType() {
-        return workplaceType;
+    public String getPostDate() {
+        return postDate;
+    }
+    public void setPostDate(String postDate) {
+        this.postDate = postDate;
     }
 
-    public String getDuration() {
-        return duration;
+    public String getTitle() {
+        return Title;
+    }
+    public void setTitle(String title) {
+        this.Title = title;
     }
 
-    public String getSalary() {
-        return salary;
+    public Integer getSalary() {
+        return Salary;
+    }
+    public void setSalary(Integer salary) {
+        this.Salary = salary;
     }
 
-    public String getDurationType() {
-        return durationType;
+    public String getSalaryType() {
+        return SalaryType;
+    }
+    public void setSalaryType(String salaryType) {
+        this.SalaryType = salaryType;
     }
 
-    // Setters
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
+    public String getWorkHoursStart() {
+        return WorkHoursStart;
+    }
+    public void setWorkHoursStart(String workHoursStart) {
+        this.WorkHoursStart = workHoursStart;
     }
 
-    public void setEmployerName(String employerName) {
-        this.employerName = employerName;
+    public String getWorkHoursEnd() {
+        return WorkHoursEnd;
+    }
+    public void setWorkHoursEnd(String workHoursEnd) {
+        this.WorkHoursEnd = workHoursEnd;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public String getCanNegotiableTime() {
+        return can_negotiable_time;
+    }
+    public void setCanNegotiableTime(String canNegotiableTime) {
+        this.can_negotiable_time = canNegotiableTime;
     }
 
-    public void setJobType(String jobType) {
-        this.jobType = jobType;
+    public String getRecruitmentEnd() {
+        return RecruitmentEnd;
+    }
+    public void setRecruitmentEnd(String recruitmentEnd) {
+        this.RecruitmentEnd = recruitmentEnd;
     }
 
-    public void setWorkplaceType(String workplaceType) {
-        this.workplaceType = workplaceType;
+    public String getRecruitmentGender() {
+        return recruitmentGender;
+    }
+    public void setRecruitmentGender(String recruitmentGender) {
+        this.recruitmentGender = recruitmentGender;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
+    public Integer getRecruitmentCount() {
+        return RecruitmentCount;
+    }
+    public void setRecruitmentCount(Integer recruitmentCount) {
+        this.RecruitmentCount = recruitmentCount;
     }
 
-    public void setSalary(String salary) {
-        this.salary = salary;
+    public String getWorkType() {
+        return WorkType;
+    }
+    public void setWorkType(String workType) {
+        this.WorkType = workType;
     }
 
-    public void setDurationType(String durationType) {
-        this.durationType = durationType;
+    public String getWorkField() {
+        return WorkField;
+    }
+    public void setWorkField(String workField) {
+        this.WorkField = workField;
+    }
+
+    public String getWorkDays() {
+        return WorkDays;
+    }
+    public void setWorkDays(String workDays) {
+        this.WorkDays = workDays;
+    }
+
+    public String getWorkPeriod() {
+        return WorkPeriod;
+    }
+    public void setWorkPeriod(String workPeriod) {
+        this.WorkPeriod = workPeriod;
+    }
+
+    public String getCanNegotiableDays() {
+        return can_negotiable_days;
+    }
+    public void setCanNegotiableDays(String canNegotiableDays) {
+        this.can_negotiable_days = canNegotiableDays;
+    }
+
+    public String getWorkLocation() {
+        return WorkLocation;
+    }
+    public void setWorkLocation(String workLocation) {
+        this.WorkLocation = workLocation;
+    }
+
+    public String getDetails() {
+        return Details;
+    }
+    public void setDetails(String details) {
+        this.Details = details;
+    }
+
+    public String getCompanyContact() {
+        return CompanyContact;
+    }
+    public void setCompanyContact(String companyContact) {
+        this.CompanyContact = companyContact;
     }
 }

@@ -2,6 +2,7 @@ package com.example.application22024;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.application22024.employee.EmployeeMain;
 import com.example.application22024.employer.EmployerMain;
 import com.example.application22024.model.User;
+import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +22,8 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
     APIService apiService;
-    EditText loginAccount,loginPassword;
+    EditText loginAccount, loginPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,20 +40,21 @@ public class LoginActivity extends AppCompatActivity {
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Lấy thông tin từ Intent
-                String nextActivity = getIntent().getStringExtra("userType");
-
-                Intent intent = null;
-
-                // Tạo Intent để chuyển sang Activity khác
-                if ("Employer".equals(nextActivity)) {
-                    intent = new Intent(LoginActivity.this, EmployerMain.class);
-                } else if ("Employee".equals(nextActivity)) {
-                    intent = new Intent(LoginActivity.this, EmployeeMain.class);
-                }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent); // Bắt đầu chuyển sang Activity khác
-                finish();
+//                // Lấy thông tin từ Intent
+//                String nextActivity = getIntent().getStringExtra("userType");
+//
+//                Intent intent = null;
+//
+//                // Tạo Intent để chuyển sang Activity khác
+//                if ("Employer".equals(nextActivity)) {
+//                    intent = new Intent(LoginActivity.this, EmployerMain.class);
+//                } else if ("Employee".equals(nextActivity)) {
+//                    intent = new Intent(LoginActivity.this, EmployeeMain.class);
+//                }
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent); // Bắt đầu chuyển sang Activity khác
+//                finish();
+                Login();
             }
         });
         Button registerbutton = findViewById(R.id.registerbutton);
@@ -68,37 +72,67 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void Login() {
-        String account = loginAccount.getText().toString().trim();
-        String password = loginPassword.getText().toString().trim();
+//        String account = loginAccount.getText().toString().trim();
+//        String password = loginPassword.getText().toString().trim();
+        String account ="a";
+        String password ="a";
 
-        // Check if username and password are not empty
+        // Lấy userType từ Intent
+        String expectedUserType = getIntent().getStringExtra("userType"); // "Employer" hoặc "Employee"
+        Log.e("user type: ", expectedUserType);
         if (!account.isEmpty() && !password.isEmpty()) {
-            // Create a login request object
-            LoginRequest loginRequest = new LoginRequest(account, password);
+            LoginRequest loginRequest = new LoginRequest(account, password, expectedUserType);
 
-            // Make an asynchronous network call to login API
-            Call<User> call = apiService.login(loginRequest);
-            call.enqueue(new Callback<User>() {
+            // Gọi API đăng nhập
+            Call<LoginResponse> call = apiService.login(loginRequest);
+            call.enqueue(new Callback<LoginResponse>() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()) {
-                        // If login is successful, fetch user info
-//                        getUserInfo(loginAccount);
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.e("API Response Body", new Gson().toJson(response.body()));
+
                     } else {
-                        // Handle unsuccessful login response
+                        Log.e("API Response Error", "Response code: " + response.code());
+                    }
+                    if (response.isSuccessful() && response.body() != null) {
+                        String message = response.body().getMessage();
+                        String userType = response.body().getUser_type();
+                        int userId = response.body().getUserId();
+                        String actualUserType = userType; // Lấy userType từ server
+                        // Kiểm tra nếu loại tài khoản từ server không khớp với loại tài khoản người dùng đã chọn
+                        if (expectedUserType != null && !expectedUserType.equals(actualUserType)) {
+                            Toast.makeText(LoginActivity.this, "You cannot log in as " + actualUserType + ". Please check your account type.", Toast.LENGTH_SHORT).show();
+                            return; // Ngăn chặn đăng nhập tiếp tục
+                        }
+                        // Nếu userType khớp, chuyển hướng đến giao diện chính tương ứng
+                        Intent intent;
+                        if ("Employer".equals(actualUserType)) {
+                            intent = new Intent(LoginActivity.this, EmployerMain.class);
+                            intent.putExtra("user_id", userId);
+                        } else if ("Employee".equals(actualUserType)) {
+                            intent = new Intent(LoginActivity.this, EmployeeMain.class);
+                            intent.putExtra("user_id", userId);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
                         Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                     }
                 }
 
+
                 @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    // Handle network connection failure
-                    Toast.makeText(LoginActivity.this, "Login failed: Cannot connect to server" + t.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Login failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            // Show a toast message if username or password is empty
             Toast.makeText(LoginActivity.this, "Please enter username and password", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

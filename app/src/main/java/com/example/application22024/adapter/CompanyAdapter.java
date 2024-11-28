@@ -2,6 +2,7 @@ package com.example.application22024.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     private Context context;
     private List<Company> companyList;
 
+
     // Constructor
     public CompanyAdapter(Context context, List<Company> companyList) {
         this.context = context;
@@ -34,21 +36,21 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     @NonNull
     @Override
     public CompanyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        Log.e("AdapterDebug", "onCreateViewHolder called");
+        Log.e("AdapterDebug", "onCreateViewHolder called");
         View view = LayoutInflater.from(context).inflate(R.layout.company, parent, false);
         return new CompanyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CompanyViewHolder holder, int position) {
-//        Log.e("AdapterDebug", "onBindViewHolder for position: " + position);
+        Log.e("AdapterDebug", "onBindViewHolder for position: " + position);
 
         Company company = companyList.get(position);
 
         holder.companyNameTextView.setText(company.getCompanyName());
-        holder.cityTextView.setText(company.getCity());
-        holder.jobPositionsTextView.setText(String.valueOf(company.getJobPositions()));
-//        Log.e("RecruitmentData", "Jobs: " + company.getJobs());
+        holder.cityTextView.setText(company.getAddress());
+        holder.jobPositionsTextView.setText(String.valueOf(company.getJobCount()));
+        Log.e("RecruitmentData", "Jobs: " + company.getJobs());
         // Hiển thị hoặc ẩn danh sách bài đăng tuyển
         if (company.isExpanded()) {
             holder.jobListView.setVisibility(View.VISIBLE);
@@ -134,11 +136,11 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         return companyList.size();
     }
 
-    public void updateData(List<Company> newCompanyList) {
-        this.companyList.clear();
-        this.companyList.addAll(newCompanyList);
-        notifyDataSetChanged();
+    public void updateData(List<Company> companyList) {
+        this.companyList = companyList; // Cập nhật dữ liệu trong adapter
+        notifyDataSetChanged(); // Thông báo dữ liệu đã thay đổi
     }
+
 
     // ViewHolder class
     public static class CompanyViewHolder extends RecyclerView.ViewHolder {

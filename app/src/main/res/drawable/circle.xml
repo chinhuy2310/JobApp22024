@@ -1,0 +1,18 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lớp bên dưới (hình tròn nền trong suốt) -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+
+    <!-- Lớp viền vàng -->
+    <item>
+        <shape android:shape="oval">
+            <stroke
+                android:width="2dp"
+                android:color="#FFD700" /> <!-- Màu vàng -->
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>

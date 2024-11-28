@@ -236,100 +236,100 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        }
 //        return companyList;
 //    }
-    public List<Company> fetchCompaniesFromDatabase2() {
-        List<Company> companyList = new ArrayList<>();
-        Cursor cursor = null;
-        try {
-            // Fetch all companies
-            cursor = this.getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_COMPANY, null);
-
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
-                    String city = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CITY));
-                    int jobPositions = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JOB_POSITIONS));
-
-                    // Fetch jobs for the current company
-                    List<Job> jobs = fetchJobsForCompany(name);
-
-                    // Add company to the list with jobs populated
-                    companyList.add(new Company(name, city, jobPositions, jobs));
-                } while (cursor.moveToNext());
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return companyList;
-    }
+//    public List<Company> fetchCompaniesFromDatabase2() {
+//        List<Company> companyList = new ArrayList<>();
+//        Cursor cursor = null;
+//        try {
+//            // Fetch all companies
+//            cursor = this.getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_COMPANY, null);
+//
+//            if (cursor != null && cursor.moveToFirst()) {
+//                do {
+//                    String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAME));
+//                    String city = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CITY));
+//                    int jobPositions = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_JOB_POSITIONS));
+//
+//                    // Fetch jobs for the current company
+//                    List<Job> jobs = fetchJobsForCompany(name);
+//
+//                    // Add company to the list with jobs populated
+//                    companyList.add(new Company(name, city, jobPositions, jobs));
+//                } while (cursor.moveToNext());
+//            }
+//        } finally {
+//            if (cursor != null) {
+//                cursor.close();
+//            }
+//        }
+//        return companyList;
+//    }
     // Phương thức để lấy danh sách công việc cho một công ty
-    public List<Job> fetchJobsForCompany(String companyName) {
-        List<Job> jobList = new ArrayList<>();
-        Cursor cursor = null;
-        try {
-            // Truy vấn bảng công việc nơi công ty = companyName
-            String query = "SELECT * FROM " + TABLE_JOBS + " WHERE " + COLUMN_EMPLOYER_NAME + " = ?";
-            cursor = this.getReadableDatabase().rawQuery(query, new String[]{companyName});
+//    public List<Job> fetchJobsForCompany(String companyName) {
+//        List<Job> jobList = new ArrayList<>();
+//        Cursor cursor = null;
+//        try {
+//            // Truy vấn bảng công việc nơi công ty = companyName
+//            String query = "SELECT * FROM " + TABLE_JOBS + " WHERE " + COLUMN_EMPLOYER_NAME + " = ?";
+//            cursor = this.getReadableDatabase().rawQuery(query, new String[]{companyName});
+//
+//            if (cursor != null && cursor.moveToFirst()) {
+//                do {
+//                    // Lấy thông tin công việc từ cơ sở dữ liệu
+//                    String jobTitle = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TITLE));
+//                    String location = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_LOCATION));
+//                    String salary = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_SALARY));
+//
+//                    // Thêm công việc vào danh sách
+//                    jobList.add(new Job(jobTitle, location, salary));
+//                } while (cursor.moveToNext());
+//            }
+//        } finally {
+//            if (cursor != null) {
+//                cursor.close();
+//            }
+//        }
+//        return jobList;
+//    }
 
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    // Lấy thông tin công việc từ cơ sở dữ liệu
-                    String jobTitle = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TITLE));
-                    String location = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_LOCATION));
-                    String salary = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_SALARY));
-
-                    // Thêm công việc vào danh sách
-                    jobList.add(new Job(jobTitle, location, salary));
-                } while (cursor.moveToNext());
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return jobList;
-    }
-
-    public List<Job> getAllJobs() {
-        List<Job> jobs = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        // Sử dụng JOIN để lấy thông tin từ bảng Jobs và Job_Duration
-        String query = "SELECT " + TABLE_JOBS + "." + COLUMN_JOB_TITLE + ", " +
-                TABLE_JOBS + "." + COLUMN_EMPLOYER_NAME + ", " +
-                TABLE_JOBS + "." + COLUMN_JOB_LOCATION + ", " +
-                TABLE_JOBS + "." + COLUMN_JOB_TYPE + ", " +
-                TABLE_JOBS + "." + COLUMN_WORKPLACE_TYPE + ", " +
-                TABLE_JOBS + "." + COLUMN_JOB_DURATION + ", " +
-                TABLE_JOBS + "." + COLUMN_JOB_SALARY + ", " +
-                TABLE_JOB_DURATION + "." + COLUMN_DURATION_TYPE +
-                " FROM " + TABLE_JOBS +
-                " LEFT JOIN " + TABLE_JOB_DURATION +
-                " ON " + TABLE_JOBS + "." + COLUMN_JOB_ID + " = " + TABLE_JOB_DURATION + "." + COLUMN_JOB_ID;
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                // Sử dụng constructor để tạo đối tượng Job với các trường từ cursor
-                Job job = new Job(
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TITLE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMPLOYER_NAME)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_LOCATION)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TYPE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WORKPLACE_TYPE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_DURATION)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_SALARY)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DURATION_TYPE)) // Lấy từ bảng Job_Duration
-                );
-
-                jobs.add(job);
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-        return jobs;
-    }
+//    public List<Job> getAllJobs() {
+//        List<Job> jobs = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        // Sử dụng JOIN để lấy thông tin từ bảng Jobs và Job_Duration
+//        String query = "SELECT " + TABLE_JOBS + "." + COLUMN_JOB_TITLE + ", " +
+//                TABLE_JOBS + "." + COLUMN_EMPLOYER_NAME + ", " +
+//                TABLE_JOBS + "." + COLUMN_JOB_LOCATION + ", " +
+//                TABLE_JOBS + "." + COLUMN_JOB_TYPE + ", " +
+//                TABLE_JOBS + "." + COLUMN_WORKPLACE_TYPE + ", " +
+//                TABLE_JOBS + "." + COLUMN_JOB_DURATION + ", " +
+//                TABLE_JOBS + "." + COLUMN_JOB_SALARY + ", " +
+//                TABLE_JOB_DURATION + "." + COLUMN_DURATION_TYPE +
+//                " FROM " + TABLE_JOBS +
+//                " LEFT JOIN " + TABLE_JOB_DURATION +
+//                " ON " + TABLE_JOBS + "." + COLUMN_JOB_ID + " = " + TABLE_JOB_DURATION + "." + COLUMN_JOB_ID;
+//
+//        Cursor cursor = db.rawQuery(query, null);
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                // Sử dụng constructor để tạo đối tượng Job với các trường từ cursor
+//                Job job = new Job(
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TITLE)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMPLOYER_NAME)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_LOCATION)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_TYPE)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_WORKPLACE_TYPE)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_DURATION)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_JOB_SALARY)),
+//                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DURATION_TYPE)) // Lấy từ bảng Job_Duration
+//                );
+//
+//                jobs.add(job);
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+//        db.close();
+//        return jobs;
+//    }
 }

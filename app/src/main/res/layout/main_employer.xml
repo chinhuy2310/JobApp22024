@@ -57,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:gravity="center"
-                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:text="Add new recruitment"
                 android:textColor="@color/textview_color" />
         </LinearLayout>

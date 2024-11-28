@@ -1,8 +1,10 @@
 package com.example.application22024.employer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import android.view.View;
@@ -20,10 +22,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.application22024.APIService;
 import com.example.application22024.DatabaseHelper;
 import com.example.application22024.First_Activity;
 import com.example.application22024.R;
 
+import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.adapter.CompanyAdapter;
 import com.example.application22024.model.Company;
 import com.google.android.material.navigation.NavigationView;
@@ -31,29 +35,37 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class EmployerMain extends AppCompatActivity {
     // Views
     private ImageView openMenuButton;
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
     private LinearLayout emptyView;
-            TextView addNewRecruitment;
+    TextView addNewRecruitment;
 
     // Data and Adapter
     private CompanyAdapter adapter;
+    APIService apiService;
     private DatabaseHelper databaseHelper;
     private List<Company> companyList;
+    private boolean backPressedOnce = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_employer);
 
+        apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+
         // Initialize views
         initViews();
 
-        // Initialize DatabaseHelper
-        databaseHelper = new DatabaseHelper(this);
+
 
         // Set up Navigation Drawer
         setupNavigationDrawer();
@@ -61,12 +73,21 @@ public class EmployerMain extends AppCompatActivity {
         // Set up RecyclerView
         setupRecyclerView();
 
-        // Fetch data from database and update UI
-        companyList = databaseHelper.fetchCompaniesFromDatabase2();
-//        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
+
+//        updateUI();
 
 
-        updateUI();
+
+        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
+        Log.e("userid from intent", String.valueOf(userId));
+        if (userId != -1) {
+            // Gọi API để lấy thông tin công ty của Employer dựa trên userId
+            getCompanies(userId);
+        } else {
+            // Xử lý nếu không có user_id (lỗi)
+            Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
+        }
+        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,9 +95,43 @@ public class EmployerMain extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+
     }
 
-    // Initialize all views
+
+    private void getCompanies(int userId) {
+        // Gọi API lấy các công ty của employer
+        Call<List<Company>> call = apiService.getCompanies(userId);
+        call.enqueue(new Callback<List<Company>>() {
+            @Override
+            public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
+                Log.e("get company with userid: ", String.valueOf(userId));
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.e("",response.toString());
+                    List<Company> companies = response.body();
+                    Log.e("company list", companies.toString());
+
+                    // Cập nhật danh sách công ty và thông báo adapter thay đổi dữ liệu
+                    companyList.clear();  // Xóa danh sách công ty cũ
+                    companyList.addAll(companies);
+                    Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
+
+                    adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật lại dữ liệu
+                    updateUI();  // Cập nhật giao diện (nếu cần)
+
+                } else {
+                    Log.e("API Error", "Response body is empty or error occurred");
+                    Toast.makeText(EmployerMain.this, "No companies found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Company>> call, Throwable t) {
+                Toast.makeText(EmployerMain.this, "Failed to load companies: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void initViews() {
         drawerLayout = findViewById(R.id.drawer_layout);
         openMenuButton = findViewById(R.id.menuButton);
@@ -97,6 +152,9 @@ public class EmployerMain extends AppCompatActivity {
     private void setupNavigationDrawer() {
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(item -> {
+            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
             Intent intent;
             if (item.getItemId() == R.id.addRecruitment) {
                 showCompanySelectionDialog();
@@ -126,7 +184,7 @@ public class EmployerMain extends AppCompatActivity {
     // Update the UI based on the company list
     private void updateUI() {
         if (companyList.isEmpty()) {
-//            Log.e("RecyclerViewDebug", "No companies to show. Showing empty view.");
+            Log.e("RecyclerViewDebug", "No companies to show. Showing empty view.");
             recyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {
@@ -138,6 +196,7 @@ public class EmployerMain extends AppCompatActivity {
 //        Log.e("AdapterDebug", "Adapter Notified");
 
     }
+
     private void showCompanySelectionDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] options = {"Choose an existing company", "Create new"};
@@ -154,6 +213,7 @@ public class EmployerMain extends AppCompatActivity {
 
         builder.create().show();
     }
+
     private void showCompanyPickerDialog() {
         if (companyList.isEmpty()) {
             Toast.makeText(this, "There are no companies to choose from.", Toast.LENGTH_SHORT).show();
@@ -193,4 +253,18 @@ public class EmployerMain extends AppCompatActivity {
         builder.create().show();
     }
 
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+        if (backPressedOnce) {
+            moveTaskToBack(true); // Ẩn ứng dụng
+//            finish(); // Kết thúc Activity (thoát hoàn toàn)
+        } else {
+            backPressedOnce = true;
+            Toast.makeText(this, "Nhấn lần nữa để thoát", Toast.LENGTH_SHORT).show();
+
+            // Đặt lại trạng thái sau 2 giây
+            new Handler().postDelayed(() -> backPressedOnce = false, 2000);
+        }
+    }
 }
