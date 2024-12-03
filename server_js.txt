@@ -1,0 +1,557 @@
+const express = require('express');
+const multer = require('multer');
+const moment = require('moment');
+
+const path = require('path');
+// const nodemailer = require('nodemailer');
+const mysql = require('mysql2');
+const bodyParser = require('body-parser');
+const app = express();
+
+// Cấu hình body-parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Kết nối đến cơ sở dữ liệu MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '1234',
+    database: 'jobapp',
+    dateStrings: true
+  }); 
+  // Kết nối đến MySQL
+db.connect((err) => {
+  if (err) {
+    console.error('SQL Error', err);
+    return;
+  }
+  console.log('SQL connect OK');
+});
+
+
+// Đặt vị trí lưu trữ ảnh tải lên
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    // Lưu ảnh vào thư mục "uploads"
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    // Đặt tên file khi lưu (bảo đảm không trùng tên)
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+// Khởi tạo multer với cấu hình lưu trữ
+const upload = multer({ storage: storage });
+
+// Tạo thư mục uploads nếu chưa có
+const fs = require('fs');
+if (!fs.existsSync('uploads')) {
+  fs.mkdirSync('uploads');
+}
+
+// // Cấu hình Nodemailer
+// const transporter = nodemailer.createTransport({
+//     service: 'gmail', // Sử dụng Gmail để gửi email
+//     auth: {
+//         user: 'yourEmail@gmail.com',
+//         pass: 'yourEmailPassword'
+//     }
+// });
+
+// // Hàm tạo OTP ngẫu nhiên
+// const generateOtp = () => {
+//     return Math.floor(100000 + Math.random() * 900000).toString(); // Tạo OTP 6 chữ số
+// };
+
+// // API gửi mã OTP
+// app.post('/sendOtp', (req, res) => {
+//     const email = req.body.email;
+//     const otp = generateOtp();
+//     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // Hết hạn sau 10 phút
+
+//     // Lưu OTP vào cơ sở dữ liệu
+//     const sql = 'INSERT INTO otps (email, otp, expires_at) VALUES (?, ?, ?)';
+//     db.execute(sql, [email, otp, expiresAt], (err) => {
+//         if (err) {
+//             return res.status(500).json({ error: 'Error saving OTP to database.' });
+//         }
+
+//         // Gửi OTP qua email
+//         const mailOptions = {
+//             from: 'yourEmail@gmail.com',
+//             to: email,
+//             subject: 'Your OTP Code',
+//             text: `Your OTP code is ${otp}. It is valid for 10 minutes.`
+//         };
+
+//         transporter.sendMail(mailOptions, (error, info) => {
+//             if (error) {
+//                 return res.status(500).json({ error: 'Error sending email.' });
+//             }
+//             res.json({ message: 'OTP sent to your email.' });
+//         });
+//     });
+// });
+
+// // API xác thực OTP
+// app.post('/verifyOtp', (req, res) => {
+//     const { email, otp } = req.body;
+
+//     // Kiểm tra OTP trong cơ sở dữ liệu
+//     const sql = 'SELECT * FROM otps WHERE email = ? AND otp = ? AND expires_at > NOW()';
+//     db.execute(sql, [email, otp], (err, results) => {
+//         if (err) {
+//             return res.status(500).json({ error: 'Error checking OTP.' });
+//         }
+//         if (results.length > 0) {
+//             // OTP hợp lệ
+//             return res.json({ message: 'OTP verified successfully.' });
+//         } else {
+//             // OTP không hợp lệ hoặc đã hết hạn
+//             return res.status(401).json({ error: 'Invalid or expired OTP.' });
+//         }
+//     });
+// });
+
+
+
+// Endpoint đăng ký
+app.post('/signup', (req, res) => {
+  const { account, password, userName, contact, userType } = req.body;
+
+  // Kiểm tra dữ liệu đầu vào
+  if (!account || !password || !userName || !contact || !userType) {
+      return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  // Kiểm tra tài khoản đã tồn tại chưa
+  const checkQuery = 'SELECT * FROM user WHERE account = ?';
+  db.query(checkQuery, [account], (err, results) => {
+      if (err) {
+          console.error('SQL Error:', err);
+          return res.status(500).json({ message: 'Database error' });
+      }
+
+      if (results.length > 0) {
+          return res.status(400).json({ message: 'Account already exists' });
+      }
+
+      // Chèn dữ liệu người dùng vào cơ sở dữ liệu
+      const insertQuery = `
+          INSERT INTO user (account, password, userName, contact, user_type)
+          VALUES (?, ?, ?, ?, ?)
+      `;
+      db.query(insertQuery, [account, password, userName, contact, userType], (err, result) => {
+          if (err) {
+              console.error('SQL Error:', err);
+              return res.status(500).json({ message: 'Failed to create user' });
+          }
+
+          return res.status(201).json({ message: 'User created successfully' });
+      });
+  });
+});
+  
+
+  // Đăng nhập người dùng
+app.post('/login', (req, res) => {
+    const { account, password, userType } = req.body;
+    console.error('đăng nhập với nội dung', account, password, userType );
+    if (!account || !password || !userType) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+  
+    // Kiểm tra tài khoản trong cơ sở dữ liệu
+    const query = 'SELECT * FROM user WHERE account = ? ';
+    db.query(query, [account,password], (err, results) => {
+      if (err) {
+        return res.status(500).json({ message: 'Database error' });
+      }
+  
+      if (results.length === 0) {
+        return res.status(400).json({ message: 'Invalid account or password' });
+      }
+  
+      const user = results[0];
+  
+      // Kiểm tra loại người dùng
+      if (user.user_type !== userType) {
+        return res.status(403).json({ message: 'User type mismatch' });
+      }
+  
+      // Kiểm tra mật khẩu
+      if (user.password !== password) {
+        return res.status(400).json({ message: 'Invalid account or password' });
+      }
+    
+      return res.json({
+        message: 'Login successful',
+        user_id: user.user_id,
+        user_type: user.user_type
+      });
+      
+    });
+  });
+
+  app.get('/companies/:userId', (req, res) => {
+    const userId = req.params.userId; // Lấy employer_id từ query string
+    if (!userId) {
+        return res.status(400).json({ message: 'Employer ID is required' });
+    }
+
+    // Truy vấn các công ty cùng số lượng bài đăng của từng công ty
+    const query = `
+        SELECT 
+            c.company_id, 
+            c.company_name, 
+            c.name_of_representative, 
+            c.address, 
+            c.contact,
+            c.registration_number,
+            c.company_image,
+            COUNT(j.job_id) AS job_count
+        FROM company c
+        LEFT JOIN jobdetails j ON c.company_id = j.company_id
+        WHERE c.employer_id = ?
+        GROUP BY c.company_id;
+    `;
+
+    db.query(query, [userId], (err, results) => {
+        if (err) {
+            console.error('Lỗi khi truy vấn cơ sở dữ liệu:', err);
+            return res.status(500).json({ message: 'Database error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No companies found for this employer' });
+        }
+
+        res.status(200).json(results); // Trả về danh sách các công ty với số lượng bài đăng
+    });
+});
+
+app.get('/companies/:companyId/jobs', (req, res) => {
+  const companyId = req.params.companyId;
+  
+  if (!companyId) {
+      return res.status(400).json({ message: 'Company ID is required' });
+  }
+
+  const query ='SELECT * FROM jobdetails WHERE company_id = ?';
+
+  db.query(query, [companyId], (err, results) => {
+      if (err) {
+          console.error('Lỗi khi truy vấn cơ sở dữ liệu:', err);
+          return res.status(500).json({ message: 'Database error' });
+      }
+
+      if (results.length === 0) {
+          return res.status(404).json({ message: 'No jobs found for this company' });
+      }
+
+      res.status(200).json(results); // Trả về danh sách công việc của công ty
+  });
+});
+
+
+// // API để tải ảnh và lưu vào cơ sở dữ liệu
+// app.post('/upload', upload.single('company_image'), (req, res) => {
+//   if (!req.body.company_id) {
+//       return res.status(400).send('Company name is required');
+//   }
+
+//   let companyImagePath = '';
+//   if (req.file) {
+//       companyImagePath = `uploads/${req.file.filename}`; // Lấy đường dẫn ảnh nếu có tệp
+//   }
+
+//   // Kiểm tra xem công ty đã tồn tại trong cơ sở dữ liệu chưa
+//   const checkCompanySQL = 'SELECT * FROM company WHERE company_id = ?';
+//   db.query(checkCompanySQL, [req.body.company_id], (err, result) => {
+//       if (err) {
+//           console.error('Lỗi khi kiểm tra công ty: ', err);
+//           return res.status(500).send('Lỗi khi kiểm tra công ty');
+//       }
+
+//       let companyData = {
+//           company_id: req.body.company_id,
+//           employer_id: req.body.employer_id,
+//           company_name: req.body.company_name,
+//           name_of_representative: req.body.name_of_representative,
+//           registration_number: req.body.registration_number,
+//           address: req.body.address,
+//           contact: req.body.contact,
+//           company_image: companyImagePath
+//       };
+
+//       if (result.length > 0) {
+//           // Công ty đã tồn tại, thực hiện cập nhật
+//           const updateCompanySQL = 'UPDATE company SET ? WHERE company_id = ?';
+//           db.query(updateCompanySQL, [companyData, result[0].company_id], (err, updateResult) => {
+//               if (err) {
+//                   console.error('Lỗi khi cập nhật công ty: ', err);
+//                   return res.status(500).send('Lỗi khi cập nhật công ty');
+//               }
+
+//               // Cập nhật công việc
+//               handleJobData(req, result[0].company_id, res);
+//           });
+//       } else {
+//           // Công ty chưa tồn tại, thực hiện tạo mới
+//           const insertCompanySQL = 'INSERT INTO company SET ?';
+//           db.query(insertCompanySQL, companyData, (err, insertResult) => {
+//               if (err) {
+//                   console.error('Lỗi khi tạo công ty: ', err);
+//                   return res.status(500).send('Lỗi khi tạo công ty');
+//               }
+
+//               const newCompanyId = insertResult.insertId; // ID công ty mới tạo
+//               // Cập nhật công việc sau khi tạo công ty mới
+//               handleJobData(req, newCompanyId, res);
+//           });
+//       }
+//   });
+// });
+
+// API để lưu dữ liệu vào `company` và `jobdetails`
+app.post("/submit_registration", upload.single("company_image"), (req, res) => {
+  const {
+    employer_id,
+    company_id,
+    company_name,
+    name_of_representative,
+    registration_number,
+    address,
+    contact,
+    job_id,
+    Title,
+    Salary,
+    SalaryType,
+    WorkHoursStart,
+    WorkHoursEnd,
+    can_negotiable_time,
+    RecruitmentGender,
+    RecruitmentCount,
+    WorkType,
+    WorkField,
+    WorkDays,
+    WorkPeriod,
+    can_negotiable_days,
+    WorkLocation,
+    Details,
+    RecruitmentEnd,
+  } = req.body;
+  const formattedRecruitmentEnd = moment(RecruitmentEnd, 'DD/MM/YYYY').format('YYYY-MM-DD');
+
+  // Lấy đường dẫn file ảnh (nếu có)
+  const companyImagePath = req.file ? `/uploads/${req.file.filename}` : null;
+
+  if (company_id) {
+    // Cập nhật thông tin công ty
+    const updateCompanyQuery = `
+      UPDATE company
+      SET company_name = ?, name_of_representative = ?, registration_number = ?, 
+          address = ?, contact = ?, company_image = ?
+      WHERE company_id = ? AND employer_id = ?`;
+
+    db.query(
+      updateCompanyQuery,
+      [
+        company_name,
+        name_of_representative,
+        registration_number,
+        address,
+        contact,
+        companyImagePath,
+        company_id,
+        employer_id,
+      ],
+      (err, companyResult) => {
+        if (err) {
+          console.error("Error updating company: ", err);
+          return res.status(500).send({ message: "Error updating company" });
+        }
+
+        handleJobDetails(company_id);
+      }
+    );
+  } else {
+    // Tạo công ty mới
+    const insertCompanyQuery = `
+      INSERT INTO company (employer_id, company_name, name_of_representative, registration_number, 
+          address, contact, company_image) 
+      VALUES (?, ?, ?, ?, ?, ?, ?)`;
+
+    db.query(
+      insertCompanyQuery,
+      [
+        employer_id,
+        company_name,
+        name_of_representative,
+        registration_number,
+        address,
+        contact,
+        companyImagePath,
+      ],
+      (err, companyResult) => {
+        if (err) {
+          console.error("Error inserting company: ", err);
+          return res.status(500).send({ message: "Error inserting company" });
+        }
+
+        const newCompanyId = companyResult.insertId;
+        handleJobDetails(newCompanyId);
+      }
+    );
+  }
+
+  function handleJobDetails(currentCompanyId) {
+    if (job_id) {
+      const updateJobQuery = `
+        UPDATE jobdetails
+        SET Title = ?, Salary = ?, SalaryType = ?, WorkHoursStart = ?, 
+            WorkHoursEnd = ?, can_negotiable_time = ?, RecruitmentGender = ?, 
+            RecruitmentCount = ?, WorkType = ?, WorkField = ?, WorkDays = ?, 
+            WorkPeriod = ?, can_negotiable_days = ?, WorkLocation = ?, 
+            Details = ?, RecruitmentEnd = ?
+        WHERE job_id = ? AND company_id = ?`;
+
+      db.query(
+        updateJobQuery,
+        [
+          Title,
+          Salary,
+          SalaryType,
+          WorkHoursStart,
+          WorkHoursEnd,
+          can_negotiable_time,
+          RecruitmentGender,
+          RecruitmentCount,
+          WorkType,
+          WorkField,
+          WorkDays,
+          WorkPeriod,
+          can_negotiable_days,
+          WorkLocation,
+          Details,
+          formattedRecruitmentEnd, // Dùng ngày đã định dạng
+          job_id,
+          currentCompanyId,
+        ],
+        (err, jobResult) => {
+          if (err) {
+            console.error("Error updating job: ", err);
+            return res.status(500).send({ message: "Error updating job" });
+          }
+
+          res.send({ message: "Job updated successfully" });
+        }
+      );
+    } else {
+      const insertJobQuery = `
+        INSERT INTO jobdetails (company_id, Title, Salary, SalaryType, WorkHoursStart, WorkHoursEnd, 
+            can_negotiable_time, RecruitmentGender, RecruitmentCount, WorkType, WorkField, WorkDays, 
+            WorkPeriod, can_negotiable_days, WorkLocation, Details, RecruitmentEnd)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      db.query(
+        insertJobQuery,
+        [
+          currentCompanyId,
+          Title,
+          Salary,
+          SalaryType,
+          WorkHoursStart,
+          WorkHoursEnd,
+          can_negotiable_time,
+          RecruitmentGender,
+          RecruitmentCount,
+          WorkType,
+          WorkField,
+          WorkDays,
+          WorkPeriod,
+          can_negotiable_days,
+          WorkLocation,
+          Details,
+          formattedRecruitmentEnd, // Dùng ngày đã định dạng
+        ],
+        (err, jobResult) => {
+          if (err) {
+            console.error("Error inserting job: ", err);
+            return res.status(500).send({ message: "Error inserting job" });
+          }
+
+          res.send({ message: "Job created successfully" });
+        }
+      );
+    }
+  }
+});
+
+// Xử lý việc tạo mới hoặc cập nhật thông tin công việc (jobdetails)
+function handleJobData(req, company_id, res) {
+  const jobData = {
+      job_id:req.body.job_id,
+      company_id: company_id,
+      Title: req.body.Title,
+      Salary: req.body.Salary,
+      SalaryType: req.body.SalaryType,
+      WorkHoursStart: req.body.WorkHoursStart,
+      WorkHoursEnd: req.body.WorkHoursEnd,
+      can_negotiable_time: req.body.can_negotiable_time,
+      RecruitmentGender: req.body.RecruitmentGender,
+      RecruitmentCount: req.body.RecruitmentCount,
+      WorkType: req.body.WorkType,
+      WorkField: req.body.WorkField,
+      WorkDays: req.body.WorkDays,
+      WorkPeriod: req.body.WorkPeriod,
+      can_negotiable_days: req.body.can_negotiable_days,  
+      WorkLocation: req.body.WorkLocation,
+      Details: req.body.Details,
+      RecruitmentEnd: req.body.RecruitmentEnd
+  };
+
+  if (req.body.job_id) {
+      // Nếu có job_id, thực hiện cập nhật công việc
+      const updateJobSQL = 'UPDATE jobdetails SET ? WHERE job_id = ?';
+      db.query(updateJobSQL, [jobData, req.body.job_id], (err, updateResult) => {
+          if (err) {
+              console.error('Lỗi khi cập nhật công việc: ', err);
+              return res.status(500).send('Lỗi khi cập nhật công việc');
+          }
+          res.status(200).send('Cập nhật công việc thành công');
+      });
+  } else {
+      // Nếu không có company_id, thực hiện tạo mới công việc
+      const insertJobSQL = 'INSERT INTO jobdetails SET ?';
+      db.query(insertJobSQL, jobData, (err, insertResult) => {
+          if (err) {
+              console.error('Lỗi khi tạo công việc: ', err);
+              return res.status(500).send('Lỗi khi tạo công việc');
+          }
+          res.status(200).send('Công việc đã được tạo mới thành công');
+      });
+  }
+}
+
+
+  app.get('/user', (req, res) => {
+    const query = 'SELECT * FROM user';
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+      res.status(200).json( results );
+    });
+  });
+  
+
+// Khởi động server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running at http://<địa_chỉ_IP>:${PORT}`);
+});

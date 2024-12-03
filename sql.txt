@@ -1,0 +1,77 @@
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
+  `account` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `userName` varchar(255) DEFAULT NULL,
+  `contact` varchar(255) NOT NULL,
+  `user_type` enum('Employer','Employee') NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `account` (`account`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `company` (
+  `company_id` int NOT NULL AUTO_INCREMENT,
+  `employer_id` int NOT NULL,
+  `company_name` text NOT NULL,
+  `name_of_representative` text,
+  `registration_number` text,
+  `address` text,
+  `contact` text,
+  `company_image` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`company_id`),
+  KEY `employer_id` (`employer_id`),
+  CONSTRAINT `company_ibfk_1` FOREIGN KEY (`employer_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `jobdetails` (
+  `job_id` int NOT NULL AUTO_INCREMENT,
+  `company_id` int NOT NULL,
+  `Title` text NOT NULL,
+  `Salary` int DEFAULT NULL,
+  `SalaryType` text,
+  `WorkHoursStart` time DEFAULT NULL,
+  `WorkHoursEnd` time DEFAULT NULL,
+  `can_negotiable_time` enum('Yes','No') DEFAULT NULL,
+  `RecruitmentGender` text,
+  `RecruitmentCount` int DEFAULT NULL,
+  `WorkType` text,
+  `WorkField` text,
+  `WorkDays` text,
+  `WorkPeriod` text,
+  `can_negotiable_days` enum('Yes','No') DEFAULT NULL,
+  `WorkLocation` text,
+  `Details` text,
+  `RecruitmentEnd` date DEFAULT NULL,
+  `PostDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`job_id`),
+  KEY `company_id` (`company_id`),
+  CONSTRAINT `jobdetails_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+CREATE TABLE `profile` (
+  `profile_id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `avatar_url` text,
+  `full_name` varchar(255) NOT NULL,
+  `gender` enum('Male','Female') NOT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `education_level` text,
+  `education_status` text,
+  `experience` text,
+  `introduction` text,
+  `preferred_work_location` varchar(255) DEFAULT NULL,
+  `preferred_work_duration` varchar(255) DEFAULT NULL,
+  `work_type` varchar(255) DEFAULT NULL,
+  `work_schedule` text,
+  `expected_salary` int DEFAULT NULL,
+  `salary_type` varchar(50) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`profile_id`),
+  KEY `employee_id` (`employee_id`),
+  CONSTRAINT `profile_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
