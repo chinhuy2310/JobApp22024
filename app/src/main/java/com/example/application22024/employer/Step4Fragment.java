@@ -81,6 +81,9 @@ public class Step4Fragment extends Fragment {
             representativeName.setText(viewModel.getSelectedCompany().getNameOfRepresentative());
             registerNumber1.setText(viewModel.getSelectedCompany().getRegistrationNumber().split("-")[0]);
             registerNumber2.setText(viewModel.getSelectedCompany().getRegistrationNumber().split("-")[1]);
+            viewModel.setCompanyName(companyName.getText().toString());
+            viewModel.setRepresentativeName(representativeName.getText().toString());
+            viewModel.setRegisterNumber(viewModel.getSelectedCompany().getRegistrationNumber());
             String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
             String relativePath = viewModel.getSelectedCompany().getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath;
@@ -92,15 +95,21 @@ public class Step4Fragment extends Fragment {
             Log.e("selectedCompany", "is null");
         }
 
-        String combinedRegisterNumber = registerNumber1.getText().toString() + "-" + registerNumber2.getText().toString();
+
+
+//        Log.e("combinedRegisterNumber", combinedRegisterNumber);
 
         setTextChangedListener(companyName, viewModel::setCompanyName);
         setTextChangedListener(representativeName, viewModel::setRepresentativeName);
-        viewModel.setRegisterNumber(combinedRegisterNumber);
+
+//        Log.e("registerNumber", viewModel.getRegisterNumber());
 
 
         Button nextButton = view.findViewById(R.id.button_post);
         nextButton.setOnClickListener(v -> {
+            String combinedRegisterNumber = registerNumber1.getText().toString() + "-" + registerNumber2.getText().toString();
+            Log.e("combinedRegisterNumber", combinedRegisterNumber);
+            viewModel.setRegisterNumber(combinedRegisterNumber);
             if (listener != null) {
                 listener.onPostButtonClicked(); // Gọi phương thức trong Activity
             }
