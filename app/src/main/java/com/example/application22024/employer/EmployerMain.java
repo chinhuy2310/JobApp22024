@@ -2,7 +2,6 @@ package com.example.application22024.employer;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,11 +24,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.application22024.APIService;
 import com.example.application22024.DatabaseHelper;
 import com.example.application22024.First_Activity;
+import com.example.application22024.MyApplication;
 import com.example.application22024.R;
 
 import com.example.application22024.RetrofitClientInstance;
+import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.CompanyAdapter;
 import com.example.application22024.model.Company;
+import com.example.application22024.model.RegistrationViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -53,19 +55,16 @@ public class EmployerMain extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private List<Company> companyList;
     private boolean backPressedOnce = false;
-
-
+    RegistrationViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_employer);
-
+        viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
 
         // Initialize views
         initViews();
-
-
 
         // Set up Navigation Drawer
         setupNavigationDrawer();
@@ -73,13 +72,9 @@ public class EmployerMain extends AppCompatActivity {
         // Set up RecyclerView
         setupRecyclerView();
 
-
-//        updateUI();
-
-
-
-        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
-        Log.e("userid from intent", String.valueOf(userId));
+//        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
+        int userId = SharedPrefManager.getInstance(this).getUserId();
+        Log.e("userid", String.valueOf(userId));
         if (userId != -1) {
             // Gọi API để lấy thông tin công ty của Employer dựa trên userId
             getCompanies(userId);
@@ -87,7 +82,7 @@ public class EmployerMain extends AppCompatActivity {
             // Xử lý nếu không có user_id (lỗi)
             Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
         }
-        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
+//        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -107,10 +102,9 @@ public class EmployerMain extends AppCompatActivity {
             public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
                 Log.e("get company with userid: ", String.valueOf(userId));
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.e("",response.toString());
+//                    Log.e("",response.toString());
                     List<Company> companies = response.body();
-                    Log.e("company list", companies.toString());
-
+//                    Log.e("company list", companies.toString());
                     // Cập nhật danh sách công ty và thông báo adapter thay đổi dữ liệu
                     companyList.clear();  // Xóa danh sách công ty cũ
                     companyList.addAll(companies);
@@ -155,16 +149,11 @@ public class EmployerMain extends AppCompatActivity {
             if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
                 drawerLayout.closeDrawer(GravityCompat.END);
             }
-            Intent intent;
             if (item.getItemId() == R.id.addRecruitment) {
                 showCompanySelectionDialog();
                 return true;
             } else if (item.getItemId() == R.id.Logout) {
-                // Đăng xuất và trở về First_Activity
-                intent = new Intent(EmployerMain.this, First_Activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+                showLogoutConfirmation();
                 return true;
             }
             return false;
@@ -205,6 +194,7 @@ public class EmployerMain extends AppCompatActivity {
                 // Hiển thị danh sách công ty
                 showCompanyPickerDialog();
             } else if (which == 1) {
+                viewModel.reset();
                 // Chuyển đến màn hình tạo mới công ty
                 Intent intent = new Intent(EmployerMain.this, RegistrationActivity.class);
                 startActivity(intent);
@@ -235,19 +225,11 @@ public class EmployerMain extends AppCompatActivity {
             // Công ty được chọn
             Company selectedCompany = companyList.get(which);
             Toast.makeText(this, "Selected: " + selectedCompany.getCompanyName(), Toast.LENGTH_SHORT).show();
-
+            viewModel.setSelectedCompany(selectedCompany);
             // Có thể chuyển đến màn hình đăng tuyển với thông tin công ty
             Intent intent = new Intent(EmployerMain.this, RegistrationActivity.class);
-            intent.putExtra("companyName", selectedCompany.getCompanyName());
             startActivity(intent);
 
-//            // Lấy thông tin công ty từ Intent ở activity tiếp theo
-//            String companyName = getIntent().getStringExtra("companyName");
-//            if (companyName != null) {
-//                // Hiển thị hoặc xử lý thông tin công ty
-//                TextView companyTextView = findViewById(R.id.companyNameTextView);
-//                companyTextView.setText("Công ty: " + companyName);
-//            }
         });
 
         builder.create().show();
@@ -267,4 +249,20 @@ public class EmployerMain extends AppCompatActivity {
             new Handler().postDelayed(() -> backPressedOnce = false, 2000);
         }
     }
+
+    private void showLogoutConfirmation() {
+        new AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    SharedPrefManager.getInstance(this).clear();
+                    Intent intent = new Intent(EmployerMain.this, First_Activity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
 }

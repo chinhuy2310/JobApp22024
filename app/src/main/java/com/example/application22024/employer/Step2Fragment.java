@@ -2,13 +2,19 @@ package com.example.application22024.employer;
 
 import android.app.DatePickerDialog;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.NumberPicker;
@@ -19,20 +25,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.application22024.MyApplication;
 import com.example.application22024.R;
+import com.example.application22024.model.RegistrationViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Calendar;
 
 public class Step2Fragment extends Fragment {
 
-    private TextView textViewDate, arrow, arrow1, arrow2;
+    private TextView arrow, arrow1, arrow2;
     private Button nextButton;
-    private EditText startTime, endTime, workArrangement;
+    private EditText recruitmentEndTime, startTime, endTime, workType, salary, recruitmentCount, workPeriod, workDay;
     private Spinner partsOfDay1, partsOfDay2, salaryType;
     private Calendar calendar;
+    private RegistrationViewModel viewModel;
+    private CheckBox checkBoxOption1, checkBoxOption2, checkBoxOption3;
+
 
     // Inflate layout for fragment
     @Nullable
@@ -45,6 +58,7 @@ public class Step2Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
 
         // Initialize views
         initializeViews(view);
@@ -58,14 +72,62 @@ public class Step2Fragment extends Fragment {
         // Setup time pickers for start and end time
         setupTimePicker();
 
-        // Handle Work Arrangement
-        workArrangement.setFocusable(false);
-        workArrangement.setOnClickListener(v -> showBottomSheetDialog(workArrangement.getText().toString()));
+        if (viewModel.getSelectedJob() != null) {
+            recruitmentCount.setText(String.valueOf(viewModel.getSelectedJob().getRecruitmentCount()));
+            salary.setText(String.valueOf(viewModel.getSelectedJob().getSalary()));
+            startTime.setText(viewModel.getSelectedJob().getWorkHoursStart());
+            endTime.setText(viewModel.getSelectedJob().getWorkHoursEnd());
+            workType.setText(viewModel.getSelectedJob().getWorkType());
+            workPeriod.setText(viewModel.getSelectedJob().getWorkPeriod());
+            workDay.setText(viewModel.getSelectedJob().getWorkDays());
+            recruitmentEndTime.setText(viewModel.getSelectedJob().getRecruitmentEnd());
+            Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
+            if ("Yes".equals(viewModel.getSelectedJob().getCanNegotiableTime())) {
+                checkBoxOption1.setChecked(true);
+                viewModel.setOption1Checked(true);
+            } else {
+                checkBoxOption1.setChecked(false);
+            }
+            if ("Yes".equals(viewModel.getSelectedJob().getCanNegotiableDays())) {
+                checkBoxOption2.setChecked(true);
+                viewModel.setOption2Checked(true);
+            } else {
+                checkBoxOption2.setChecked(false);
+            }
 
+        }
+        // Handle Work Arrangement
+        workType.setFocusable(false);
+        workType.setOnClickListener(v -> showBottomSheetDialog(workType.getText().toString()));
+        recruitmentEndTime.setFocusable(false);
+
+        // Lắng nghe sự thay đổi trạng thái checkbox và cập nhật vào ViewModel
+        checkBoxOption1.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption1Checked(isChecked));
+        checkBoxOption2.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption2Checked(isChecked));
+        checkBoxOption3.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption3Checked(isChecked));
+
+        // Get the selected values from Spinners
+        String selectedSalaryType = salaryType.getSelectedItem().toString();
+//        String selectedPartOfDay1 = partsOfDay1.getSelectedItem().toString();
+//        String selectedPartOfDay2 = partsOfDay2.getSelectedItem().toString();
+
+        viewModel.setSelectedSalaryType(selectedSalaryType);
+//        viewModel.setPartOfDay1(selectedPartOfDay1);
+//        viewModel.setPartOfDay2(selectedPartOfDay2);
+
+        // Cập nhật giá trị từ các trường vào ViewModel
+        setTextChangedListener(recruitmentCount, viewModel::setRecruitmentCount);
+        setTextChangedListener(salary, viewModel::setSalary);
+        setTextChangedListener(startTime, viewModel::setStartTime);
+        setTextChangedListener(endTime, viewModel::setEndTime);
+        setTextChangedListener(workType, viewModel::setWorkType);
+        setTextChangedListener(workPeriod, viewModel::setWorkPeriod);
+        setTextChangedListener(workDay, viewModel::setWorkDay);
+        setTextChangedListener(recruitmentEndTime, viewModel::setRecruitmentEndTime);
     }
 
     private void initializeViews(View view) {
-        textViewDate = view.findViewById(R.id.text_view_date);
+        recruitmentEndTime = view.findViewById(R.id.RecruitmentEndTime);
         startTime = view.findViewById(R.id.startTime);
         endTime = view.findViewById(R.id.endTime);
         nextButton = view.findViewById(R.id.button_next);
@@ -75,14 +137,39 @@ public class Step2Fragment extends Fragment {
         partsOfDay1 = view.findViewById(R.id.time1);
         partsOfDay2 = view.findViewById(R.id.time2);
         salaryType = view.findViewById(R.id.salaryType);
-        workArrangement = view.findViewById(R.id.work_arrangement);
+        workType = view.findViewById(R.id.work_type);
+        salary = view.findViewById(R.id.salary);
+        recruitmentCount = view.findViewById(R.id.RecruitmentCount);
+        workPeriod = view.findViewById(R.id.work_period);
+        workDay = view.findViewById(R.id.work_day);
+        checkBoxOption1 = view.findViewById(R.id.checkBoxOption1);
+        checkBoxOption2 = view.findViewById(R.id.checkBoxOption2);
+        checkBoxOption3 = view.findViewById(R.id.checkBoxOption3);
+
+    }
+
+    private void setTextChangedListener(EditText editText, Consumer<String> setValueMethod) {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                setValueMethod.accept(s.toString()); // Gọi phương thức setValue từ ViewModel
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
     }
 
     private void setEventListeners() {
         // Set next button listener
         nextButton.setOnClickListener(v -> navigateToNextFragment());
         //
-        textViewDate.setOnClickListener(v -> showDatePickerDialog());
+        recruitmentEndTime.setOnClickListener(v -> showDatePickerDialog());
         // Set arrow click listeners to open Spinners
         arrow.setOnClickListener(v -> salaryType.performClick());
         arrow1.setOnClickListener(v -> partsOfDay1.performClick());
@@ -95,17 +182,33 @@ public class Step2Fragment extends Fragment {
         ArrayAdapter<String> adapter1 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, options1);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, options2);
 
+
         salaryType.setAdapter(adapter1);
         partsOfDay1.setAdapter(adapter2);
         partsOfDay2.setAdapter(adapter2);
 
         // Set default selection for Spinners
-        salaryType.setSelection(0);
+        if (viewModel.getSelectedJob() != null) {
+            // Lấy workField từ ViewModel
+            String selectedSalaryType = viewModel.getSelectedJob().getSalaryType();
+            Log.e("Step2Fragment", "Selected Salary Type: " + selectedSalaryType);
+            // Tìm chỉ số của workField trong mảng options1
+            for (int i = 0; i < options1.length; i++) {
+                if (options1[i].equals(selectedSalaryType)) {
+                    salaryType.setSelection(i);
+                    break;
+                }
+            }
+        } else {
+            salaryType.setSelection(0);
+        }
+
         partsOfDay1.setSelection(0);
         partsOfDay2.setSelection(1);
     }
 
     private void navigateToNextFragment() {
+        hideKeyboard();
         // Navigate to the next fragment
         ((RegistrationActivity) getActivity()).showNextFragment(new Step3Fragment());
     }
@@ -121,7 +224,7 @@ public class Step2Fragment extends Fragment {
         endTime.setOnClickListener(v -> showCustomTimePickerDialog(false)); // End time
     }
 
-//        //muốn mã ngắn gọn thì sử dụng showTimePickerDialog() thay cho showCustomTimePickerDialog()
+    //        //muốn mã ngắn gọn thì sử dụng showTimePickerDialog() thay cho showCustomTimePickerDialog()
 //        private void showTimePickerDialog(final boolean isStartTime) {
 //        int hour = calendar.get(Calendar.HOUR_OF_DAY);
 //        int minute = calendar.get(Calendar.MINUTE);
@@ -170,7 +273,6 @@ public class Step2Fragment extends Fragment {
         dialog.show();
 
 
-
         // Xử lý sự kiện cho nút "OK"
         confirmButton.setOnClickListener(v -> {
             int selectedHour = hourPicker.getValue();
@@ -206,18 +308,19 @@ public class Step2Fragment extends Fragment {
         bottomSheetDialog.setContentView(bottomSheetView);
 
         ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"알바", "정규직", "계약직","인턴","주말알바","기타"}; // Options for work arrangement
+        String[] items = {"알바", "정규직", "계약직", "인턴", "주말알바", "기타"}; // Options for work arrangement
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String newValue = items[position];
-            workArrangement.setText(newValue);
+            workType.setText(newValue);
             bottomSheetDialog.dismiss();
         });
 
         bottomSheetDialog.show();
     }
+
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -228,9 +331,19 @@ public class Step2Fragment extends Fragment {
                 requireContext(),
                 (datePicker, selectedYear, selectedMonth, selectedDay) -> {
                     String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    textViewDate.setText(selectedDate);
+                    recruitmentEndTime.setText(selectedDate);
                 }, year, month, day);
 
         datePickerDialog.show();
+    }
+
+    public void hideKeyboard() {
+        View view = requireActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
     }
 }

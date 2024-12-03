@@ -24,12 +24,14 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/dateTextview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint=" yyyy/mm/dd 등록"
                 android:textColor="@color/black" />
 
             <TextView
+                android:id="@+id/titleTextview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="5dp"
@@ -38,6 +40,7 @@
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/companyTextview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="회사 이름" />
@@ -67,6 +70,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/salaryTextview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="2,400,000" />
@@ -86,6 +90,7 @@
                         android:src="@drawable/ic_calendar" />
 
                     <TextView
+                        android:id="@+id/work_day"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:hint="주 5일" />
@@ -110,6 +115,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/start_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="09:00 " />
@@ -121,6 +127,7 @@
                             android:textColor="@color/black" />
 
                         <TextView
+                            android:id="@+id/end_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="18:00" />
@@ -154,6 +161,7 @@
                         android:text="모집마감" />
 
                     <TextView
+                        android:id="@+id/deadlineTextview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -179,6 +187,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/recruitment_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="00"
@@ -206,6 +215,7 @@
                         android:text="모집성별" />
 
                     <TextView
+                        android:id="@+id/genderTextview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -244,6 +254,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/salaryTypeTextview2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/border_rounded_small"
@@ -251,6 +262,7 @@
                             android:paddingHorizontal="5dp" />
 
                         <TextView
+                            android:id="@+id/salaryTextview2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="5dp"
@@ -271,6 +283,7 @@
                         android:text="근무기간" />
 
                     <TextView
+                        android:id="@+id/work_period"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -290,6 +303,7 @@
                         android:text="근무요일" />
 
                     <TextView
+                        android:id="@+id/work_days2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -314,6 +328,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/start_time2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="09:00 " />
@@ -325,6 +340,7 @@
                             android:textColor="@color/black" />
 
                         <TextView
+                            android:id="@+id/end_time2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:hint="18:00" />
@@ -348,10 +364,11 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/detailsTextview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
-                    android:background="@drawable/border_square"
+                    android:background="@drawable/border_rounded_small"
                     android:minHeight="70dp"
                     android:padding="10dp" />
             </LinearLayout>
@@ -369,6 +386,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/addressTextview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -401,10 +419,10 @@
                         android:text="업체명" />
 
                     <TextView
+                        android:id="@+id/companyTextview2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:hint="asdsadasd" />
+                        android:layout_weight="2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -419,6 +437,7 @@
                         android:text="연락처" />
 
                     <TextView
+                        android:id="@+id/contactTextview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
@@ -449,8 +468,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="전화하기" />
             </LinearLayout>
 
@@ -467,8 +488,10 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="지원하기" />
             </LinearLayout>
         </LinearLayout>
@@ -488,8 +511,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/deleteButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="Delete" />
             </LinearLayout>
 
@@ -506,8 +532,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/editButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
                     android:text="Edit" />
             </LinearLayout>
         </LinearLayout>

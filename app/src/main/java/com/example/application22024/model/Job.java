@@ -3,7 +3,7 @@ package com.example.application22024.model;
 public class Job {
     private int job_id;
     private int company_id;
-    private String postDate;
+    private String PostDate;
     private String Title;
     private Integer Salary;
     private String SalaryType;
@@ -11,7 +11,7 @@ public class Job {
     private String WorkHoursEnd;
     private String can_negotiable_time;
     private String RecruitmentEnd;
-    private String recruitmentGender;
+    private String RecruitmentGender;
     private Integer RecruitmentCount;
     private String WorkType;
     private String WorkField;
@@ -47,10 +47,10 @@ public class Job {
     }
 
     public String getPostDate() {
-        return postDate;
+        return PostDate;
     }
     public void setPostDate(String postDate) {
-        this.postDate = postDate;
+        this.PostDate = postDate;
     }
 
     public String getTitle() {
@@ -70,8 +70,8 @@ public class Job {
     public String getSalaryType() {
         return SalaryType;
     }
-    public void setSalaryType(String salaryType) {
-        this.SalaryType = salaryType;
+    public void setSalaryType(String SalaryType) {
+        this.SalaryType = SalaryType;
     }
 
     public String getWorkHoursStart() {
@@ -103,10 +103,10 @@ public class Job {
     }
 
     public String getRecruitmentGender() {
-        return recruitmentGender;
+        return RecruitmentGender;
     }
     public void setRecruitmentGender(String recruitmentGender) {
-        this.recruitmentGender = recruitmentGender;
+        this.RecruitmentGender = recruitmentGender;
     }
 
     public Integer getRecruitmentCount() {

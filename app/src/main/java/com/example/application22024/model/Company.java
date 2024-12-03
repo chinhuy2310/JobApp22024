@@ -11,15 +11,19 @@ public class Company {
     private String name_of_representative;
     private String address;
     private String contact;
+    private String registration_number;
+    private String company_image;
     private int job_count;  // Trường mới cho số lượng bài đăng
     private boolean isExpanded = false; // Trạng thái mở rộng
     private List<Job> jobs = new ArrayList<>();
-    public Company(int company_id, String company_name, String name_of_representative, String address, String contact, int job_count) {
+    public Company(int company_id, String company_name, String name_of_representative, String address, String contact, String registration_number,String company_image, int job_count) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.name_of_representative = name_of_representative;
         this.address = address;
         this.contact = contact;
+        this.registration_number = registration_number;
+        this.company_image = company_image;
         this.job_count = job_count;
 
     }
@@ -41,7 +45,7 @@ public class Company {
     }
 
     public void setJobs(List<Job> jobs) {
-        this.jobs = jobs;
+        this.jobs = jobs != null ? jobs : new ArrayList<>(); // Safeguard for null
     }
 
     // Getter và setter
@@ -84,7 +88,18 @@ public class Company {
     public void setContact(String contact) {
         this.contact = contact;
     }
-
+    public String getRegistrationNumber() {
+        return registration_number;
+    }
+    public void setRegistrationNumber(String registration_number) {
+        this.registration_number = registration_number;
+    }
+    public String getCompanyIamge() {
+        return company_image;
+    }
+    public void setCompanyIamge(String company_image) {
+        this.company_image = company_image;
+    }
     public int getJobCount() {
         return job_count;
     }
@@ -101,8 +116,10 @@ public class Company {
                 ", address='" + address + '\'' +
                 ", contact='" + contact + '\'' +
                 ", jobCount=" + job_count +
+                ", registerNumber='" + registration_number + '\'' +
                 ", isExpanded=" + isExpanded +
                 '}';
     }
+
 
 }

@@ -24,6 +24,14 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Recruitment Manager"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"/>
+
                 <ImageView
                     android:id="@+id/menuButton"
                     android:layout_width="wrap_content"
@@ -56,9 +64,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:gravity="center"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:gravity="center"
                 android:text="Add new recruitment"
                 android:textColor="@color/textview_color" />
         </LinearLayout>

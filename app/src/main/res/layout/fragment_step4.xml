@@ -16,11 +16,13 @@
             android:text="회사명"
             android:textColor="@color/black"/>
         <EditText
+            android:id="@+id/company_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="35dp"
             android:layout_marginVertical="5dp"
             android:paddingHorizontal="5dp"
+            android:singleLine="true"
             android:hint="회사명을 입력해주세요."
             android:background="@drawable/border_square"/>
 
@@ -30,11 +32,13 @@
             android:text="대표자 성함"
             android:textColor="@color/black"/>
         <EditText
+            android:id="@+id/name_of_representative"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/border_square"
             android:hint="대표자 성함을 입력하세요."
             android:paddingHorizontal="5dp"
+            android:singleLine="true"
             android:layout_marginVertical="5dp"/>
         <TextView
             android:layout_width="wrap_content"
@@ -45,8 +49,12 @@
             android:layout_height="30dp"
             android:orientation="horizontal">
             <EditText
+                android:id="@+id/register_number"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:singleLine="true"
+                android:inputType="number"
+                android:maxLength="6"
                 android:background="@drawable/border_square"
                 android:gravity="center"/>
             <TextView
@@ -58,9 +66,13 @@
                 android:textSize="16sp"
                 android:textColor="@color/black"/>
             <EditText
+                android:id="@+id/register_number2"
                 android:layout_width="20dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/border_square"
+                android:singleLine="true"
+                android:inputType="number"
+                android:maxLength="1"
                 android:gravity="center"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -74,6 +86,7 @@
             android:text="사업자등록증 사진"
             android:textColor="@color/black"/>
         <LinearLayout
+            android:id="@+id/selectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/border_rounded_large"
@@ -90,6 +103,10 @@
                 android:text="사진 올리기"
                 android:gravity="center"/>
         </LinearLayout>
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
 
         <Button
             android:id="@+id/button_post"

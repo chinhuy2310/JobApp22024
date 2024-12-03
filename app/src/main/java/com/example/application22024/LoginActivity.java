@@ -1,6 +1,7 @@
 package com.example.application22024;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -72,10 +73,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void Login() {
-//        String account = loginAccount.getText().toString().trim();
-//        String password = loginPassword.getText().toString().trim();
-        String account ="a";
-        String password ="a";
+        String account = loginAccount.getText().toString().trim();
+        String password = loginPassword.getText().toString().trim();
+//        String account ="a";
+//        String password ="a";
 
         // Lấy userType từ Intent
         String expectedUserType = getIntent().getStringExtra("userType"); // "Employer" hoặc "Employee"
@@ -89,15 +90,18 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Log.e("API Response Body", new Gson().toJson(response.body()));
+//                        Log.e("API Response Body", new Gson().toJson(response.body()));
 
                     } else {
-                        Log.e("API Response Error", "Response code: " + response.code());
+//                        Log.e("API Response Error", "Response code: " + response.code());
                     }
                     if (response.isSuccessful() && response.body() != null) {
                         String message = response.body().getMessage();
                         String userType = response.body().getUser_type();
                         int userId = response.body().getUserId();
+                        // Lưu userId vào SharedPreferences
+                        SharedPrefManager.getInstance(LoginActivity.this).saveUserId(userId);
+
                         String actualUserType = userType; // Lấy userType từ server
                         // Kiểm tra nếu loại tài khoản từ server không khớp với loại tài khoản người dùng đã chọn
                         if (expectedUserType != null && !expectedUserType.equals(actualUserType)) {
@@ -108,10 +112,10 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent;
                         if ("Employer".equals(actualUserType)) {
                             intent = new Intent(LoginActivity.this, EmployerMain.class);
-                            intent.putExtra("user_id", userId);
+//                            intent.putExtra("user_id", userId);
                         } else if ("Employee".equals(actualUserType)) {
                             intent = new Intent(LoginActivity.this, EmployeeMain.class);
-                            intent.putExtra("user_id", userId);
+//                            intent.putExtra("user_id", userId);
                         } else {
                             Toast.makeText(LoginActivity.this, "Invalid user type", Toast.LENGTH_SHORT).show();
                             return;

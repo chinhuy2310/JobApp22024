@@ -22,8 +22,9 @@
             android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/RecruitmentCount"
                 android:layout_width="130dp"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:inputType="number"
                 android:maxLength="2"
                 android:singleLine="true" />
@@ -43,8 +44,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginBottom="20dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <Spinner
@@ -61,6 +63,7 @@
                 android:text="▼" />
 
             <EditText
+                android:id="@+id/salary"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -82,7 +85,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <Spinner
@@ -133,7 +137,7 @@
         </LinearLayout>
 
         <CheckBox
-            android:id="@+id/checkBoxOption"
+            android:id="@+id/checkBoxOption1"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:text="근무시간 협의 가능"
@@ -147,9 +151,9 @@
             android:textColor="@color/black" />
 
         <EditText
-            android:id="@+id/work_arrangement"
+            android:id="@+id/work_type"
             android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:singleLine="true" />
 
 
@@ -161,8 +165,9 @@
             android:textColor="@color/black" />
 
         <EditText
+            android:id="@+id/work_period"
             android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="1년 이상"
             android:singleLine="true" />
 
@@ -175,11 +180,13 @@
             android:textColor="@color/black" />
 
         <EditText
+            android:id="@+id/work_day"
             android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="주 5일 " />
 
         <CheckBox
+            android:id="@+id/checkBoxOption2"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:text="근무요일  협의 가능"
@@ -197,8 +204,8 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
             <!-- TextView để hiển thị ngày được chọn -->
-            <TextView
-                android:id="@+id/text_view_date"
+            <EditText
+                android:id="@+id/RecruitmentEndTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_square"
@@ -207,6 +214,7 @@
                 android:textSize="18sp" />
 
             <CheckBox
+                android:id="@+id/checkBoxOption3"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:text="마감일 없음"

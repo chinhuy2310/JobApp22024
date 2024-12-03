@@ -16,20 +16,24 @@
             android:text="근무 장소"
             android:textColor="@color/black"/>
         <EditText
+            android:id="@+id/editText_address"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:maxLines="1"
             android:ellipsize="end"
             android:paddingLeft="10dp"
+            android:singleLine="true"
             android:layout_marginVertical="5dp"
             android:hint="지번,도로명,건물명을 입력하세요."
             android:background="@drawable/border_square"/>
         <EditText
+            android:id="@+id/editText_detail_address"
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:maxLines="1"
             android:ellipsize="end"
             android:paddingLeft="10dp"
+            android:singleLine="true"
             android:layout_marginVertical="5dp"
             android:hint="상세주소를 입력해주세요."
             android:background="@drawable/border_square"/>
@@ -39,6 +43,7 @@
             android:text="상세 정보"
             android:textColor="@color/black"/>
         <EditText
+            android:id="@+id/editText_description"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:padding="10dp"
