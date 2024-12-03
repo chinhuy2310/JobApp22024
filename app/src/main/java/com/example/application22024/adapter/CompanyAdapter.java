@@ -69,7 +69,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
         // Load the image using Picasso
         if(company.getCompanyIamge()!=null){
-            String baseUrl = "http://172.16.5.164:3000"; // Địa chỉ gốc
+            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
             String relativePath = company.getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
             Picasso.get().load(fullImageUrl).into(holder.companyImageView);
