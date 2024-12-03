@@ -20,6 +20,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.application22024.APIService;
 import com.example.application22024.DatabaseHelper;
@@ -52,10 +53,12 @@ public class EmployerMain extends AppCompatActivity {
     // Data and Adapter
     private CompanyAdapter adapter;
     APIService apiService;
-    private DatabaseHelper databaseHelper;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private List<Company> companyList;
     private boolean backPressedOnce = false;
     RegistrationViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +75,7 @@ public class EmployerMain extends AppCompatActivity {
         // Set up RecyclerView
         setupRecyclerView();
 
+
 //        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
         int userId = SharedPrefManager.getInstance(this).getUserId();
         Log.e("userid", String.valueOf(userId));
@@ -82,6 +86,12 @@ public class EmployerMain extends AppCompatActivity {
             // Xử lý nếu không có user_id (lỗi)
             Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
         }
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getCompanies(userId);
+            }
+        });
 //        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -102,19 +112,22 @@ public class EmployerMain extends AppCompatActivity {
             public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
                 Log.e("get company with userid: ", String.valueOf(userId));
                 if (response.isSuccessful() && response.body() != null) {
-//                    Log.e("",response.toString());
                     List<Company> companies = response.body();
-//                    Log.e("company list", companies.toString());
                     // Cập nhật danh sách công ty và thông báo adapter thay đổi dữ liệu
                     companyList.clear();  // Xóa danh sách công ty cũ
                     companyList.addAll(companies);
+                    swipeRefreshLayout.setRefreshing(false);
                     Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
 
                     adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật lại dữ liệu
                     updateUI();  // Cập nhật giao diện (nếu cần)
 
                 } else {
-                    Log.e("API Error", "Response body is empty or error occurred");
+//                    if (companyList.isEmpty()) {
+//                        Toast.makeText(EmployerMain.this, "No companies found for this user", Toast.LENGTH_SHORT).show();
+//                    }
+                    updateUI();
+//                    Log.e("API Error", "Response body is empty or error occurred");
                     Toast.makeText(EmployerMain.this, "No companies found", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -132,6 +145,7 @@ public class EmployerMain extends AppCompatActivity {
         recyclerView = findViewById(R.id.companyView);
         emptyView = findViewById(R.id.emptyView);
         addNewRecruitment = findViewById(R.id.addNewRecruitment);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         // Set listener
         openMenuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
@@ -140,6 +154,7 @@ public class EmployerMain extends AppCompatActivity {
             Intent intent = new Intent(EmployerMain.this, RegistrationActivity.class);
             startActivity(intent);
         });
+
     }
 
     // Set up Navigation Drawer and its item click handling
@@ -173,11 +188,13 @@ public class EmployerMain extends AppCompatActivity {
     // Update the UI based on the company list
     private void updateUI() {
         if (companyList.isEmpty()) {
-            Log.e("RecyclerViewDebug", "No companies to show. Showing empty view.");
+//            Log.e("RecyclerViewDebug", "No companies to show. Showing empty view.");
+            swipeRefreshLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         } else {
 //            Log.e("RecyclerViewDebug", "Showing company list in RecyclerView.");
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
         }

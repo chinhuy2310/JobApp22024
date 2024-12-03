@@ -34,7 +34,10 @@ import com.example.application22024.R;
 import com.example.application22024.model.RegistrationViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class Step2Fragment extends Fragment {
 
@@ -75,12 +78,22 @@ public class Step2Fragment extends Fragment {
         if (viewModel.getSelectedJob() != null) {
             recruitmentCount.setText(String.valueOf(viewModel.getSelectedJob().getRecruitmentCount()));
             salary.setText(String.valueOf(viewModel.getSelectedJob().getSalary()));
-            startTime.setText(viewModel.getSelectedJob().getWorkHoursStart());
-            endTime.setText(viewModel.getSelectedJob().getWorkHoursEnd());
+            startTime.setText(formatTimeToHoursAndMinutes(viewModel.getSelectedJob().getWorkHoursStart()));
+            endTime.setText(formatTimeToHoursAndMinutes(viewModel.getSelectedJob().getWorkHoursEnd()));
             workType.setText(viewModel.getSelectedJob().getWorkType());
             workPeriod.setText(viewModel.getSelectedJob().getWorkPeriod());
             workDay.setText(viewModel.getSelectedJob().getWorkDays());
             recruitmentEndTime.setText(viewModel.getSelectedJob().getRecruitmentEnd());
+
+            viewModel.setRecruitmentCount(recruitmentCount.getText().toString());
+            viewModel.setSalary(salary.getText().toString());
+            viewModel.setStartTime(startTime.getText().toString());
+            viewModel.setEndTime(endTime.getText().toString());
+            viewModel.setWorkType(workType.getText().toString());
+            viewModel.setWorkPeriod(workPeriod.getText().toString());
+            viewModel.setWorkDay(workDay.getText().toString());
+            viewModel.setRecruitmentEndTime(recruitmentEndTime.getText().toString());
+
             Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
             if ("Yes".equals(viewModel.getSelectedJob().getCanNegotiableTime())) {
                 checkBoxOption1.setChecked(true);
@@ -330,13 +343,26 @@ public class Step2Fragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (datePicker, selectedYear, selectedMonth, selectedDay) -> {
-                    String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                    String selectedDate =   selectedYear+ "-" + (selectedMonth + 1) + "-" +selectedDay;
                     recruitmentEndTime.setText(selectedDate);
                 }, year, month, day);
 
         datePickerDialog.show();
     }
+    private String formatTimeToHoursAndMinutes(String time) {
+        try {
+            // Định dạng chuỗi thời gian đầu vào
+            SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            Date date = inputFormat.parse(time);
 
+            // Định dạng lại chỉ hiển thị giờ và phút
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return time;  // Nếu có lỗi, trả về thời gian ban đầu
+        }
+    }
     public void hideKeyboard() {
         View view = requireActivity().getCurrentFocus();
         if (view != null) {

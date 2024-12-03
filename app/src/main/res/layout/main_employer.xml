@@ -29,8 +29,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="Recruitment Manager"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:id="@+id/menuButton"
@@ -71,15 +71,19 @@
                 android:textColor="@color/textview_color" />
         </LinearLayout>
 
-
-        <!-- RecyclerView (Main Content) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/companyView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <!-- RecyclerView (Main Content) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/companyView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <!-- Navigation Drawer -->

@@ -16,10 +16,14 @@ import com.example.application22024.employer.RegistrationActivity;
 import com.example.application22024.model.Job;
 import com.example.application22024.model.RegistrationViewModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class JobDetails extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView dateTextview, titleTextview, companyTextview, salaryTypeTextview, salaryTextview,workDayTextview, startTimeTextview, endTimeTextview;
-    private TextView recruitmentCountTextview, genderTextview, deadlineTextview;
+    private TextView recruitmentCountTextview, genderTextview, deadlineTextview, canNegotiableDayTextview, canNegotiableTimeTextview;
     private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview,startTime2Textview, endTime2Textview;
     private TextView detailsTextview, addressTextview,companyTextview2, contactTextview;
     private LinearLayout viewOfEmployee, viewOfEmployer;
@@ -70,8 +74,10 @@ public class JobDetails extends AppCompatActivity {
         salaryTypeTextview = findViewById(R.id.salaryTypeTextview);
         salaryTextview = findViewById(R.id.salaryTextview);
         workDayTextview = findViewById(R.id.work_day);
+        canNegotiableDayTextview = findViewById(R.id.canNegotiableDay);
         startTimeTextview = findViewById(R.id.start_time);
         endTimeTextview = findViewById(R.id.end_time);
+        canNegotiableTimeTextview =findViewById(R.id.canNegotiableTime);
         deadlineTextview = findViewById(R.id.deadlineTextview);
         recruitmentCountTextview = findViewById(R.id.recruitment_count);
         genderTextview = findViewById(R.id.genderTextview);
@@ -108,10 +114,23 @@ public class JobDetails extends AppCompatActivity {
             titleTextview.setText(selectedJob.getTitle());
             companyTextview.setText(viewModel.getSelectedCompany().getCompanyName());
             salaryTypeTextview.setText(selectedJob.getSalaryType());
-            salaryTextview.setText(String.valueOf(selectedJob.getSalary()));
+            int number = selectedJob.getSalary();
+            String formattedNumber = String.format("%,d", number) + " ₩";
+            salaryTextview.setText(formattedNumber);
             workDayTextview.setText(selectedJob.getWorkDays());
-            startTimeTextview.setText(selectedJob.getWorkHoursStart());
-            endTimeTextview.setText(selectedJob.getWorkHoursEnd());
+//            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
+            if(selectedJob.getCanNegotiableDays().equals("Yes")){
+                canNegotiableDayTextview.setVisibility(View.VISIBLE);
+            }else{
+                canNegotiableDayTextview.setVisibility(View.GONE);
+            }
+            startTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
+            endTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
+            if(selectedJob.getCanNegotiableTime().equals("Yes")){
+                canNegotiableTimeTextview.setVisibility(View.VISIBLE);
+            }else{
+                canNegotiableTimeTextview.setVisibility(View.GONE);
+            }
             deadlineTextview.setText(selectedJob.getRecruitmentEnd());
             recruitmentCountTextview.setText(String.valueOf(selectedJob.getRecruitmentCount()));
             genderTextview.setText(selectedJob.getRecruitmentGender());
@@ -119,10 +138,10 @@ public class JobDetails extends AppCompatActivity {
             salaryTextview2.setText(String.valueOf(selectedJob.getSalary()));
             workPeriodTextview.setText(selectedJob.getWorkPeriod());
             workDaysTextview.setText(selectedJob.getWorkDays());
-            startTime2Textview.setText(selectedJob.getWorkHoursStart());
-            endTime2Textview.setText(selectedJob.getWorkHoursEnd());
+            startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
+            endTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
             detailsTextview.setText(selectedJob.getDetails());
-            addressTextview.setText(selectedJob.getWorkLocation());
+            addressTextview.setText(viewModel.getSelectedCompany().getAddress());
             companyTextview2.setText(viewModel.getSelectedCompany().getCompanyName());
             contactTextview.setText(viewModel.getSelectedCompany().getContact());
         }
@@ -135,5 +154,19 @@ public class JobDetails extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private String formatTimeToHoursAndMinutes(String time) {
+        try {
+            // Định dạng chuỗi thời gian đầu vào
+            SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            Date date = inputFormat.parse(time);
+
+            // Định dạng lại chỉ hiển thị giờ và phút
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return time;  // Nếu có lỗi, trả về thời gian ban đầu
+        }
     }
 }

@@ -58,12 +58,14 @@ public class Step1Fragment extends Fragment {
         if (viewModel.getSelectedCompany() != null) {
             companyNameEditText.setText(viewModel.getSelectedCompany().getCompanyName());
             contactEditText.setText(viewModel.getSelectedCompany().getContact());
+            viewModel.setCompanyName(companyNameEditText.getText().toString());
+            viewModel.setContact(contactEditText.getText().toString());
         } else {
             Log.e("selectedCompany", "is null");
         }
         if (viewModel.getSelectedJob() != null) {
             jobTitleEditText.setText(viewModel.getSelectedJob().getTitle());
-
+            viewModel.setRecruitmentTitle(jobTitleEditText.getText().toString());
             String workField = viewModel.getSelectedJob().getWorkField();
             String[] recruitmentFields = {"농장", "공장", "식당", "사무직", "건설", "야외"};
             boolean foundMatch = false;  // Flag để kiểm tra sự khớp
@@ -81,23 +83,24 @@ public class Step1Fragment extends Fragment {
                 viewModel.setSelectedRecruitmentField(workField);
             }
 
-//            String selectedGender = viewModel.getSelectedJob().getRecruitmentGender();
-//            Log.e("selectedGender", selectedGender);
-//            if (selectedGender != null) {
-//                switch (selectedGender) {
-//                    case "성별 무관" :  // Non-binary
-//                        selectedGenderPosition = 0;
-//                        //
-////                        viewModel.setSelectedGender("Any");
-//                        break;
-//                    case "남자":  // Male
-//                        selectedGenderPosition = 1;
-//                        break;
-//                    case "여자":  // Female
-//                        selectedGenderPosition = 2;
-//                        break;
-//                }
-//            }
+            String selectedGender = viewModel.getSelectedJob().getRecruitmentGender();
+            Log.e("selectedGender", selectedGender);
+            if (selectedGender != null) {
+                switch (selectedGender) {
+                    case "성별 무관" :  // Non-binary
+                        selectedGenderPosition = 0;
+                        viewModel.setSelectedGender("성별 무관"); // Gửi giá trị vào ViewModel
+                        break;
+                    case "남자":  // Male
+                        selectedGenderPosition = 1;
+                        viewModel.setSelectedGender("남자");
+                        break;
+                    case "여자":  // Female
+                        selectedGenderPosition = 2;
+                        viewModel.setSelectedGender("여자");
+                        break;
+                }
+            }
 
         } else {
             Log.e("selectedJob", "is null");
@@ -244,6 +247,7 @@ public class Step1Fragment extends Fragment {
         String[] recruitmentFields = {"농장", "공장", "식당", "사무직", "건설", "야외"};
         viewModel.setSelectedRecruitmentField(recruitmentFields[position]);
     }
+
     private void setupCellClick(View view, int itemId, int position) {
         TextView cell = view.findViewById(itemId);
         cell.setOnClickListener(v -> {

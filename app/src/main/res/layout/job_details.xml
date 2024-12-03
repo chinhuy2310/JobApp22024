@@ -37,7 +37,8 @@
                 android:layout_marginVertical="5dp"
                 android:hint="공고 제목"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textStyle="bold"
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/companyTextview"
@@ -72,8 +73,7 @@
                     <TextView
                         android:id="@+id/salaryTextview"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:hint="2,400,000" />
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -92,8 +92,15 @@
                     <TextView
                         android:id="@+id/work_day"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/canNegotiableDay"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="주 5일" />
+                        android:text="협의 가능"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -132,6 +139,14 @@
                             android:layout_height="wrap_content"
                             android:hint="18:00" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/canNegotiableTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="협의 가능"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -385,12 +400,26 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/addressTextview"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:hint="주소" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:hint="주소" />
+
+                    <TextView
+                        android:id="@+id/addressTextview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

@@ -24,7 +24,7 @@
             <EditText
                 android:id="@+id/RecruitmentCount"
                 android:layout_width="130dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:inputType="number"
                 android:maxLength="2"
                 android:singleLine="true" />
@@ -44,7 +44,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -85,7 +85,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -153,7 +153,7 @@
         <EditText
             android:id="@+id/work_type"
             android:layout_width="140dp"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:singleLine="true" />
 
 
@@ -166,8 +166,9 @@
 
         <EditText
             android:id="@+id/work_period"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:minWidth="140dp"
+            android:layout_height="wrap_content"
             android:hint="1년 이상"
             android:singleLine="true" />
 
@@ -181,8 +182,10 @@
 
         <EditText
             android:id="@+id/work_day"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:minWidth="140dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="주 5일 " />
 
         <CheckBox

@@ -80,10 +80,36 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
     
     @Override
     public void onPostButtonClicked() {
+//        Log.e("RequestBody", "employerId: " + String.valueOf(SharedPrefManager.getInstance(this).getUserId()));
+//        Log.e("RequestBody", "companyId: " + ((viewModel.getSelectedCompany() != null)
+//                ? String.valueOf(viewModel.getSelectedJob().getCompanyId()) : ""));
+//        Log.e("RequestBody", "jobId: " + ((viewModel.getSelectedJob() != null)
+//                ? String.valueOf(viewModel.getSelectedJob().getJobId()) : ""));
+//        Log.e("RequestBody", "title: " + viewModel.getRecruitmentTitle());
+//        Log.e("RequestBody", "companyName: " + viewModel.getCompanyName());
+//        Log.e("RequestBody", "contact: " + viewModel.getContact());
+//        Log.e("RequestBody", "workField: " + ((viewModel.getSelectedRecruitmentField() != null)
+//                ? viewModel.getSelectedRecruitmentField() : viewModel.getOtherRecruitmentField()));
+//        Log.e("RequestBody", "recruitmentGender: " + viewModel.getSelectedGender());
+//        Log.e("RequestBody", "recruitmentCount: " + viewModel.getRecruitmentCount());
+//        Log.e("RequestBody", "salaryType: " + viewModel.getSelectedSalaryType());
+//        Log.e("RequestBody", "salary: " + viewModel.getSalary());
+//        Log.e("RequestBody", "workHoursStart: " + viewModel.getStartTime());
+//        Log.e("RequestBody", "workHoursEnd: " + viewModel.getEndTime());
+//        Log.e("RequestBody", "canNegotiableTime: " + viewModel.isOption1Checked());
+//        Log.e("RequestBody", "workType: " + viewModel.getWorkType());
+//        Log.e("RequestBody", "workPeriod: " + viewModel.getWorkPeriod());
+//        Log.e("RequestBody", "workDays: " + viewModel.getWorkDay());
+//        Log.e("RequestBody", "canNegotiableDays: " + viewModel.isOption2Checked());
+//        Log.e("RequestBody", "recruitmentEnd: " + viewModel.getRecruitmentEndTime());
+//        Log.e("RequestBody", "address: " + viewModel.getAddress());
+//        Log.e("RequestBody", "details: " + viewModel.getDescription());
+//        Log.e("RequestBody", "representativeName: " + viewModel.getRepresentativeName());
+//        Log.e("RequestBody", "registrationNumber: " + viewModel.getRegisterNumber());
         // Tạo RequestBody cho từng trường dữ liệu
         RequestBody employerId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(SharedPrefManager.getInstance(this).getUserId()));
         RequestBody companyId = RequestBody.create(MediaType.parse("text/plain"), (viewModel.getSelectedCompany() != null)
-                ? String.valueOf(viewModel.getSelectedJob().getCompanyId()) : "");
+                ? String.valueOf(viewModel.getSelectedCompany().getCompanyId()) : "");
         RequestBody jobId = RequestBody.create(MediaType.parse("text/plain"), (viewModel.getSelectedJob() != null)
                 ? String.valueOf(viewModel.getSelectedJob().getJobId()) : "");
         RequestBody title = RequestBody.create(MediaType.parse("text/plain"), viewModel.getRecruitmentTitle());
@@ -114,8 +140,8 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
             try {
                 // Chuyển đổi URI sang File
                 InputStream inputStream = getContentResolver().openInputStream(viewModel.getSelectedImageUri());
-//                File tempFile = new File(getCacheDir(), "temp_image"); lưu ảnh dạng bit
-                File tempFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "company_image.png");// lưu ảnh dạng png
+                File tempFile = new File(getCacheDir(), "temp_image");
+//                File tempFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "company_image.png");// lưu ảnh dạng png
                 try (OutputStream outputStream = new FileOutputStream(tempFile)) {
                     byte[] buffer = new byte[4096];
                     int bytesRead;

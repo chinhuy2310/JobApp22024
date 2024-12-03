@@ -69,7 +69,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
         // Load the image using Picasso
         if(company.getCompanyIamge()!=null){
-            String baseUrl = "http://172.16.5.164:3000"; // Địa chỉ gốc
+            String baseUrl = "http://192.168.0.3:3000"; // Địa chỉ gốc
             String relativePath = company.getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
             Picasso.get().load(fullImageUrl).into(holder.companyImageView);
@@ -104,6 +104,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
             company.setExpanded(newExpandedState);
             // Nếu công ty được mở rộng, thu gọn tất cả các công ty khác
             if (newExpandedState) {
+
                 // Duyệt qua tất cả các công ty và thu gọn các công ty khác
                 for (int i = 0; i < companyList.size(); i++) {
                     if (i != position) {
@@ -113,6 +114,10 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
                 }
             }
             notifyItemChanged(position);
+            if (newExpandedState) {
+                RecyclerView recyclerView = ((RecyclerView) holder.itemView.getParent());
+                recyclerView.scrollToPosition(position);
+            }
         });
 
         // Set icon or click listeners (optional)

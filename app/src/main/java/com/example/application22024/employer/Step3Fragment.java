@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,11 @@ public class Step3Fragment extends Fragment {
         descriptionEditText = view.findViewById(R.id.editText_description);
         if (viewModel.getSelectedJob() != null){
             descriptionEditText.setText(viewModel.getSelectedJob().getDetails());
+            viewModel.setDescription(descriptionEditText.getText().toString());
         }
         if (viewModel.getSelectedCompany() != null) {
             addressEditText.setText(viewModel.getSelectedCompany().getAddress());
+            viewModel.setAddress(addressEditText.getText().toString());
         }
 
         setTextChangedListener(addressEditText, viewModel::setAddress);

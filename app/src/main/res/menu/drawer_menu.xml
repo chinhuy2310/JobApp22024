@@ -3,29 +3,14 @@
 
     <item
         android:id="@+id/addRecruitment"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:title="New job posting"
-        android:textStyle="bold" />
-    <item
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:title="add company"
-        android:textStyle="bold" />
-    <item
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:title="....."
-        android:textStyle="bold" />
+        android:title="새 공고 등록" />
+    <item android:title="회사/기업 추가" />
+    <item android:title="알림 설정" />
+    <item android:title="....." />
+    <item android:title="문의 하기" />
+    <item android:title="계정 설정" />
     <item
         android:id="@+id/Logout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:title="Logout"
-        android:textStyle="bold"
-        android:icon="@drawable/ic_logout"/>
+        android:icon="@drawable/ic_logout"
+        android:title="로그아웃" />
 </menu>
