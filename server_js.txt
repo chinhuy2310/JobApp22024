@@ -192,6 +192,82 @@ app.get('/companies/:companyId/jobs', (req, res) => {
   });
 });
 
+// lấy toàn bộ công việc cho employee
+app.get('/api/companyjobs', (req, res) => {
+  const query = `
+    SELECT 
+      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image, 
+      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time, 
+      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod, 
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate    
+    FROM 
+      company c
+    JOIN 
+      jobdetails j ON c.company_id = j.company_id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Database error' });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+app.get('/searchCompanyJobs', (req, res) => {
+  const { keyword, location } = req.query; // Lấy keyword và location từ query parameters
+
+  // Tạo điều kiện tìm kiếm động
+  let conditions = [];
+  if (keyword) {
+    conditions.push(`
+      (j.Title LIKE ? OR 
+       j.Details LIKE ? OR 
+       c.company_name LIKE ?)
+    `);
+  }
+  if (location) {
+    conditions.push("c.address LIKE ?");
+  }
+
+  // Kết hợp điều kiện với từ khóa SQL WHERE
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  // Truy vấn SQL với điều kiện tìm kiếm
+  const query = `
+    SELECT 
+      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image, 
+      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time, 
+      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod, 
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate    
+    FROM 
+      company c
+    JOIN 
+      jobdetails j ON c.company_id = j.company_id
+    ${whereClause}
+  `;
+
+  // Tạo mảng giá trị cho tham số động
+  const params = [];
+  if (keyword) {
+    const keywordPattern = `%${keyword}%`;
+    params.push(keywordPattern, keywordPattern, keywordPattern); // Ba lần cho các cột liên quan
+  }
+  if (location) {
+    const locationPattern = `%${location}%`;
+    params.push(locationPattern);
+  }
+
+  // Thực thi truy vấn SQL
+  db.query(query, params, (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Database error' });
+      return;
+    }
+    res.json(results);
+  });
+});
 
 // API để lưu dữ liệu vào `company` và `jobdetails`
 app.post("/submit_registration", upload.single("company_image"), (req, res) => {
