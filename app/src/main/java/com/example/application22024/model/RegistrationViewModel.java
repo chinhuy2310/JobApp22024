@@ -9,6 +9,7 @@ public class RegistrationViewModel extends ViewModel {
 
     private Company selectedCompany;
     private Job selectedJob;
+    private CompanyJobItem selectedCompanyJobItem;
     // Các trường dữ liệu cần thu thập từ người dùng
     private String recruitmentTitle, companyName, contact, selectedRecruitmentField, otherRecruitmentField, selectedGender;
     private String recruitmentCount, selectedSalaryType, salary, startTime, endTime, workType, workPeriod, workDay, recruitmentEndTime;
@@ -284,4 +285,11 @@ public class RegistrationViewModel extends ViewModel {
     }
 
 
+    public CompanyJobItem getSelectedCompanyJobItem() {
+        return selectedCompanyJobItem;
+    }
+
+    public void setSelectedCompanyJobItem(CompanyJobItem selectedCompanyJobItem) {
+        this.selectedCompanyJobItem = selectedCompanyJobItem;
+    }
 }

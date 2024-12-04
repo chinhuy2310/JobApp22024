@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.application22024.employer.EmployerMain;
 import com.example.application22024.employer.RegistrationActivity;
+import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
 import com.example.application22024.model.RegistrationViewModel;
 
@@ -145,6 +146,43 @@ public class JobDetails extends AppCompatActivity {
             companyTextview2.setText(viewModel.getSelectedCompany().getCompanyName());
             contactTextview.setText(viewModel.getSelectedCompany().getContact());
         }
+        if (viewModel.getSelectedCompanyJobItem() != null) {
+            CompanyJobItem selectedJob = viewModel.getSelectedCompanyJobItem();
+            dateTextview.setText(selectedJob.getPostDate());
+            titleTextview.setText(selectedJob.getTitle());
+            companyTextview.setText(selectedJob.getCompany_name());
+            salaryTypeTextview.setText(selectedJob.getSalaryType());
+            int number = selectedJob.getSalary();
+            String formattedNumber = String.format("%,d", number) + " ₩";
+            salaryTextview.setText(formattedNumber);
+            workDayTextview.setText(selectedJob.getWorkDays());
+//            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
+            if(selectedJob.getCan_negotiable_days().equals("Yes")){
+                canNegotiableDayTextview.setVisibility(View.VISIBLE);
+            }else{
+                canNegotiableDayTextview.setVisibility(View.GONE);
+            }
+            startTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
+            endTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
+            if(selectedJob.getCan_negotiable_time().equals("Yes")){
+                canNegotiableTimeTextview.setVisibility(View.VISIBLE);
+            }else{
+                canNegotiableTimeTextview.setVisibility(View.GONE);
+            }
+            deadlineTextview.setText(selectedJob.getRecruitmentEnd());
+            recruitmentCountTextview.setText(String.valueOf(selectedJob.getRecruitmentCount()));
+            genderTextview.setText(selectedJob.getRecruitmentGender());
+            salaryTypeTextview2.setText(selectedJob.getSalaryType());
+            salaryTextview2.setText(String.valueOf(selectedJob.getSalary()));
+            workPeriodTextview.setText(selectedJob.getWorkPeriod());
+            workDaysTextview.setText(selectedJob.getWorkDays());
+            startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
+            endTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
+            detailsTextview.setText(selectedJob.getDetails());
+            addressTextview.setText(selectedJob.getAddress());
+            companyTextview2.setText(selectedJob.getCompany_name());
+            contactTextview.setText(selectedJob.getContact());
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -168,5 +206,15 @@ public class JobDetails extends AppCompatActivity {
             e.printStackTrace();
             return time;  // Nếu có lỗi, trả về thời gian ban đầu
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        viewModel.reset();
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

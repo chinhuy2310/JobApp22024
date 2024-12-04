@@ -1,6 +1,7 @@
 package com.example.application22024;
 
 import com.example.application22024.model.Company;
+import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface APIService {
     @POST("login")
@@ -25,6 +27,14 @@ public interface APIService {
     Call<List<Company>> getCompanies(@Path("userId") int userId);
     @GET("companies/{companyId}/jobs")
     Call<List<Job>> getJobsForCompany(@Path("companyId") int companyId);
+    @GET("api/companyjobs")
+    Call<List<CompanyJobItem>> getCompanyJobs();
+    @GET("searchCompanyJobs")
+    Call<List<CompanyJobItem>> searchCompanyJobs(
+            @Query("keyword") String keyword,
+            @Query("location") String location
+    );
+
     @Multipart
     @POST("submit_registration")
     Call<ResponseBody> submitRegistration(

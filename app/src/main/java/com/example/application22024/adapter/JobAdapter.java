@@ -42,7 +42,6 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         // Set data to views
         holder.jobName.setText(job.getTitle());
 //        holder.employerName.setText(job.getCompany() != null ? job.getCompany().getCompanyName() : "N/A");
-        holder.location.setText(job.getWorkLocation());
         holder.jobType.setText(job.getWorkType());
         holder.workplaceType.setText(job.getWorkField());
         holder.duration.setText(job.getWorkPeriod());

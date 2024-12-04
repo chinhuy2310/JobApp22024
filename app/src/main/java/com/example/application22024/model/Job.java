@@ -18,9 +18,8 @@ public class Job {
     private String WorkDays;
     private String WorkPeriod;
     private String can_negotiable_days;
-    private String WorkLocation;
+
     private String Details;
-    private String CompanyContact;
     private Company company;
 
     public Company getCompany() {
@@ -151,13 +150,6 @@ public class Job {
         this.can_negotiable_days = canNegotiableDays;
     }
 
-    public String getWorkLocation() {
-        return WorkLocation;
-    }
-    public void setWorkLocation(String workLocation) {
-        this.WorkLocation = workLocation;
-    }
-
     public String getDetails() {
         return Details;
     }
@@ -165,10 +157,4 @@ public class Job {
         this.Details = details;
     }
 
-    public String getCompanyContact() {
-        return CompanyContact;
-    }
-    public void setCompanyContact(String companyContact) {
-        this.CompanyContact = companyContact;
-    }
-}
+  }
