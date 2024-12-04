@@ -56,7 +56,12 @@ public class RightAdapter extends RecyclerView.Adapter<RightAdapter.ViewHolder> 
             }
         });
     }
-
+    public String getSelectedArea() {
+        if (selectedPosition != RecyclerView.NO_POSITION) {
+            return areas.get(selectedPosition);
+        }
+        return null;
+    }
     @Override
     public int getItemCount() {
         return areas.size();

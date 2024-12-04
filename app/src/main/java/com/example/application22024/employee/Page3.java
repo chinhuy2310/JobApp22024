@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +21,15 @@ import java.util.List;
 import java.util.HashMap;
 
 public class Page3 extends Fragment {
+
+    private TextView selectedLocationText;
+
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page3, container, false);
         view.findViewById(R.id.selectLocation).setOnClickListener(v -> showCustomDialog());
+
+        selectedLocationText = view.findViewById(R.id.selectedLocationTextView);
 
         return view;
     }
@@ -67,6 +74,19 @@ public class Page3 extends Fragment {
             rightAdapter.notifyDataSetChanged(); // Cập nhật RightAdapter
             rightAdapter.setSelectedPosition(0);
         }
+        // Xử lý khi nhấn nút "Xác nhận"
+        dialog.findViewById(R.id.confirm_button).setOnClickListener(v -> {
+            // Lấy tỉnh và khu vực đã chọn từ Adapter
+            String selectedProvince = leftAdapter.getSelectedProvince();
+            String selectedArea = rightAdapter.getSelectedArea();
+
+            // Cập nhật TextView trong Fragment
+            selectedLocationText.setText(selectedProvince +" "+ selectedArea);
+
+            // Đóng dialog
+            dialog.dismiss();
+        });
+
         // Hiển thị dialog
         dialog.show();
     }

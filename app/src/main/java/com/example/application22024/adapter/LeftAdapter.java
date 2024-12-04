@@ -70,6 +70,12 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.ViewHolder> {
         notifyItemChanged(previousSelectedPosition); // Làm mới mục cũ
         notifyItemChanged(selectedPosition); // Làm mới mục mới
     }
+    public String getSelectedProvince() {
+        if (selectedPosition != RecyclerView.NO_POSITION) {
+            return provinces.get(selectedPosition);
+        }
+        return null;
+    }
     @Override
     public int getItemCount() {
         return provinces.size();

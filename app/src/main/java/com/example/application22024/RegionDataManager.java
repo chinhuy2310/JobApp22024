@@ -9,7 +9,7 @@ public class RegionDataManager {
         HashMap<String, ArrayList<String>> regions = new HashMap<>();
 
         ArrayList<String> all = new ArrayList<>();
-        all.add("All");
+        all.add("");
         regions.put("All", all);
 
 
