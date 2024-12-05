@@ -13,7 +13,7 @@
         android:orientation="horizontal">
         <!-- Ảnh đại diện -->
         <ImageView
-            android:id="@+id/imageViewAvatar"
+            android:id="@+id/companyLogo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
@@ -25,7 +25,7 @@
             android:layout_marginStart="8dp">
             <!-- Phần tên người đăng -->
             <TextView
-                android:id="@+id/JobName"
+                android:id="@+id/jobTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="2dp"
@@ -37,10 +37,10 @@
 
 
             <TextView
-                android:id="@+id/EmployerName"
+                android:id="@+id/companyName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/JobName"
+                android:layout_below="@+id/jobTitle"
                 android:text="company name"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
@@ -67,7 +67,7 @@
             android:layout_height="20dp"
             android:src="@drawable/ic_location2"/>
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/workLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="sadasdasdasd"/>
@@ -79,7 +79,7 @@
         android:paddingHorizontal="5dp"
         android:gravity="center">
         <TextView
-            android:id="@+id/JobType"
+            android:id="@+id/workType"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -89,7 +89,7 @@
             android:text="Full-time"
             android:textColor="@color/black"/>
         <TextView
-            android:id="@+id/WorkPlaceType"
+            android:id="@+id/WorkField"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -99,7 +99,7 @@
             android:text="Restaurant"
             android:textColor="@color/black"/>
         <TextView
-            android:id="@+id/duration"
+            android:id="@+id/period"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -123,7 +123,7 @@
         android:layout_marginHorizontal="15dp"
         android:layout_margin="2dp">
         <TextView
-            android:id="@+id/salary"
+            android:id="@+id/jobSalary"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:text="$$$$$"/>
@@ -133,7 +133,7 @@
             android:paddingHorizontal="2dp"
             android:text="/"/>
         <TextView
-            android:id="@+id/durationType"
+            android:id="@+id/salaryType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="time"/>

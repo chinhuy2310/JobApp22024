@@ -2,7 +2,7 @@
     android:shape="rectangle">
 
     <!-- Màu nền bên trong -->
-    <solid android:color="#9B30FF" /> <!-- Thay đổi màu này theo ý muốn -->
+    <solid android:color="#C8A8E9" /> <!-- Thay đổi màu này theo ý muốn -->
 
     <!-- Viền -->
 <!--    <stroke-->

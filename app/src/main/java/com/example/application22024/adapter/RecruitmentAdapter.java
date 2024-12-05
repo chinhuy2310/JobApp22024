@@ -1,17 +1,13 @@
 package com.example.application22024.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application22024.JobDetails;
@@ -41,7 +37,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
     @Override
     public RecruitmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 //        Log.e("AdapterDebug", "onCreateViewHolder called");
-        View view = LayoutInflater.from(context).inflate(R.layout.job_post_in_imployer, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.job_item_on_employer, parent, false);
         return new RecruitmentViewHolder(view);
     }
 

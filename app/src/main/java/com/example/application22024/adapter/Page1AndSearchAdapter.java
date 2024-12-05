@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.application22024.APIService;
 import com.example.application22024.JobDetails;
@@ -22,9 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
-import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
-import com.example.application22024.model.Job;
 import com.example.application22024.model.RegistrationViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -34,16 +31,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.ViewHolder> {
+public class Page1AndSearchAdapter extends RecyclerView.Adapter<Page1AndSearchAdapter.ViewHolder> {
 
     private List<CompanyJobItem> companyJobItems;
     private Context context; // Context để khởi chạy Activity
     RegistrationViewModel viewModel;
     APIService apiService;
-
-    public CompanyJobAdapter(Context context, List<CompanyJobItem> companyJobItems) {
+    private int layoutType;
+    public Page1AndSearchAdapter(Context context, List<CompanyJobItem> companyJobItems, int layoutType) {
         this.context = context;
         this.companyJobItems = companyJobItems;
+        this.layoutType = layoutType;
         viewModel = ((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
     }
@@ -51,13 +49,40 @@ public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.job_post_in_search, parent, false);
+        View view;
+        if (layoutType == 1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_on_search, parent, false);}
+        else{
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_on_page1, parent, false);
+        }
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CompanyJobItem item = companyJobItems.get(position);
+
+        if (item.getCompany_image() != null) {
+            holder.comapnyImage.setVisibility(View.VISIBLE);
+            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
+            String relativePath = item.getCompany_image();
+            String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
+            Picasso.get().load(fullImageUrl).into(holder.comapnyImage);
+//            Log.e("imageUrl", fullImageUrl);
+        } else {
+            // Load a default image if the avatar URL is empty
+//            Picasso.get().load(R.drawable.ic_launcher_background).into(holder.comapnyImage);
+            holder.comapnyImage.setVisibility(View.GONE);
+        }
+
+        if (layoutType == 0) {
+            holder.workField.setText(companyJobItems.get(position).getWorkField());
+            holder.workType.setText(companyJobItems.get(position).getWorkType());
+            holder.period.setText(companyJobItems.get(position).getWorkPeriod());
+        } else {
+            Log.e("layoutType", "layoutType is not 0");
+        }
+
 
         // Gán dữ liệu vào các view trong item
         holder.companyNameTextView.setText(item.getCompany_name());
@@ -66,6 +91,8 @@ public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.Vi
         int number = item.getSalary();
         String formattedNumber = String.format("%,d", number) + " ₩";
         holder.jobSalaryTextView.setText(formattedNumber);
+
+
 
         // Tạo một GradientDrawable để làm nền và stroke cho TextView
         GradientDrawable drawable = new GradientDrawable();
@@ -131,17 +158,7 @@ public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.Vi
             context.startActivity(intent);
         });
 
-        if (item.getCompany_image() != null) {
-            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
-            String relativePath = item.getCompany_image();
-            String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
-            Picasso.get().load(fullImageUrl).into(holder.comapnyImage);
-//            Log.e("imageUrl", fullImageUrl);
-        } else {
-            // Load a default image if the avatar URL is empty
-//            Picasso.get().load(R.drawable.ic_launcher_background).into(holder.comapnyImage);
-            holder.comapnyImage.setVisibility(View.GONE);
-        }
+
     }
 
     private void updateBookmarkStatus(CompanyJobItem item) {
@@ -181,6 +198,7 @@ public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.Vi
         TextView jobSalaryTextView;
         TextView jobSalaryTypeTextView;
         ImageView bookmarkImageView,comapnyImage;
+        TextView workField, workType, period;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -191,6 +209,10 @@ public class CompanyJobAdapter extends RecyclerView.Adapter<CompanyJobAdapter.Vi
             jobSalaryTypeTextView = itemView.findViewById(R.id.salaryType);
             bookmarkImageView = itemView.findViewById(R.id.bookmark);
             comapnyImage = itemView.findViewById(R.id.companyLogo);
+
+            workField = itemView.findViewById(R.id.WorkField);
+            workType = itemView.findViewById(R.id.workType);
+            period = itemView.findViewById(R.id.period);
         }
     }
 }

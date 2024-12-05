@@ -21,7 +21,7 @@ import com.example.application22024.R;
 import com.example.application22024.RegionDataManager;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
-import com.example.application22024.adapter.CompanyJobAdapter;
+import com.example.application22024.adapter.Page1AndSearchAdapter;
 import com.example.application22024.adapter.LeftAdapter;
 import com.example.application22024.adapter.RightAdapter;
 import com.example.application22024.model.CompanyJobItem;
@@ -41,7 +41,7 @@ public class Page3 extends Fragment {
     private EditText searchEditText;
     private ImageView searchButton;
     private RecyclerView recyclerView;
-    private CompanyJobAdapter adapter;
+    private Page1AndSearchAdapter adapter;
     private List<CompanyJobItem> companyJobItems = new ArrayList<>();
     private APIService apiService;
 
@@ -75,7 +75,7 @@ public class Page3 extends Fragment {
         loadCompanyJobData();
 
         // Cập nhật RecyclerView với adapter
-        adapter = new CompanyJobAdapter(getContext(), companyJobItems);
+        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -94,7 +94,7 @@ public class Page3 extends Fragment {
                     if (companyJobItems != null && !companyJobItems.isEmpty()) {
                         recyclerView.setVisibility(View.VISIBLE);
                         noResultsTextView.setVisibility(View.GONE);
-                        adapter = new CompanyJobAdapter(getContext(), companyJobItems);
+                        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
                         recyclerView.setAdapter(adapter);
                     } else {
                         // Hiển thị thông báo không tìm thấy kết quả
@@ -124,7 +124,7 @@ public class Page3 extends Fragment {
             public void onResponse(Call<List<CompanyJobItem>> call, Response<List<CompanyJobItem>> response) {
                 if (response.isSuccessful()) {
                     companyJobItems = response.body();
-                    adapter = new CompanyJobAdapter(getContext(), companyJobItems);
+                    adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
                     recyclerView.setAdapter(adapter);
                 } else {
                     Toast.makeText(getActivity(), "Error loading data", Toast.LENGTH_SHORT).show();

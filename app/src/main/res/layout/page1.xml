@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#faf7fa"
         android:orientation="vertical">
 
         <!-- Phần cố định (Header) -->
@@ -99,13 +98,6 @@
                         android:maxLines="1"
                         android:singleLine="true" />
                 </LinearLayout>
-
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/custom_border3"
-                    android:src="@drawable/ic_filter" />
             </LinearLayout>
 
         </LinearLayout>
@@ -113,7 +105,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:gravity="center_vertical">
 
@@ -121,8 +112,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="Suggested Jobs"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="20sp"
+                android:text="추천"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -148,7 +140,6 @@
                 android:id="@+id/SuggestedJob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#faf7fa"
                 android:minHeight="221dp"
                 android:padding="16dp" />
         </LinearLayout>
@@ -157,9 +148,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
-            android:text="Recent Jobs"
+            android:text="최근 보기"
             android:textColor="@color/black"
             android:textSize="20sp" />
         <!-- Thẻ cuộn ngang thứ hai -->
@@ -173,7 +164,6 @@
                 android:id="@+id/recentJob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#faf7fa"
                 android:minHeight="221dp"
                 android:padding="16dp" />
         </LinearLayout>
