@@ -55,6 +55,9 @@ public class Step1Fragment extends Fragment {
         contactEditText = view.findViewById(R.id.contact_edit_text);
         otherRecruitmentField = view.findViewById(R.id.otherRecruitmentField);
 
+        nonBinary = view.findViewById(R.id.Non_binary);
+        male = view.findViewById(R.id.male);
+        female = view.findViewById(R.id.female);
         if (viewModel.getSelectedCompany() != null) {
             companyNameEditText.setText(viewModel.getSelectedCompany().getCompanyName());
             contactEditText.setText(viewModel.getSelectedCompany().getContact());
@@ -84,7 +87,7 @@ public class Step1Fragment extends Fragment {
             }
 
             String selectedGender = viewModel.getSelectedJob().getRecruitmentGender();
-            Log.e("selectedGender", selectedGender);
+//            Log.e("selectedGender", selectedGender);
             if (selectedGender != null) {
                 switch (selectedGender) {
                     case "성별 무관" :  // Non-binary
@@ -100,6 +103,8 @@ public class Step1Fragment extends Fragment {
                         viewModel.setSelectedGender("여자");
                         break;
                 }
+                updateGenderSelection(view);
+
             }
 
         } else {
@@ -119,9 +124,7 @@ public class Step1Fragment extends Fragment {
         item5 = view.findViewById(R.id.item5);
         item6 = view.findViewById(R.id.item6);
 
-        nonBinary = view.findViewById(R.id.Non_binary);
-        male = view.findViewById(R.id.male);
-        female = view.findViewById(R.id.female);
+
 
         // Thiết lập sự kiện click cho các ô bảng
         setupCellClick(view, R.id.item1, 0);
@@ -210,6 +213,28 @@ public class Step1Fragment extends Fragment {
         });
     }
 
+    private void updateGenderSelection(View view) {
+        // Reset lại màu sắc cho tất cả các ô giới tính
+        resetGenderColor(nonBinary);
+        resetGenderColor(male);
+        resetGenderColor(female);
+
+        // Tùy vào selectedGenderPosition, thay đổi màu sắc của ô tương ứng
+        switch (selectedGenderPosition) {
+            case 0: // Non-binary
+                nonBinary.setBackgroundColor(Color.BLUE);
+                nonBinary.setTextColor(Color.WHITE);
+                break;
+            case 1: // Male
+                male.setBackgroundColor(Color.BLUE);
+                male.setTextColor(Color.WHITE);
+                break;
+            case 2: // Female
+                female.setBackgroundColor(Color.BLUE);
+                female.setTextColor(Color.WHITE);
+                break;
+        }
+    }
 
     // Phương thức chung để xử lý TextWatcher cho bất kỳ EditText nào
     private void setTextChangedListener(EditText editText, Consumer<String> setValueMethod) {

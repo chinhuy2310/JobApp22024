@@ -7,12 +7,15 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.application22024.R;
 import com.example.application22024.adapter.ViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -25,6 +28,7 @@ public class EmployeeMain extends AppCompatActivity {
     private InputMethodManager inputMethodManager;
     private boolean isSwipingFromPage2 = false;
     private boolean backPressedOnce = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,11 +68,14 @@ public class EmployeeMain extends AppCompatActivity {
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
+
         // kiểm tra thay đổi của page2 khi chuyển trang
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -88,6 +95,7 @@ public class EmployeeMain extends AppCompatActivity {
             }
         });
     }
+
     // kiểm tra thay đổi của page2 khi chuyển trang
     private void checkForUnsavedChangesAndSwitch(int newPosition) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
@@ -102,6 +110,7 @@ public class EmployeeMain extends AppCompatActivity {
             viewPager.setCurrentItem(newPosition, true);
         }
     }
+
     // hiển thị thông báo xác nhận lưu thông tin đã thay đổi khi chuyển trang
     private void showSaveAlertDialog(Page2 page2Fragment, int newPosition) {
         new AlertDialog.Builder(this)
@@ -117,6 +126,7 @@ public class EmployeeMain extends AppCompatActivity {
                 .setCancelable(false)
                 .show();
     }
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {

@@ -110,7 +110,7 @@ public class Step4Fragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_post);
         nextButton.setOnClickListener(v -> {
             String combinedRegisterNumber = registerNumber1.getText().toString() + "-" + registerNumber2.getText().toString();
-            Log.e("combinedRegisterNumber", combinedRegisterNumber);
+//            Log.e("combinedRegisterNumber", combinedRegisterNumber);
             viewModel.setRegisterNumber(combinedRegisterNumber);
             if (listener != null) {
                 listener.onPostButtonClicked(); // Gọi phương thức trong Activity

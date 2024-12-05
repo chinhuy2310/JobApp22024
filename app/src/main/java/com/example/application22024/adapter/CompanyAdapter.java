@@ -45,7 +45,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         this.context = context;
         this.companyList = companyList != null ? companyList : new ArrayList<>();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
-        viewModel =((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
+        viewModel = ((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
 
     }
 
@@ -68,7 +68,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         holder.jobPositionsTextView.setText(String.valueOf(company.getJobCount()));
 
         // Load the image using Picasso
-        if(company.getCompanyIamge()!=null){
+        if (company.getCompanyIamge() != null) {
             String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
             String relativePath = company.getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
@@ -147,6 +147,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
             }
         });
     }
+
     private void displayJobsInRecyclerView(CompanyViewHolder holder, Company company) {
         holder.noJobPostsTextView.setVisibility(View.GONE); // Ẩn thông báo
         holder.jobListView.setVisibility(View.VISIBLE); // Hiển thị RecyclerView
@@ -158,7 +159,13 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
 
     }
+
     private void showPopupMenu(View v, int position) {
+        // Kiểm tra xem position có hợp lệ không
+        if (position < 0 || position >= companyList.size()) {
+            Log.e("CompanyAdapter", "Invalid position: " + position);
+            return;  // Không thực hiện hành động nào nếu position không hợp lệ
+        }
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
         popupMenu.inflate(R.menu.options_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
@@ -167,19 +174,17 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
                 Intent intent = new Intent(context, RegistrationActivity.class);
                 viewModel.setSelectedCompany(companyList.get(position));
 //                Log.e("selectedCompany", viewModel.getSelectedCompany().getCompanyName());
-                // Truyền dữ liệu, ví dụ: truyền tên công ty
-//                intent.putExtra("companyName", companyList.get(position).getCompanyName());
                 context.startActivity(intent);
-
                 return true;
             } else if (item.getItemId() == R.id.edit_company) {
                 // Handle edit company action
                 Toast.makeText(context, "Edit: " + companyList.get(position).getCompanyName(), Toast.LENGTH_SHORT).show();
                 return true;
             } else if (item.getItemId() == R.id.delete_company) {
-                // Handle delete company action
-//                companyList.remove(position);
-//                notifyItemRemoved(position);
+//                Company companyToDelete = companyList.get(position);
+//                Log.e("", String.valueOf(companyToDelete.getCompanyId()));
+//                deleteCompany(companyToDelete, position);
+                showDeleteConfirmationDialog(companyList.get(position), position);
                 Toast.makeText(context, "Deleted: " + companyList.get(position).getCompanyName(), Toast.LENGTH_SHORT).show();
                 return true;
             } else {
@@ -192,6 +197,53 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     @Override
     public int getItemCount() {
         return companyList.size();
+    }
+    private void showDeleteConfirmationDialog(Company company, int position) {
+        // Tạo một AlertDialog để xác nhận xóa công ty
+        new android.app.AlertDialog.Builder(context)
+                .setMessage("Are you sure you want to delete the company " + company.getCompanyName() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    // Nếu người dùng chọn "Xóa", gọi hàm deleteCompany()
+                    deleteCompany(company, position);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    // Nếu người dùng chọn "Hủy", không làm gì cả
+                    dialog.dismiss();
+                })
+                .setCancelable(false)  // Không cho phép người dùng đóng dialog khi nhấn ra ngoài
+                .show();
+    }
+
+    private void deleteCompany(Company company, int position) {
+        // Gọi API để xóa công ty
+        apiService.deleteCompany(company.getCompanyId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Nếu xóa thành công, thông báo cho người dùng
+                    Toast.makeText(context, "Deleted: " + company.getCompanyName(), Toast.LENGTH_SHORT).show();
+
+                    // Xóa công ty khỏi danh sách
+                    companyList.remove(position);
+                    notifyItemRemoved(position); // Thông báo cho adapter biết đã xóa item
+                    notifyItemRangeChanged(position, companyList.size());
+                    viewModel.reset();
+                    // Cập nhật giao diện nếu không còn công ty nào
+                    if (companyList.isEmpty()) {
+                        Toast.makeText(context, "No companies left.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Nếu có lỗi khi xóa
+                    Toast.makeText(context, "Failed to delete company. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Nếu có lỗi kết nối với API
+                Toast.makeText(context, "Network error. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void updateData(List<Company> companyList) {

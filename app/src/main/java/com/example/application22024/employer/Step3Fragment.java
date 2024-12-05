@@ -1,5 +1,6 @@
 package com.example.application22024.employer;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -11,16 +12,26 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
+import com.example.application22024.RegionDataManager;
+import com.example.application22024.adapter.LeftAdapter;
+import com.example.application22024.adapter.RightAdapter;
 import com.example.application22024.model.RegistrationViewModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Step3Fragment extends Fragment {
     private RegistrationViewModel viewModel;
@@ -41,16 +52,42 @@ public class Step3Fragment extends Fragment {
         addressEditText = view.findViewById(R.id.editText_address);
         detailAddressEditText = view.findViewById(R.id.editText_detail_address);
         descriptionEditText = view.findViewById(R.id.editText_description);
+        addressEditText.setFocusable(false);
+        addressEditText.setOnClickListener(v -> showCustomDialog());
+
         if (viewModel.getSelectedJob() != null){
             descriptionEditText.setText(viewModel.getSelectedJob().getDetails());
             viewModel.setDescription(descriptionEditText.getText().toString());
         }
         if (viewModel.getSelectedCompany() != null) {
-            addressEditText.setText(viewModel.getSelectedCompany().getAddress());
-            viewModel.setAddress(addressEditText.getText().toString());
-        }
 
-        setTextChangedListener(addressEditText, viewModel::setAddress);
+//            addressEditText.setText(viewModel.getSelectedCompany().getAddress());
+            String fulladdress =viewModel.getSelectedCompany().getAddress(); // Chuỗi ban đầu
+            // Tách chuỗi thành mảng các phần tử dựa trên ký tự " - "
+            String[] parts = fulladdress.split(" ");
+            // Lấy phần 1 và 2 để hiển thị trong TextView1
+            if (parts.length >= 2) {
+                String textView1Content = parts[0] + " " + parts[1];
+                addressEditText.setText(textView1Content);
+            } else {
+                addressEditText.setText(""); // Nếu không đủ phần tử, hiển thị chuỗi rỗng
+            }
+            // Ghép các phần tử còn lại để hiển thị trong TextView2
+            if (parts.length > 2) {
+                StringBuilder textView2Content = new StringBuilder();
+                for (int i = 2; i < parts.length; i++) {
+                    if (i > 2) {
+                        textView2Content.append(" "); // Thêm khoảng trắng giữa các phần tử
+                    }
+                    textView2Content.append(parts[i]);
+                }
+                detailAddressEditText.setText(textView2Content.toString());
+            } else {
+                detailAddressEditText.setText(""); // Nếu không còn phần tử nào, hiển thị chuỗi rỗng
+            }
+            viewModel.setAddress(fulladdress);
+        }
+//        setTextChangedListener(addressEditText, viewModel::setAddress);
         setTextChangedListener(detailAddressEditText, viewModel::setDetailAddress);
         setTextChangedListener(descriptionEditText, viewModel::setDescription);
 
@@ -77,6 +114,75 @@ public class Step3Fragment extends Fragment {
             }
         });
     }
+    private void showCustomDialog() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_select_location_layout);
+        dialog.setCanceledOnTouchOutside(false);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // Lấy dữ liệu từ RegionDataManager
+        HashMap<String, ArrayList<String>> regionsData = RegionDataManager.getRegionsData();
+        List<String> provinces = new ArrayList<>(regionsData.keySet());
+        List<String> areas = new ArrayList<>();
+
+        // Xóa mục đầu tiên khỏi danh sách provinces
+        if (!provinces.isEmpty()) {
+            provinces.remove(0);
+        }
+
+        // RecyclerView
+        RecyclerView leftRecyclerView = dialog.findViewById(R.id.left_recycler_view);
+        RecyclerView rightRecyclerView = dialog.findViewById(R.id.right_recycler_view);
+
+        leftRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Adapters
+        LeftAdapter leftAdapter = new LeftAdapter(provinces, province -> {
+            areas.clear();
+            if (regionsData.get(province) != null) {
+                areas.addAll(regionsData.get(province));
+                // Xóa mục đầu tiên khỏi danh sách areas
+                if (!areas.isEmpty()) {
+                    areas.remove(0);
+                }
+            }
+            rightRecyclerView.getAdapter().notifyDataSetChanged();
+        });
+
+        RightAdapter rightAdapter = new RightAdapter(areas);
+
+        leftRecyclerView.setAdapter(leftAdapter);
+        rightRecyclerView.setAdapter(rightAdapter);
+
+        // Xử lý khi nhấn nút "Xác nhận"
+        dialog.findViewById(R.id.confirm_button).setOnClickListener(v -> {
+            // Lấy tỉnh và khu vực đã chọn từ Adapter
+            String selectedProvince = leftAdapter.getSelectedProvince();
+            String selectedArea = rightAdapter.getSelectedArea();
+
+            // Kiểm tra xem có tỉnh và khu vực được chọn không
+            if (selectedProvince == null || selectedArea == null || selectedProvince.isEmpty() || selectedArea.isEmpty()) {
+                // Nếu không có tỉnh hoặc khu vực nào được chọn, hiển thị Toast thông báo
+                Toast.makeText(getContext(), "Vui lòng chọn cả tỉnh và khu vực.", Toast.LENGTH_SHORT).show();
+            } else {
+                // Nếu có tỉnh và khu vực được chọn, cập nhật TextView và ViewModel
+                addressEditText.setText(selectedProvince + " " + selectedArea);
+                viewModel.setAddress(selectedProvince + " " + selectedArea);
+                // Đóng dialog
+                dialog.dismiss();
+            }
+        });
+        dialog.findViewById(R.id.cancel_button).setOnClickListener(v -> {
+                    dialog.dismiss();
+        });
+
+        // Hiển thị dialog
+        dialog.show();
+    }
+
     public void hideKeyboard() {
         View view = requireActivity().getCurrentFocus();
         if (view != null) {

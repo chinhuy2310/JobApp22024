@@ -120,11 +120,11 @@ public class Step2Fragment extends Fragment {
         checkBoxOption3.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption3Checked(isChecked));
 
         // Get the selected values from Spinners
-        String selectedSalaryType = salaryType.getSelectedItem().toString();
+
 //        String selectedPartOfDay1 = partsOfDay1.getSelectedItem().toString();
 //        String selectedPartOfDay2 = partsOfDay2.getSelectedItem().toString();
 
-        viewModel.setSelectedSalaryType(selectedSalaryType);
+
 //        viewModel.setPartOfDay1(selectedPartOfDay1);
 //        viewModel.setPartOfDay2(selectedPartOfDay2);
 
@@ -221,6 +221,8 @@ public class Step2Fragment extends Fragment {
     }
 
     private void navigateToNextFragment() {
+        String selectedSalaryType = salaryType.getSelectedItem().toString();
+        viewModel.setSelectedSalaryType(selectedSalaryType);
         hideKeyboard();
         // Navigate to the next fragment
         ((RegistrationActivity) getActivity()).showNextFragment(new Step3Fragment());
@@ -343,12 +345,13 @@ public class Step2Fragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 requireContext(),
                 (datePicker, selectedYear, selectedMonth, selectedDay) -> {
-                    String selectedDate =   selectedYear+ "-" + (selectedMonth + 1) + "-" +selectedDay;
+                    String selectedDate = selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay;
                     recruitmentEndTime.setText(selectedDate);
                 }, year, month, day);
 
         datePickerDialog.show();
     }
+
     private String formatTimeToHoursAndMinutes(String time) {
         try {
             // Định dạng chuỗi thời gian đầu vào
@@ -363,6 +366,7 @@ public class Step2Fragment extends Fragment {
             return time;  // Nếu có lỗi, trả về thời gian ban đầu
         }
     }
+
     public void hideKeyboard() {
         View view = requireActivity().getCurrentFocus();
         if (view != null) {

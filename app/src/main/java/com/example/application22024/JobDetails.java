@@ -7,7 +7,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -21,21 +23,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class JobDetails extends AppCompatActivity {
     private Toolbar toolbar;
-    private TextView dateTextview, titleTextview, companyTextview, salaryTypeTextview, salaryTextview,workDayTextview, startTimeTextview, endTimeTextview;
+    private TextView dateTextview, titleTextview, companyTextview, salaryTypeTextview, salaryTextview, workDayTextview, startTimeTextview, endTimeTextview;
     private TextView recruitmentCountTextview, genderTextview, deadlineTextview, canNegotiableDayTextview, canNegotiableTimeTextview;
-    private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview,startTime2Textview, endTime2Textview;
-    private TextView detailsTextview, addressTextview,companyTextview2, contactTextview;
+    private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview, startTime2Textview, endTime2Textview;
+    private TextView detailsTextview, addressTextview, companyTextview2, contactTextview;
     private LinearLayout viewOfEmployee, viewOfEmployer;
     private TextView deleteTextView, editTextview;
-
+    private APIService apiService;
     RegistrationViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.job_details);
         viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
+        apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
 //        if (viewModel.getSelectedJob() != null) {
 //          Log.e("selectedJob", String.valueOf(viewModel.getSelectedJob().getSalary()));
 //        } else {
@@ -61,13 +69,13 @@ public class JobDetails extends AppCompatActivity {
         }
 
 
-
         // Kích hoạt nút quay lại
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
     }
+
     private void initViews() {
         dateTextview = findViewById(R.id.dateTextview);
         titleTextview = findViewById(R.id.titleTextview);
@@ -78,7 +86,7 @@ public class JobDetails extends AppCompatActivity {
         canNegotiableDayTextview = findViewById(R.id.canNegotiableDay);
         startTimeTextview = findViewById(R.id.start_time);
         endTimeTextview = findViewById(R.id.end_time);
-        canNegotiableTimeTextview =findViewById(R.id.canNegotiableTime);
+        canNegotiableTimeTextview = findViewById(R.id.canNegotiableTime);
         deadlineTextview = findViewById(R.id.deadlineTextview);
         recruitmentCountTextview = findViewById(R.id.recruitment_count);
         genderTextview = findViewById(R.id.genderTextview);
@@ -102,7 +110,53 @@ public class JobDetails extends AppCompatActivity {
             Intent intent = new Intent(JobDetails.this, RegistrationActivity.class);
             startActivity(intent);
         });
+        deleteTextView = findViewById(R.id.deleteButton);
+        deleteTextView.setOnClickListener(v -> {
+            // Tạo AlertDialog để xác nhận việc xóa
+            new AlertDialog.Builder(JobDetails.this)
+                    .setMessage("Are you sure you want to delete?")  // Câu hỏi hiển thị trong hộp thoại
+                    .setCancelable(false)  // Không thể hủy bỏ bằng cách nhấn ngoài hộp thoại
+                    .setPositiveButton("Yes", (dialog, id) -> {
+                        // Nếu người dùng nhấn "Có", thực hiện phương thức deleteRecrutment()
+                        deleteRecrutment();
+                    })
+                    .setNegativeButton("No", (dialog, id) -> {
+                        // Nếu người dùng nhấn "Không", chỉ cần đóng hộp thoại
+                        dialog.dismiss();
+                    })
+                    .show();  // Hiển thị hộp thoại
+        });
     }
+
+    private void deleteRecrutment() {
+        int job_id = viewModel.getSelectedJob().getJobId();
+//        Log.e("job_id", String.valueOf(job_id));
+        // Gọi API xóa công việc
+        Call<Void> call = apiService.deleteJobDetails(job_id);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // Nếu xóa thành công, hiển thị thông báo thành công
+                    Toast.makeText(JobDetails.this, "Successfully deleted!", Toast.LENGTH_SHORT).show();
+                    viewModel.reset();
+                    finish();
+                } else {
+                    // Nếu có lỗi trong quá trình xóa
+                    Toast.makeText(JobDetails.this, "Failed to delete. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Nếu có lỗi mạng hoặc lỗi khi gọi API
+                Toast.makeText(JobDetails.this, "Network error. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void displayDetails() {
 //        if (viewModel.getSelectedCompany() != null){
 //            Log.e("selectedCompany", viewModel.getSelectedCompany().getCompanyName());
@@ -120,23 +174,23 @@ public class JobDetails extends AppCompatActivity {
             salaryTextview.setText(formattedNumber);
             workDayTextview.setText(selectedJob.getWorkDays());
 //            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
-            if(selectedJob.getCanNegotiableDays().equals("Yes")){
+            if (selectedJob.getCanNegotiableDays().equals("Yes")) {
                 canNegotiableDayTextview.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 canNegotiableDayTextview.setVisibility(View.GONE);
             }
             startTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
             endTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
-            if(selectedJob.getCanNegotiableTime().equals("Yes")){
+            if (selectedJob.getCanNegotiableTime().equals("Yes")) {
                 canNegotiableTimeTextview.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 canNegotiableTimeTextview.setVisibility(View.GONE);
             }
             deadlineTextview.setText(selectedJob.getRecruitmentEnd());
             recruitmentCountTextview.setText(String.valueOf(selectedJob.getRecruitmentCount()));
             genderTextview.setText(selectedJob.getRecruitmentGender());
             salaryTypeTextview2.setText(selectedJob.getSalaryType());
-            salaryTextview2.setText(String.valueOf(selectedJob.getSalary()));
+            salaryTextview2.setText(formattedNumber);
             workPeriodTextview.setText(selectedJob.getWorkPeriod());
             workDaysTextview.setText(selectedJob.getWorkDays());
             startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
@@ -157,23 +211,23 @@ public class JobDetails extends AppCompatActivity {
             salaryTextview.setText(formattedNumber);
             workDayTextview.setText(selectedJob.getWorkDays());
 //            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
-            if(selectedJob.getCan_negotiable_days().equals("Yes")){
+            if (selectedJob.getCan_negotiable_days().equals("Yes")) {
                 canNegotiableDayTextview.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 canNegotiableDayTextview.setVisibility(View.GONE);
             }
             startTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
             endTimeTextview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
-            if(selectedJob.getCan_negotiable_time().equals("Yes")){
+            if (selectedJob.getCan_negotiable_time().equals("Yes")) {
                 canNegotiableTimeTextview.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 canNegotiableTimeTextview.setVisibility(View.GONE);
             }
             deadlineTextview.setText(selectedJob.getRecruitmentEnd());
             recruitmentCountTextview.setText(String.valueOf(selectedJob.getRecruitmentCount()));
             genderTextview.setText(selectedJob.getRecruitmentGender());
             salaryTypeTextview2.setText(selectedJob.getSalaryType());
-            salaryTextview2.setText(String.valueOf(selectedJob.getSalary()));
+            salaryTextview2.setText(formattedNumber);
             workPeriodTextview.setText(selectedJob.getWorkPeriod());
             workDaysTextview.setText(selectedJob.getWorkDays());
             startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
@@ -184,6 +238,7 @@ public class JobDetails extends AppCompatActivity {
             contactTextview.setText(selectedJob.getContact());
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -193,6 +248,7 @@ public class JobDetails extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     private String formatTimeToHoursAndMinutes(String time) {
         try {
             // Định dạng chuỗi thời gian đầu vào
@@ -211,8 +267,12 @@ public class JobDetails extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        viewModel.reset();
+//        String userType = getIntent().getStringExtra("userType");
+//        if (!"Employer".equals(userType)){
+//            viewModel.reset();
+//        }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

@@ -13,7 +13,7 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#20C3C7F4"
+            android:background="#30C3C7F4"
             android:orientation="vertical">
 
             <LinearLayout
@@ -76,7 +76,7 @@
                     android:id="@+id/selectedLocationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="location"
+                    android:hint="location"
                     android:textColor="@color/black" />
             </LinearLayout>
 
@@ -87,6 +87,13 @@
                 android:text="Advanced search" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
+    <TextView
+        android:id="@+id/noResultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:text="No results found"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

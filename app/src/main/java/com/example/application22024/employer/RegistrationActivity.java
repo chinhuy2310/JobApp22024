@@ -77,36 +77,10 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
                 .commit();
     }
 
-    
+
     @Override
     public void onPostButtonClicked() {
-//        Log.e("RequestBody", "employerId: " + String.valueOf(SharedPrefManager.getInstance(this).getUserId()));
-//        Log.e("RequestBody", "companyId: " + ((viewModel.getSelectedCompany() != null)
-//                ? String.valueOf(viewModel.getSelectedJob().getCompanyId()) : ""));
-//        Log.e("RequestBody", "jobId: " + ((viewModel.getSelectedJob() != null)
-//                ? String.valueOf(viewModel.getSelectedJob().getJobId()) : ""));
-//        Log.e("RequestBody", "title: " + viewModel.getRecruitmentTitle());
-//        Log.e("RequestBody", "companyName: " + viewModel.getCompanyName());
-//        Log.e("RequestBody", "contact: " + viewModel.getContact());
-//        Log.e("RequestBody", "workField: " + ((viewModel.getSelectedRecruitmentField() != null)
-//                ? viewModel.getSelectedRecruitmentField() : viewModel.getOtherRecruitmentField()));
-//        Log.e("RequestBody", "recruitmentGender: " + viewModel.getSelectedGender());
-//        Log.e("RequestBody", "recruitmentCount: " + viewModel.getRecruitmentCount());
-//        Log.e("RequestBody", "salaryType: " + viewModel.getSelectedSalaryType());
-//        Log.e("RequestBody", "salary: " + viewModel.getSalary());
-//        Log.e("RequestBody", "workHoursStart: " + viewModel.getStartTime());
-//        Log.e("RequestBody", "workHoursEnd: " + viewModel.getEndTime());
-//        Log.e("RequestBody", "canNegotiableTime: " + viewModel.isOption1Checked());
-//        Log.e("RequestBody", "workType: " + viewModel.getWorkType());
-//        Log.e("RequestBody", "workPeriod: " + viewModel.getWorkPeriod());
-//        Log.e("RequestBody", "workDays: " + viewModel.getWorkDay());
-//        Log.e("RequestBody", "canNegotiableDays: " + viewModel.isOption2Checked());
-//        Log.e("RequestBody", "recruitmentEnd: " + viewModel.getRecruitmentEndTime());
-//        Log.e("RequestBody", "address: " + viewModel.getAddress());
-//        Log.e("RequestBody", "details: " + viewModel.getDescription());
-//        Log.e("RequestBody", "representativeName: " + viewModel.getRepresentativeName());
-//        Log.e("RequestBody", "registrationNumber: " + viewModel.getRegisterNumber());
-        // Tạo RequestBody cho từng trường dữ liệu
+
         RequestBody employerId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(SharedPrefManager.getInstance(this).getUserId()));
         RequestBody companyId = RequestBody.create(MediaType.parse("text/plain"), (viewModel.getSelectedCompany() != null)
                 ? String.valueOf(viewModel.getSelectedCompany().getCompanyId()) : "");
@@ -129,7 +103,7 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
         RequestBody workDays = RequestBody.create(MediaType.parse("text/plain"), viewModel.getWorkDay());
         RequestBody canNegotiableDays = RequestBody.create(MediaType.parse("text/plain"), viewModel.isOption2Checked());
         RequestBody recruitmentEnd = RequestBody.create(MediaType.parse("text/plain"), viewModel.getRecruitmentEndTime());
-        RequestBody address = RequestBody.create(MediaType.parse("text/plain"), viewModel.getAddress());
+        RequestBody address = RequestBody.create(MediaType.parse("text/plain"), viewModel.getAddress()+" "+viewModel.getDetailAddress());
         RequestBody details = RequestBody.create(MediaType.parse("text/plain"), viewModel.getDescription());
         RequestBody representativeName = RequestBody.create(MediaType.parse("text/plain"), viewModel.getRepresentativeName());
         RequestBody registrationNumber = RequestBody.create(MediaType.parse("text/plain"), viewModel.getRegisterNumber());

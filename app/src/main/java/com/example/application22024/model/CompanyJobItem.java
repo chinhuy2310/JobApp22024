@@ -24,6 +24,7 @@ public class CompanyJobItem {
     private String Details;
     private  String RecruitmentEnd;
     private String PostDate;
+    private int is_saved;
 
     public int getCompany_id() {
         return company_id;
@@ -201,5 +202,13 @@ public class CompanyJobItem {
 
     public void setPostDate(String postDate) {
         PostDate = postDate;
+    }
+
+    public int getIs_saved() {
+        return is_saved;
+    }
+
+    public void setIs_saved(int is_saved) {
+        this.is_saved = is_saved;
     }
 }

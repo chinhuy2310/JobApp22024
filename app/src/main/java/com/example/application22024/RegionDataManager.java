@@ -14,6 +14,7 @@ public class RegionDataManager {
 
 
         ArrayList<String> seoulAreas = new ArrayList<>();
+        seoulAreas.add("All");
         seoulAreas.add("Jongno-gu");
         seoulAreas.add("Gangnam-gu");
         seoulAreas.add("Mapo-gu");

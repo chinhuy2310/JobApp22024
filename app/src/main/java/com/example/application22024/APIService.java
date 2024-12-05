@@ -11,6 +11,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -28,13 +29,25 @@ public interface APIService {
     @GET("companies/{companyId}/jobs")
     Call<List<Job>> getJobsForCompany(@Path("companyId") int companyId);
     @GET("api/companyjobs")
-    Call<List<CompanyJobItem>> getCompanyJobs();
+    Call<List<CompanyJobItem>> getCompanyJobs(@Query("userId") int userId);
+    @POST("/api/saved-job")
+    Call<Void> updateBookmarkStatus(
+            @Query("user_id") int userId,
+            @Query("job_id") int jobId);
+
+
+
     @GET("searchCompanyJobs")
     Call<List<CompanyJobItem>> searchCompanyJobs(
             @Query("keyword") String keyword,
-            @Query("location") String location
+            @Query("location") String location,
+            @Query("user_id") int userId
     );
+    @DELETE("/api/deleteJob/{job_id}")
+    Call<Void> deleteJobDetails(@Path("job_id") int jobId);
 
+    @DELETE("deleteCompany/{companyId}")
+    Call<Void> deleteCompany(@Path("companyId") int companyId);
     @Multipart
     @POST("submit_registration")
     Call<ResponseBody> submitRegistration(
