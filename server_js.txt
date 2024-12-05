@@ -91,7 +91,6 @@ app.post('/signup', (req, res) => {
   });
 });
   
-
   // Đăng nhập người dùng
 app.post('/login', (req, res) => {
     const { account, password, userType } = req.body;
@@ -132,6 +131,7 @@ app.post('/login', (req, res) => {
     });
   });
 
+// lấy dữ liệu company của người đăng nhập
 app.get('/companies/:userId', (req, res) => {
     const userId = req.params.userId; // Lấy employer_id từ query string
     if (!userId) {
@@ -169,6 +169,7 @@ app.get('/companies/:userId', (req, res) => {
     });
 });
 
+// lấy dữ liệu các công việc thuộc company
 app.get('/companies/:companyId/jobs', (req, res) => {
   const companyId = req.params.companyId;
   
@@ -194,29 +195,42 @@ app.get('/companies/:companyId/jobs', (req, res) => {
 
 // lấy toàn bộ công việc cho employee
 app.get('/api/companyjobs', (req, res) => {
+  // Lấy user_id từ query string (người dùng sẽ gửi qua URL)
+  const userId = req.query.userId;
+
+  // Kiểm tra nếu user_id không được gửi
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+
+  // Truy vấn SQL với user_id
   const query = `
     SELECT 
       c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image, 
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time, 
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod, 
-      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate    
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
+      CASE WHEN sj.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_saved
     FROM 
       company c
     JOIN 
       jobdetails j ON c.company_id = j.company_id
+    LEFT JOIN 
+      saved_jobs sj ON j.job_id = sj.job_id AND sj.user_id = ?;
   `;
 
-  db.query(query, (err, results) => {
+  // Thực thi truy vấn với user_id
+  db.query(query, [userId], (err, results) => {
     if (err) {
-      res.status(500).json({ error: 'Database error' });
-      return;
+      return res.status(500).json({ error: 'Database error' });
     }
-    res.json(results);
+    res.json(results);  // Trả kết quả về phía client (Android)
   });
 });
 
+// lấy dữ liệu theo tùy chọn tìm kiếm 
 app.get('/searchCompanyJobs', (req, res) => {
-  const { keyword, location } = req.query; // Lấy keyword và location từ query parameters
+  const { keyword, location, user_id } = req.query; // Lấy thêm user_id từ query parameters
 
   // Tạo điều kiện tìm kiếm động
   let conditions = [];
@@ -240,16 +254,22 @@ app.get('/searchCompanyJobs', (req, res) => {
       c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image, 
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time, 
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod, 
-      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate    
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
+      CASE 
+        WHEN s.job_id IS NOT NULL THEN 1
+        ELSE 0
+      END AS is_saved
     FROM 
       company c
     JOIN 
       jobdetails j ON c.company_id = j.company_id
+    LEFT JOIN 
+      saved_jobs s ON j.job_id = s.job_id AND s.user_id = ? 
     ${whereClause}
   `;
 
   // Tạo mảng giá trị cho tham số động
-  const params = [];
+  const params = [user_id]; // Thêm user_id vào danh sách tham số
   if (keyword) {
     const keywordPattern = `%${keyword}%`;
     params.push(keywordPattern, keywordPattern, keywordPattern); // Ba lần cho các cột liên quan
@@ -269,7 +289,130 @@ app.get('/searchCompanyJobs', (req, res) => {
   });
 });
 
-// API để lưu dữ liệu vào `company` và `jobdetails`
+app.post('/api/saved-job', (req, res) => {
+  const { user_id, job_id } = req.query;
+
+  // Kiểm tra xem bài viết đã lưu chưa
+  const checkQuery = 'SELECT * FROM saved_jobs WHERE user_id = ? AND job_id = ?';
+
+  db.query(checkQuery, [user_id, job_id], (err, result) => {
+    if (err) {
+      console.error("Database query error: ", err);  // Log chi tiết lỗi
+      return res.status(500).json({ error: 'Database query error', details: err });
+    }
+
+    if (result.length > 0) {  
+      // Nếu bài viết đã lưu, xóa nó khỏi cơ sở dữ liệu
+      const deleteQuery = 'DELETE FROM saved_jobs WHERE user_id = ? AND job_id = ?';
+      
+      db.query(deleteQuery, [user_id, job_id], (err, deleteResult) => {
+        if (err) {
+          console.error("Error deleting saved job: ", err);  // Log chi tiết lỗi
+          return res.status(500).json({ error: 'Error deleting saved job', details: err });
+        }
+        res.json({ message: 'Job removed from saved jobs' });
+      });
+    } else {
+      // Nếu bài viết chưa lưu, thêm nó vào cơ sở dữ liệu
+      const insertQuery = 'INSERT INTO saved_jobs (user_id, job_id) VALUES (?, ?)';
+      
+      db.query(insertQuery, [user_id, job_id], (err, insertResult) => {
+        if (err) {
+          console.error("Error inserting saved job: ", err);  // Log chi tiết lỗi
+          return res.status(500).json({ error: 'Error inserting saved job', details: err });
+        }
+        res.json({ message: 'Job added to saved jobs' });
+      });
+    }
+  });
+});
+
+
+// xóa bài đăng tuyển
+app.delete('/api/deleteJob/:job_id', (req, res) => {
+  const job_id = req.params.job_id;
+  console.log("delete job");
+  // Câu lệnh SQL để xóa dữ liệu trong bảng jobdetails
+  const sql = 'DELETE FROM jobdetails WHERE job_id = ?';
+  db.query(sql, [job_id], (err, result) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ message: 'Error deleting job details.' });
+      }
+
+      // Kiểm tra xem có bản ghi nào bị xóa không
+      if (result.affectedRows > 0) {
+          res.status(200).json({ message: 'Job details deleted successfully.' });
+      } else {
+          res.status(404).json({ message: 'Job details not found.' });
+      }
+  });
+});
+
+//xóa company
+app.delete('/deleteCompany/:companyId', (req, res) => {
+  const companyId = req.params.companyId;
+
+  // Bước 1: Xóa tất cả các công việc (jobs) liên quan đến công ty
+  const deleteJobsQuery = 'DELETE FROM jobdetails WHERE company_id = ?';
+
+  db.query(deleteJobsQuery, [companyId], (err, jobResult) => {
+    if (err) {
+      console.error("Error deleting jobs: ", err);
+      return res.status(500).send({ message: "Error deleting jobs" });
+    }
+
+    console.log(`${jobResult.affectedRows} jobs deleted.`);
+
+    // Bước 2: Lấy thông tin ảnh của công ty từ cơ sở dữ liệu
+    db.query('SELECT company_image FROM company WHERE company_id = ?', [companyId], (err, result) => {
+      if (err) {
+        console.error("Error fetching company image: ", err);
+        return res.status(500).send({ message: "Error fetching company image" });
+      }
+
+      const company = result[0];
+      const companyImagePath = company ? company.company_image : null;
+
+      // Bước 3: Xóa ảnh khỏi thư mục 'uploads' nếu có ảnh
+      if (companyImagePath) {
+        const fs = require('fs');
+        const path = require('path');
+        const fullImagePath = path.join(__dirname, companyImagePath);  // Đường dẫn đầy đủ tới ảnh
+
+        fs.exists(fullImagePath, (exists) => {
+          if (exists) {
+            fs.unlink(fullImagePath, (err) => {
+              if (err) {
+                console.error("Error deleting image: ", err);
+                return res.status(500).send({ message: "Error deleting company image" });
+              }
+              console.log("Image deleted successfully.");
+            });
+          }
+        });
+      }
+
+      // Bước 4: Xóa công ty khỏi cơ sở dữ liệu
+      const deleteCompanyQuery = 'DELETE FROM company WHERE company_id = ?';
+
+      db.query(deleteCompanyQuery, [companyId], (err, result) => {
+        if (err) {
+          console.error("Error deleting company: ", err);
+          return res.status(500).send({ message: "Error deleting company" });
+        }
+
+        if (result.affectedRows > 0) {
+          res.status(200).send({ message: 'Company, its jobs, and image deleted successfully.' });
+        } else {
+          res.status(404).send({ message: 'Company not found.' });
+        }
+      });
+    });
+  });
+});
+
+// API để lưu dữ liệu vào `company` và `jobdetails` khi sửa hoặc thêm bài tuyển nhân sự
 app.post("/submit_registration", upload.single("company_image"), (req, res) => {
   const {
     employer_id,
@@ -293,7 +436,6 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
     WorkDays,
     WorkPeriod,
     can_negotiable_days,
-    WorkLocation,
     Details,
     RecruitmentEnd,
   } = req.body;
@@ -331,9 +473,15 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
           const fullOldImagePath = path.join(__dirname, oldImagePath);
           
           // Xóa ảnh cũ nếu tồn tại
-          fs.unlink(fullOldImagePath, (err) => {
-            if (err) {
-              console.error("Error deleting old image: ", err);
+          fs.exists(fullOldImagePath,(exists) => {
+            if (exists) {
+              fs.unlink(fullOldImagePath, (err) => {
+                if (err) {
+                  console.error("Error deleting image: ", err);
+                  return res.status(500).send({ message: "Error deleting company image" });
+                }
+                console.log("Image deleted successfully.");
+              });
             }
           });
         }
@@ -411,7 +559,7 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
         SET Title = ?, Salary = ?, SalaryType = ?, WorkHoursStart = ?, 
             WorkHoursEnd = ?, can_negotiable_time = ?, RecruitmentGender = ?, 
             RecruitmentCount = ?, WorkType = ?, WorkField = ?, WorkDays = ?, 
-            WorkPeriod = ?, can_negotiable_days = ?, WorkLocation = ?, 
+            WorkPeriod = ?, can_negotiable_days = ?,  
             Details = ?, RecruitmentEnd = ?
         WHERE job_id = ? AND company_id = ?`;
 
@@ -431,7 +579,6 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
           WorkDays,
           WorkPeriod,
           can_negotiable_days,
-          WorkLocation,
           Details,
           RecruitmentEnd,
           job_id,
@@ -450,8 +597,8 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
       const insertJobQuery = `
         INSERT INTO jobdetails (company_id, Title, Salary, SalaryType, WorkHoursStart, WorkHoursEnd, 
             can_negotiable_time, RecruitmentGender, RecruitmentCount, WorkType, WorkField, WorkDays, 
-            WorkPeriod, can_negotiable_days, WorkLocation, Details, RecruitmentEnd)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            WorkPeriod, can_negotiable_days, Details, RecruitmentEnd)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         insertJobQuery,
@@ -470,7 +617,6 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
           WorkDays,
           WorkPeriod,
           can_negotiable_days,
-          WorkLocation,
           Details,
           RecruitmentEnd
         ],
@@ -505,7 +651,6 @@ function handleJobData(req, company_id, res) {
       WorkDays: req.body.WorkDays,
       WorkPeriod: req.body.WorkPeriod,
       can_negotiable_days: req.body.can_negotiable_days,  
-      WorkLocation: req.body.WorkLocation,
       Details: req.body.Details,
       RecruitmentEnd: req.body.RecruitmentEnd
   };
@@ -534,7 +679,7 @@ function handleJobData(req, company_id, res) {
 }
 
 
-  app.get('/user', (req, res) => {
+app.get('/user', (req, res) => {
     const query = 'SELECT * FROM user';
     db.query(query, (err, results) => {
       if (err) {
@@ -543,7 +688,7 @@ function handleJobData(req, company_id, res) {
       }
       res.status(200).json( results );
     });
-  });
+});
   
 
 // Khởi động server

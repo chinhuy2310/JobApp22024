@@ -75,3 +75,15 @@ CREATE TABLE `profile` (
   KEY `employee_id` (`employee_id`),
   CONSTRAINT `profile_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+CREATE TABLE `saved_jobs` (
+  `saved_job_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `job_id` int NOT NULL,
+  `saved_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`saved_job_id`),
+  KEY `user_id` (`user_id`),
+  KEY `job_id` (`job_id`),
+  CONSTRAINT `saved_jobs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `saved_jobs_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `jobdetails` (`job_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
