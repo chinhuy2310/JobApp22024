@@ -22,20 +22,30 @@ import retrofit2.http.Query;
 public interface APIService {
     @POST("login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
+
     @POST("signup")
     Call<Void> signup(@Body SignupRequest signupRequest);
+
     @GET("companies/{userId}")
     Call<List<Company>> getCompanies(@Path("userId") int userId);
+
     @GET("companies/{companyId}/jobs")
     Call<List<Job>> getJobsForCompany(@Path("companyId") int companyId);
+
     @GET("api/companyjobs")
     Call<List<CompanyJobItem>> getCompanyJobs(@Query("userId") int userId);
+
     @POST("/api/saved-job")
     Call<Void> updateBookmarkStatus(
             @Query("user_id") int userId,
             @Query("job_id") int jobId);
 
+    @POST("api/recently-viewed")
+    Call<Void> saveRecentlyViewed(@Query("user_id") int userId,
+                                  @Query("job_id") int jobId);
 
+    @GET("api/get-recently-viewed")
+    Call<List<CompanyJobItem>> getRecentlyViewed(@Query("userId") int userId);
 
     @GET("searchCompanyJobs")
     Call<List<CompanyJobItem>> searchCompanyJobs(
@@ -43,11 +53,13 @@ public interface APIService {
             @Query("location") String location,
             @Query("user_id") int userId
     );
+
     @DELETE("/api/deleteJob/{job_id}")
     Call<Void> deleteJobDetails(@Path("job_id") int jobId);
 
     @DELETE("deleteCompany/{companyId}")
     Call<Void> deleteCompany(@Path("companyId") int companyId);
+
     @Multipart
     @POST("submit_registration")
     Call<ResponseBody> submitRegistration(
@@ -108,9 +120,11 @@ class LoginResponse {
     public String getMessage() {
         return message;
     }
+
     public int getUserId() {
         return user_id;
     }
+
     public String getUser_type() {
         return user_type;
     }

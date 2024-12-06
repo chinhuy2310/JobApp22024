@@ -2,6 +2,7 @@ package com.example.application22024.employee;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.example.application22024.R;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.Page1AndSearchAdapter;
+import com.example.application22024.employer.EmployerMain;
+import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import retrofit2.Response;
 
 public class Page1 extends Fragment {
 
-    private RecyclerView recyclerView,recyclerView2;
+    private RecyclerView recyclerView, recyclerView2;
     private Page1AndSearchAdapter adapter;
     private LinearLayout selectLocation;
     private List<CompanyJobItem> companyJobItems = new ArrayList<>();
@@ -63,8 +66,8 @@ public class Page1 extends Fragment {
         recyclerView2.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         loadCompanyJobData();
-
-        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,0);
+        getRecentlyViewed();
+        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems, 0);
 
         recyclerView.setAdapter(adapter);
         recyclerView2.setAdapter(adapter);
@@ -91,8 +94,31 @@ public class Page1 extends Fragment {
             public void onResponse(Call<List<CompanyJobItem>> call, Response<List<CompanyJobItem>> response) {
                 if (response.isSuccessful()) {
                     companyJobItems = response.body();
-                    adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,0);
+                    adapter = new Page1AndSearchAdapter(getContext(), companyJobItems, 0);
                     recyclerView.setAdapter(adapter);
+                } else {
+                    Toast.makeText(getActivity(), "Error loading data", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CompanyJobItem>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getRecentlyViewed() {
+        apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        int userId = SharedPrefManager.getInstance(getContext()).getUserId();
+        Call<List<CompanyJobItem>> call = apiService.getRecentlyViewed(userId);
+
+        call.enqueue(new Callback<List<CompanyJobItem>>() {
+            @Override
+            public void onResponse(Call<List<CompanyJobItem>> call, Response<List<CompanyJobItem>> response) {
+                if (response.isSuccessful()) {
+                    companyJobItems = response.body();
+                    adapter = new Page1AndSearchAdapter(getContext(), companyJobItems, 0);
                     recyclerView2.setAdapter(adapter);
                 } else {
                     Toast.makeText(getActivity(), "Error loading data", Toast.LENGTH_SHORT).show();
@@ -144,5 +170,11 @@ public class Page1 extends Fragment {
             String selectedLocation = data.getStringExtra("selected_location");
             locationTextView.setText("Vị trí: " + selectedLocation);
         }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Gọi phương thức mỗi khi fragment được mở lại
+        getRecentlyViewed();
     }
 }

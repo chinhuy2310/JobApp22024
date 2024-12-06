@@ -7,8 +7,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -54,7 +52,7 @@ public class EmployeeMain extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(4);
 
-        int[] tabIcons = {R.drawable.ic_home, R.drawable.ic_taikhoan, R.drawable.ic_bookmark, R.drawable.ic_menu};
+        int[] tabIcons = {R.drawable.ic_home, R.drawable.ic_search, R.drawable.ic_bookmark, R.drawable.ic_menu};
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             tab.setIcon(tabIcons[position]);
         }).attach();
@@ -82,15 +80,15 @@ public class EmployeeMain extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager2.SCROLL_STATE_DRAGGING && viewPager.getCurrentItem() == 1) {
                     Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f1");
-                    if (currentFragment instanceof Page2) {
-                        Page2 page2Fragment = (Page2) currentFragment;
+                    if (currentFragment instanceof Page3) {
+                        Page3 page2Fragment = (Page3) currentFragment;
                         if (page2Fragment.isEdited()) {
                             isSwipingFromPage2 = true;
                         }
                     }
                 } else if (state == ViewPager2.SCROLL_STATE_IDLE && isSwipingFromPage2) {
                     isSwipingFromPage2 = false;
-                    showSaveAlertDialog((Page2) getSupportFragmentManager().findFragmentByTag("f1"), viewPager.getCurrentItem());
+                    showSaveAlertDialog((Page3) getSupportFragmentManager().findFragmentByTag("f1"), viewPager.getCurrentItem());
                 }
             }
         });
@@ -99,10 +97,10 @@ public class EmployeeMain extends AppCompatActivity {
     // kiểm tra thay đổi của page2 khi chuyển trang
     private void checkForUnsavedChangesAndSwitch(int newPosition) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
-        if (currentFragment instanceof Page2) {
-            Page2 page2Fragment = (Page2) currentFragment;
-            if (page2Fragment.isEdited()) {
-                showSaveAlertDialog(page2Fragment, newPosition);
+        if (currentFragment instanceof Page3) {
+            Page3 page3Fragment = (Page3) currentFragment;
+            if (page3Fragment.isEdited()) {
+                showSaveAlertDialog(page3Fragment, newPosition);
             } else {
                 viewPager.setCurrentItem(newPosition, true);
             }
@@ -112,12 +110,12 @@ public class EmployeeMain extends AppCompatActivity {
     }
 
     // hiển thị thông báo xác nhận lưu thông tin đã thay đổi khi chuyển trang
-    private void showSaveAlertDialog(Page2 page2Fragment, int newPosition) {
+    private void showSaveAlertDialog(Page3 page3Fragment, int newPosition) {
         new AlertDialog.Builder(this)
                 .setTitle("Save?")
                 .setMessage("You have unsaved changes. Do you want to save before switching pages?")
                 .setPositiveButton("save", (dialog, which) -> {
-                    page2Fragment.saveChanges();
+                    page3Fragment.saveChanges();
                     viewPager.setCurrentItem(newPosition, true);
                 })
                 .setNegativeButton("don't save", (dialog, which) -> {

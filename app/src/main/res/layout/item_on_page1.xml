@@ -1,12 +1,14 @@
 <!-- layout_post.xml -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_rounded_small"
-    android:orientation="vertical"
     android:layout_margin="5dp"
+    android:background="@drawable/border_rounded_small"
+    android:gravity="center_vertical"
+    android:minHeight="180dp"
+    android:orientation="vertical"
     android:padding="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +18,7 @@
             android:id="@+id/companyLogo"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:scaleType="centerCrop"
-            />
+            android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -29,9 +30,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="2dp"
-                android:text="Job name"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Job name"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -42,6 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/jobTitle"
                 android:text="company name"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
 
@@ -60,83 +63,93 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:gravity="center"
         android:orientation="horizontal">
+
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_location2"/>
+            android:src="@drawable/ic_location2" />
+
         <TextView
             android:id="@+id/workLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="sadasdasdasd"/>
+            android:text="address" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:paddingHorizontal="5dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingHorizontal="5dp">
+
         <TextView
             android:id="@+id/workType"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="5dp"
-            android:gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/custom_border"
+            android:gravity="center"
             android:text="Full-time"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
+
         <TextView
             android:id="@+id/WorkField"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="5dp"
-            android:gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/custom_border"
+            android:gravity="center"
             android:text="Restaurant"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
+
         <TextView
             android:id="@+id/period"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_margin="5dp"
-            android:gravity="center"
+            android:layout_weight="1"
             android:background="@drawable/custom_border"
+            android:gravity="center"
             android:text="1 year"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_margin="5dp"
         android:layout_marginHorizontal="30dp"
-        android:background="#808080"
-        android:layout_margin="5dp"></LinearLayout>
+        android:background="#808080"></LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_margin="2dp"
         android:layout_marginHorizontal="15dp"
-        android:layout_margin="2dp">
+        android:gravity="center">
+
         <TextView
             android:id="@+id/jobSalary"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="$$$$$"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$$$$$" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="2dp"
-            android:text="/"/>
+            android:text="/" />
+
         <TextView
             android:id="@+id/salaryType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="time"/>
+            android:text="time" />
 
     </LinearLayout>
 

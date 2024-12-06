@@ -228,7 +228,93 @@ app.get('/api/companyjobs', (req, res) => {
   });
 });
 
-// lấy dữ liệu theo tùy chọn tìm kiếm 
+// lấy công việc đề xuất
+app.get('/api/getsuggessjobs', (req, res) => {
+  // Lấy user_id từ query string (người dùng sẽ gửi qua URL)
+  const userId = req.query.userId;
+
+  // Kiểm tra nếu user_id không được gửi
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+
+  // Truy vấn để lấy thông tin người dùng từ bảng profile
+  const profileQuery = `
+    SELECT * FROM profile WHERE employee_id = ?;
+  `;
+
+  // Lấy thông tin profile người dùng
+  db.query(profileQuery, [userId], (err, profileResults) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    if (profileResults.length === 0) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    const profile = profileResults[0];
+
+    // Truy vấn tìm kiếm công việc dựa trên thông tin profile
+    const jobQuery = `
+      SELECT
+        c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+        j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
+        j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
+        j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
+        CASE WHEN sj.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_saved,
+        -- Tính toán điểm phù hợp dựa trên các điều kiện
+        (
+          CASE WHEN j.RecruitmentGender = ? THEN 1 ELSE 0 END +
+          CASE WHEN j.Salary BETWEEN ? AND ? THEN 1 ELSE 0 END +
+          CASE WHEN j.SalaryType = ? THEN 1 ELSE 0 END +
+          CASE WHEN j.WorkType = ? THEN 1 ELSE 0 END +
+          CASE WHEN j.WorkLocation = ? THEN 1 ELSE 0 END
+        ) AS MatchScore
+      FROM
+        company c
+      JOIN
+        jobdetails j ON c.company_id = j.company_id
+      LEFT JOIN
+        saved_jobs sj ON j.job_id = sj.job_id AND sj.user_id = ?
+      WHERE
+        -- Điều kiện lọc công việc dựa trên thông tin profile
+        (j.RecruitmentGender = ? OR j.RecruitmentGender = 'Any')
+        AND j.Salary BETWEEN ? AND ?
+        AND j.SalaryType = ?
+        AND j.WorkType = ?
+        AND j.WorkLocation = ?
+      ORDER BY
+        MatchScore DESC -- Sắp xếp theo mức độ phù hợp
+      LIMIT 10; -- Lấy 10 công việc phù hợp nhất
+    `;
+
+    // Lấy các thông tin từ profile để thay thế vào truy vấn
+    const { gender, expected_salary, salary_type, work_type, preferred_work_location } = profile;
+
+    // Thực thi truy vấn lấy công việc
+    db.query(jobQuery, [
+      gender,
+      expected_salary - 10000, expected_salary + 10000,  // Lương với một phạm vi (±10k)
+      salary_type,
+      work_type,
+      preferred_work_location,
+      userId,
+      gender,
+      expected_salary - 10000, expected_salary + 10000,
+      salary_type,
+      work_type,
+      preferred_work_location
+    ], (err, jobResults) => {
+      if (err) {
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.json(jobResults); // Trả kết quả công việc về client
+    });
+  });
+});
+
+// lấy dữ liệu theo tùy chọn tìm kiếm
 app.get('/searchCompanyJobs', (req, res) => {
   const { keyword, location, user_id } = req.query; // Lấy thêm user_id từ query parameters
 
@@ -236,8 +322,8 @@ app.get('/searchCompanyJobs', (req, res) => {
   let conditions = [];
   if (keyword) {
     conditions.push(`
-      (j.Title LIKE ? OR 
-       j.Details LIKE ? OR 
+      (j.Title LIKE ? OR
+       j.Details LIKE ? OR
        c.company_name LIKE ?)
     `);
   }
@@ -250,21 +336,21 @@ app.get('/searchCompanyJobs', (req, res) => {
 
   // Truy vấn SQL với điều kiện tìm kiếm
   const query = `
-    SELECT 
-      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image, 
-      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time, 
-      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod, 
+    SELECT
+      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
+      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
       j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
-      CASE 
+      CASE
         WHEN s.job_id IS NOT NULL THEN 1
         ELSE 0
       END AS is_saved
-    FROM 
+    FROM
       company c
-    JOIN 
+    JOIN
       jobdetails j ON c.company_id = j.company_id
-    LEFT JOIN 
-      saved_jobs s ON j.job_id = s.job_id AND s.user_id = ? 
+    LEFT JOIN
+      saved_jobs s ON j.job_id = s.job_id AND s.user_id = ?
     ${whereClause}
   `;
 
@@ -289,6 +375,7 @@ app.get('/searchCompanyJobs', (req, res) => {
   });
 });
 
+//lưu bài viết employee đánh dấu
 app.post('/api/saved-job', (req, res) => {
   const { user_id, job_id } = req.query;
 
@@ -301,10 +388,10 @@ app.post('/api/saved-job', (req, res) => {
       return res.status(500).json({ error: 'Database query error', details: err });
     }
 
-    if (result.length > 0) {  
+    if (result.length > 0) {
       // Nếu bài viết đã lưu, xóa nó khỏi cơ sở dữ liệu
       const deleteQuery = 'DELETE FROM saved_jobs WHERE user_id = ? AND job_id = ?';
-      
+
       db.query(deleteQuery, [user_id, job_id], (err, deleteResult) => {
         if (err) {
           console.error("Error deleting saved job: ", err);  // Log chi tiết lỗi
@@ -315,7 +402,7 @@ app.post('/api/saved-job', (req, res) => {
     } else {
       // Nếu bài viết chưa lưu, thêm nó vào cơ sở dữ liệu
       const insertQuery = 'INSERT INTO saved_jobs (user_id, job_id) VALUES (?, ?)';
-      
+
       db.query(insertQuery, [user_id, job_id], (err, insertResult) => {
         if (err) {
           console.error("Error inserting saved job: ", err);  // Log chi tiết lỗi
@@ -327,6 +414,68 @@ app.post('/api/saved-job', (req, res) => {
   });
 });
 
+
+// Endpoint lưu "Đã xem gần đây"
+app.post("/api/recently-viewed", (req, res) => {
+  const { user_id, job_id } = req.query;
+
+  if (!user_id || !job_id) {
+      return res.status(400).json({ error: "user_id and job_id are required" });
+  }
+
+  const query = `
+      INSERT INTO recently_viewed (user_id, job_id, viewed_at)
+      VALUES (?, ?, NOW())
+      ON DUPLICATE KEY UPDATE viewed_at = NOW();
+  `;
+
+  db.query(query, [user_id, job_id], (err, results) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Database error" });
+      }
+      res.status(200).json({ message: "Recently viewed saved successfully" });
+  });
+});
+
+// lấy mục xem gần đây
+app.get('/api/get-recently-viewed', (req, res) => {
+  const userId = req.query.userId;
+
+  // Kiểm tra nếu user_id không được gửi
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+
+  // Truy vấn SQL
+  const query = `
+    SELECT
+      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
+      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
+      rv.viewed_at AS recently_viewed_at
+    FROM
+      recently_viewed rv
+    JOIN
+      jobdetails j ON rv.job_id = j.job_id
+    JOIN
+      company c ON j.company_id = c.company_id
+    WHERE
+      rv.user_id = ?
+    ORDER BY
+      rv.viewed_at DESC;  -- Sắp xếp theo thời gian đã xem gần đây nhất
+  `;
+
+  // Thực thi truy vấn
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+});
 
 // xóa bài đăng tuyển
 app.delete('/api/deleteJob/:job_id', (req, res) => {

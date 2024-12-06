@@ -1,273 +1,214 @@
 package com.example.application22024.employee;
 
-import android.graphics.Color;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.NumberPicker;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.application22024.APIService;
 import com.example.application22024.R;
+import com.example.application22024.RegionDataManager;
+import com.example.application22024.RetrofitClientInstance;
+import com.example.application22024.SharedPrefManager;
+import com.example.application22024.adapter.Page1AndSearchAdapter;
+import com.example.application22024.adapter.LeftAdapter;
+import com.example.application22024.adapter.RightAdapter;
+import com.example.application22024.model.CompanyJobItem;
 
-import java.util.Calendar;
-import java.util.Locale;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Page2 extends Fragment {
-    private EditText editTextDate, editbirthday, editText, editText1, editText2, editText3;
-    private Calendar calendar;
-    private TextView educationStatus, levelOfEducation;
-    private boolean isEdited = false;
-    private int selectedGenderPosition = -1; // Vị trí ô giới tính được chọn
-    private int initialGenderPosition = -1; // Lưu trạng thái giới tính ban đầu
 
-    @Override
+    private TextView selectedLocationText, noResultsTextView;
+    private EditText searchEditText;
+    private ImageView searchButton;
+    private RecyclerView recyclerView;
+    private Page1AndSearchAdapter adapter;
+    private List<CompanyJobItem> companyJobItems = new ArrayList<>();
+    private APIService apiService;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page2, container, false);
+        view.findViewById(R.id.selectLocation).setOnClickListener(v -> showCustomDialog());
 
-        setupDatePicker(view);
+        selectedLocationText = view.findViewById(R.id.selectedLocationTextView);
+        searchEditText = view.findViewById(R.id.searchEditText);
+        noResultsTextView = view.findViewById(R.id.noResultsTextView);
+        searchButton = view.findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(v -> {
+            String keyword = searchEditText.getText().toString().trim();
+            String locationText = selectedLocationText.getText().toString().trim();
+            String[] locationParts = locationText.split(" ");
+            String location;
+            if (locationParts.length > 1 && locationParts[1].equals("All")) {
+                location = locationParts[0];  // Nếu phần tử thứ 2 là "All", chỉ lấy phần tử đầu tiên
+            } else if (locationText.equals("All")) {
+                location = "";  // Nếu chỉ có "All", đặt location là rỗng
+            } else {
+                location = locationText;  // Nếu không phải "All", sử dụng chuỗi gốc
+            }
+            hideKeyboard();
+            performSearch(keyword, location);
+        });
 
-//        textView2 = view.findViewById(R.id.educationStatus);
-//        textView2.setText("Option1");
-//        textView2.setOnClickListener(v -> {
-//            // Dữ liệu để hiển thị trong dialog
-//            String[] items = {"Option 1", "Option 2", "Option 3"};
-//
-//            // Tạo AlertDialog
-//            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-////            builder.setTitle("Chọn một tùy chọn");
-//            builder.setItems(items, (dialog, which) -> {
-//                // Cập nhật TextView khi người dùng chọn một mục
-//                textView2.setText(items[which]);
-//            });
-//
-//            // Hiển thị dialog
-//            builder.show();
-//        });
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //1
-        educationStatus = view.findViewById(R.id.educationStatus);
-        levelOfEducation = view.findViewById(R.id.levelOfEducation);
-        //2
-        educationStatus.setText("Option 2");
-        levelOfEducation.setText("Option 1");
-        //3
-        String previousEducationStatus = educationStatus.getText().toString();
-        String previousLevelOfEducation = levelOfEducation.getText().toString();
-        //4
-        educationStatus.setOnClickListener(v -> showBottomSheetDialog1(previousEducationStatus));
-        levelOfEducation.setOnClickListener(v -> showBottomSheetDialog2(previousLevelOfEducation));
+        loadCompanyJobData();
 
-
-        editbirthday = view.findViewById(R.id.editbirthday);
-        // Thêm TextWatcher cho các EditText
-        addTextWatcher(editbirthday);
-
-
-        setupGenderClick(view, R.id.male, 0);
-        setupGenderClick(view, R.id.female, 1);
-        initialGenderPosition = selectedGenderPosition; // Ghi lại trạng thái ban đầu
+        // Cập nhật RecyclerView với adapter
+        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
 
+    private void performSearch(String keyword, String location) {
+        apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        int userId = SharedPrefManager.getInstance(getContext()).getUserId();
+        Call<List<CompanyJobItem>> call = apiService.searchCompanyJobs(keyword, location,userId);
 
-//----------------------------------------------------------------------------------------
-
-
-    private void showBottomSheetDialog1(String previousValue) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"재학", "졸업", " ....."}; // Các tùy chọn
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String newValue = items[position];
-            educationStatus.setText(newValue);
-            if (!newValue.equals(previousValue)) {
-                isEdited = true; // Đánh dấu là đã thay đổi
-            }
-            bottomSheetDialog.dismiss();
-        });
-
-        bottomSheetDialog.show();
-    }
-
-    private void showBottomSheetDialog2(String previousValue) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"고등", "대학", "1학년", " ....."};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String newValue = items[position];
-            levelOfEducation.setText(newValue);
-            if (!newValue.equals(previousValue)) {
-                isEdited = true; // Đánh dấu là đã thay đổi
-            }
-            bottomSheetDialog.dismiss();
-        });
-
-        bottomSheetDialog.show();
-    }
-
-    public void setupDatePicker(View view) {
-        editTextDate = view.findViewById(R.id.editbirthday);
-        calendar = Calendar.getInstance();
-        // Vô hiệu hóa chế độ nhập liệu cho EditText
-        editTextDate.setFocusable(false);
-        // Xử lý sự kiện khi nhấn vào EditText
-        editTextDate.setOnClickListener(v -> showDatePickerAlertDialog());
-
-    }
-
-    // Hiển thị DatePickerDialog
-    private void showDatePickerAlertDialog() {
-        // Khởi tạo AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.date_picker_alert_dialog, null);
-        builder.setView(dialogView);
-
-        // Tìm các NumberPicker và nút OK trong dialog layout
-        NumberPicker yearPicker = dialogView.findViewById(R.id.yearPicker);
-        NumberPicker monthPicker = dialogView.findViewById(R.id.monthPicker);
-        NumberPicker dayPicker = dialogView.findViewById(R.id.dayPicker);
-
-        // Thiết lập giá trị cho NumberPicker
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        yearPicker.setMinValue(1900);
-        yearPicker.setMaxValue(currentYear);
-        yearPicker.setValue(currentYear);
-
-        monthPicker.setMinValue(1);
-        monthPicker.setMaxValue(12);
-
-        dayPicker.setMinValue(1);
-        dayPicker.setMaxValue(31);
-
-        // Cập nhật ngày tối đa khi thay đổi năm hoặc tháng
-        yearPicker.setOnValueChangedListener((picker, oldVal, newVal) -> updateDayPickerMax(dayPicker, yearPicker.getValue(), monthPicker.getValue()));
-        monthPicker.setOnValueChangedListener((picker, oldVal, newVal) -> updateDayPickerMax(dayPicker, yearPicker.getValue(), monthPicker.getValue()));
-
-        // Tạo AlertDialog và hiển thị
-        AlertDialog alertDialog = builder.create();
-
-        // Xử lý khi nhấn nút "OK"
-        dialogView.findViewById(R.id.confirmButton).setOnClickListener(v -> {
-            int selectedYear = yearPicker.getValue();
-            int selectedMonth = monthPicker.getValue();
-            int selectedDay = dayPicker.getValue();
-
-            // Cập nhật EditText với ngày đã chọn
-            String selectedDate = String.format(Locale.getDefault(), "%04d.%02d.%02d", selectedYear, selectedMonth, selectedDay);
-            editTextDate.setText(selectedDate);
-
-            // Đóng dialog
-            alertDialog.dismiss();
-        });
-
-        alertDialog.show();
-    }
-
-    private void updateDayPickerMax(NumberPicker dayPicker, int year, int month) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1);  // Calendar tháng bắt đầu từ 0
-        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        dayPicker.setMaxValue(maxDay);
-    }
-
-
-//--------------------------------------------------------------------------------------------
-
-
-    // Phương thức thêm TextWatcher vào EditText
-    private void addTextWatcher(EditText editText) {
-        editText.addTextChangedListener(new TextWatcher() {
+        call.enqueue(new Callback<List<CompanyJobItem>>() {
             @Override
-            public void afterTextChanged(Editable s) {
-                isEdited = true; // Đánh dấu rằng có thay đổi khi EditText nào đó thay đổi
+            public void onResponse(Call<List<CompanyJobItem>> call, Response<List<CompanyJobItem>> response) {
+                if (response.isSuccessful()) {
+                    companyJobItems = response.body();
+                    if (companyJobItems != null && !companyJobItems.isEmpty()) {
+                        recyclerView.setVisibility(View.VISIBLE);
+                        noResultsTextView.setVisibility(View.GONE);
+                        adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
+                        recyclerView.setAdapter(adapter);
+                    } else {
+                        // Hiển thị thông báo không tìm thấy kết quả
+                        recyclerView.setVisibility(View.GONE);
+                        noResultsTextView.setVisibility(View.VISIBLE);
+//                        Toast.makeText(getContext(), "Không tìm thấy kết quả phù hợp", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Lỗi khi tải dữ liệu", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Không cần xử lý
+            public void onFailure(Call<List<CompanyJobItem>> call, Throwable t) {
+                Toast.makeText(getContext(), "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadCompanyJobData() {
+        apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        int userId = SharedPrefManager.getInstance(getContext()).getUserId();
+        Call<List<CompanyJobItem>> call = apiService.getCompanyJobs(userId);
+
+        call.enqueue(new Callback<List<CompanyJobItem>>() {
+            @Override
+            public void onResponse(Call<List<CompanyJobItem>> call, Response<List<CompanyJobItem>> response) {
+                if (response.isSuccessful()) {
+                    companyJobItems = response.body();
+                    adapter = new Page1AndSearchAdapter(getContext(), companyJobItems,1);
+                    recyclerView.setAdapter(adapter);
+                } else {
+                    Toast.makeText(getActivity(), "Error loading data", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Không cần xử lý
+            public void onFailure(Call<List<CompanyJobItem>> call, Throwable t) {
+                Toast.makeText(getActivity(), "Network error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // Phương thức kiểm tra xem có thay đổi gì không
-    public boolean isEdited() {
-        return isEdited;
-    }
-
-    // Phương thức lưu thay đổi
-    public void saveChanges() {
-        // Xử lý lưu dữ liệu ở đây
-        isEdited = false;  // Sau khi lưu, đánh dấu rằng không còn thay đổi nào nữa
-    }
-
-    //------------------------------------------------------------
-//chọn giới tính
-    private void setupGenderClick(View view, int itemId, int position) {
-        TextView cell = view.findViewById(itemId);
-        cell.setOnClickListener(v -> {
-            // Đặt lại màu cho ô giới tính đã chọn trước đó
-            if (selectedGenderPosition != -1) {
-                resetGenderColor(view, selectedGenderPosition);
-            }
-            // Cập nhật vị trí giới tính được chọn
-            selectedGenderPosition = position;
-            // So sánh giá trị mới với giá trị ban đầu
-            if (selectedGenderPosition != initialGenderPosition) {
-                isEdited = true;
-            }
-            // Thay đổi màu ô giới tính được chọn
-            cell.setBackgroundColor(Color.BLUE);
-            cell.setTextColor(Color.WHITE);
-        });
-    }
-
-    private void resetGenderColor(View view, int position) {
-        int itemId;
-        switch (position) {
-            case 0:
-                itemId = R.id.male;
-                break;
-            case 1:
-                itemId = R.id.female;
-                break;
-            default:
-                return;
+    private void showCustomDialog() {
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.dialog_select_location_layout);
+        dialog.setCanceledOnTouchOutside(false);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-        TextView cell = view.findViewById(itemId);
-        // Khôi phục màu nền về drawable
-        cell.setBackgroundResource(R.drawable.border_square);
-        cell.setTextColor(Color.BLACK); // Màu chữ mặc định
+        // Lấy dữ liệu từ RegionDataManager
+        HashMap<String, ArrayList<String>> regionsData = RegionDataManager.getRegionsData();
+        List<String> provinces = new ArrayList<>(regionsData.keySet());
+        List<String> areas = new ArrayList<>();
+        // RecyclerView
+        RecyclerView leftRecyclerView = dialog.findViewById(R.id.left_recycler_view);
+        RecyclerView rightRecyclerView = dialog.findViewById(R.id.right_recycler_view);
+
+        leftRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        // Adapters
+        LeftAdapter leftAdapter = new LeftAdapter(provinces, province -> {
+            areas.clear();
+            areas.addAll(regionsData.get(province));
+            rightRecyclerView.getAdapter().notifyDataSetChanged();
+            RightAdapter rightAdapter = (RightAdapter) rightRecyclerView.getAdapter();
+            rightAdapter.setSelectedPosition(0); // Đặt lại chọn mục đầu tiên
+        });
+
+        RightAdapter rightAdapter = new RightAdapter(areas);
+
+        leftRecyclerView.setAdapter(leftAdapter);
+        rightRecyclerView.setAdapter(rightAdapter);
+
+        if (!provinces.isEmpty()) {
+            // Chọn mục đầu tiên của LeftAdapter
+            leftAdapter.setSelectedPosition(0);
+            String firstProvince = provinces.get(0);
+            areas.addAll(regionsData.get(firstProvince)); // Thêm dữ liệu cho RightAdapter
+            rightAdapter.notifyDataSetChanged(); // Cập nhật RightAdapter
+            rightAdapter.setSelectedPosition(0);
+        }
+        // Xử lý khi nhấn nút "Xác nhận"
+        dialog.findViewById(R.id.confirm_button).setOnClickListener(v -> {
+            // Lấy tỉnh và khu vực đã chọn từ Adapter
+            String selectedProvince = leftAdapter.getSelectedProvince();
+            String selectedArea = rightAdapter.getSelectedArea();
+            // Cập nhật TextView trong Fragment
+            searchEditText.setText("");
+            selectedLocationText.setText(selectedProvince + " " + selectedArea);
+            if (selectedProvince.equals("All")) {
+                performSearch("", "");
+            } else if (selectedArea.equals("All")) {
+                performSearch("", selectedProvince);
+            } else {
+                performSearch("", selectedProvince + " " + selectedArea);
+            }
+            // Đóng dialog
+            dialog.dismiss();
+        });
+        dialog.findViewById(R.id.cancel_button).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        // Hiển thị dialog
+        dialog.show();
     }
-//-------------------------------------------------------------------
+
+    public void hideKeyboard() {
+        View view = requireActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
 }

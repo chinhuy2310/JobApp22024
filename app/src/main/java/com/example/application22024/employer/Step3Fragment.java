@@ -69,6 +69,7 @@ public class Step3Fragment extends Fragment {
             if (parts.length >= 2) {
                 String textView1Content = parts[0] + " " + parts[1];
                 addressEditText.setText(textView1Content);
+                viewModel.setAddress(textView1Content);
             } else {
                 addressEditText.setText(""); // Nếu không đủ phần tử, hiển thị chuỗi rỗng
             }
@@ -82,10 +83,10 @@ public class Step3Fragment extends Fragment {
                     textView2Content.append(parts[i]);
                 }
                 detailAddressEditText.setText(textView2Content.toString());
+                viewModel.setDetailAddress(textView2Content.toString());
             } else {
                 detailAddressEditText.setText(""); // Nếu không còn phần tử nào, hiển thị chuỗi rỗng
             }
-            viewModel.setAddress(fulladdress);
         }
 //        setTextChangedListener(addressEditText, viewModel::setAddress);
         setTextChangedListener(detailAddressEditText, viewModel::setDetailAddress);

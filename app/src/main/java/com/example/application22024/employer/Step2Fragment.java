@@ -111,7 +111,11 @@ public class Step2Fragment extends Fragment {
         }
         // Handle Work Arrangement
         workType.setFocusable(false);
-        workType.setOnClickListener(v -> showBottomSheetDialog(workType.getText().toString()));
+        workType.setOnClickListener(v -> showBottomSheetDialog("workType"));
+
+        workPeriod.setFocusable(false);
+        workPeriod.setOnClickListener(v -> showBottomSheetDialog("workPeriod"));
+
         recruitmentEndTime.setFocusable(false);
 
         // Lắng nghe sự thay đổi trạng thái checkbox và cập nhật vào ViewModel
@@ -123,8 +127,6 @@ public class Step2Fragment extends Fragment {
 
 //        String selectedPartOfDay1 = partsOfDay1.getSelectedItem().toString();
 //        String selectedPartOfDay2 = partsOfDay2.getSelectedItem().toString();
-
-
 //        viewModel.setPartOfDay1(selectedPartOfDay1);
 //        viewModel.setPartOfDay2(selectedPartOfDay2);
 
@@ -317,19 +319,34 @@ public class Step2Fragment extends Fragment {
     }
 
     // Show BottomSheet dialog for Work Arrangement
-    private void showBottomSheetDialog(String currentWorkArrangement) {
+    private void showBottomSheetDialog(String clickedItem) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = LayoutInflater.from(requireContext()).inflate(R.layout.bottom_sheet_layout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
         ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"알바", "정규직", "계약직", "인턴", "주말알바", "기타"}; // Options for work arrangement
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, items);
+
+        // Thay đổi danh sách dựa trên mục được nhấn
+        String[] items;
+        if ("workType".equals(clickedItem)) {
+            items = new String[]{"알바", "정규직", "계약직", "인턴", "주말알바", "기타"}; // Danh sách cho workType
+        } else {
+            items = new String[]{"하루(1일)", "1주일이하", "1주일~1개월", "1개월~3개월", "3개월~6개월","6개월~1년","1년이상"}; // Danh sách cho workPeriod
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.list_item_center, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String newValue = items[position];
-            workType.setText(newValue);
+
+            // Cập nhật TextView tương ứng
+            if ("workType".equals(clickedItem)) {
+                workType.setText(newValue);
+            } else {
+                workPeriod.setText(newValue);
+            }
+
             bottomSheetDialog.dismiss();
         });
 

@@ -87,3 +87,14 @@ CREATE TABLE `saved_jobs` (
   CONSTRAINT `saved_jobs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE,
   CONSTRAINT `saved_jobs_ibfk_2` FOREIGN KEY (`job_id`) REFERENCES `jobdetails` (`job_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+
+CREATE TABLE recently_viewed (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, job_id),
+    CONSTRAINT fk_recently_viewed_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_recently_viewed_job FOREIGN KEY (job_id) REFERENCES jobdetails (job_id) ON DELETE CASCADE
+);
