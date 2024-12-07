@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.application22024.APIService;
-import com.example.application22024.DatabaseHelper;
 import com.example.application22024.First_Activity;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
@@ -32,7 +31,7 @@ import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.CompanyAdapter;
 import com.example.application22024.model.Company;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -57,13 +56,13 @@ public class EmployerMain extends AppCompatActivity {
 
     private List<Company> companyList;
     private boolean backPressedOnce = false;
-    RegistrationViewModel viewModel;
+    DataViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_employer);
-        viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getApplication()).getDataViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
 
         // Initialize views

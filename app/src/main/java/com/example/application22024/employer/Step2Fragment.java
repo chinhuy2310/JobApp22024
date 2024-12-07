@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +26,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.SimpleDateFormat;
@@ -46,7 +44,7 @@ public class Step2Fragment extends Fragment {
     private EditText recruitmentEndTime, startTime, endTime, workType, salary, recruitmentCount, workPeriod, workDay;
     private Spinner partsOfDay1, partsOfDay2, salaryType;
     private Calendar calendar;
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     private CheckBox checkBoxOption1, checkBoxOption2, checkBoxOption3;
 
 
@@ -61,7 +59,7 @@ public class Step2Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
         // Initialize views
         initializeViews(view);

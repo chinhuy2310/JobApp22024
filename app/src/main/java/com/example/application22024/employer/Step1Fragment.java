@@ -19,12 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.model.Company;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 public class Step1Fragment extends Fragment {
 
@@ -34,7 +32,7 @@ public class Step1Fragment extends Fragment {
     private TextView nonBinary, male, female, item1, item2, item3, item4, item5, item6;
     private Button nextButton;
 
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
 
 
     @Nullable
@@ -46,7 +44,7 @@ public class Step1Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
 
         // Các trường nhập liệu

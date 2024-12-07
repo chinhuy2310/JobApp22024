@@ -5,22 +5,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.application22024.employer.EmployerMain;
+import com.example.application22024.adapter.ApplicantAdapter;
 import com.example.application22024.employer.RegistrationActivity;
+import com.example.application22024.model.Applicant;
 import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -33,22 +39,19 @@ public class JobDetails extends AppCompatActivity {
     private TextView recruitmentCountTextview, genderTextview, deadlineTextview, canNegotiableDayTextview, canNegotiableTimeTextview;
     private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview, startTime2Textview, endTime2Textview;
     private TextView detailsTextview, addressTextview, companyTextview2, contactTextview;
-    private LinearLayout viewOfEmployee, viewOfEmployer;
-    private TextView deleteTextView, editTextview;
+    private LinearLayout viewOfEmployee, viewOfEmployer, applyButton, bookmarkAndShare;
+    private RelativeLayout numberOfApplicants;
+    private TextView deleteTextView, editTextview, applyTextView, numberTextView;
+    private ImageView applyImageView, bookmarkImageView, shareImageView;
     private APIService apiService;
-    RegistrationViewModel viewModel;
+    DataViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.job_details);
-        viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getApplication()).getDataViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
-//        if (viewModel.getSelectedJob() != null) {
-//          Log.e("selectedJob", String.valueOf(viewModel.getSelectedJob().getSalary()));
-//        } else {
-//            Log.e("selectedCompany", "is null");
-//        }
 
         initViews();
         displayDetails();
@@ -63,9 +66,57 @@ public class JobDetails extends AppCompatActivity {
         if ("Employee".equals(userType)) {
             viewOfEmployee.setVisibility(View.VISIBLE); // Hiển thị cho Employee
             viewOfEmployer.setVisibility(View.GONE);
+
+            int saved = viewModel.getSelectedCompanyJobItem().getIs_saved();
+            bookmarkImageView.setImageResource(saved == 1 ? R.drawable.ic_bookmark2 : R.drawable.ic_bookmark);
+            bookmarkImageView.setOnClickListener(v -> {
+                if (saved == 0) {
+                    bookmarkImageView.setImageResource(R.drawable.ic_bookmark2);
+                    updateBookmarkStatus();
+                } else {
+                    Toast.makeText(JobDetails.this, "Already saved", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            applyButton.setOnClickListener(v -> {
+                applyJob();
+                applyImageView.setImageResource(R.drawable.ic_apply);
+                applyTextView.setText("지원했다");
+            });
         } else {
             viewOfEmployee.setVisibility(View.GONE); // Ẩn cho Employer
             viewOfEmployer.setVisibility(View.VISIBLE);
+            bookmarkAndShare.setVisibility(View.GONE);
+            if (viewModel.getSelectedJob().getNum_applicants() > 0) {
+                numberOfApplicants.setVisibility(View.VISIBLE);
+                numberOfApplicants.setOnClickListener(v -> {
+                    int jobId = viewModel.getSelectedJob().getJobId();
+                    fetchApplicantsAndShowDialog(jobId);
+                });
+
+            }
+
+
+            editTextview.setOnClickListener(v -> {
+                Intent intent = new Intent(JobDetails.this, RegistrationActivity.class);
+                startActivity(intent);
+            });
+
+            deleteTextView.setOnClickListener(v -> {
+                // Tạo AlertDialog để xác nhận việc xóa
+                new AlertDialog.Builder(JobDetails.this)
+                        .setMessage("Are you sure you want to delete?")  // Câu hỏi hiển thị trong hộp thoại
+                        .setCancelable(false)  // Không thể hủy bỏ bằng cách nhấn ngoài hộp thoại
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            // Nếu người dùng nhấn "Có", thực hiện phương thức deleteRecrutment()
+                            deleteRecrutment();
+                        })
+                        .setNegativeButton("No", (dialog, id) -> {
+                            // Nếu người dùng nhấn "Không", chỉ cần đóng hộp thoại
+                            dialog.dismiss();
+                        })
+                        .show();  // Hiển thị hộp thoại
+            });
         }
 
 
@@ -77,6 +128,7 @@ public class JobDetails extends AppCompatActivity {
     }
 
     private void initViews() {
+        bookmarkAndShare = findViewById(R.id.bookmarkAndShare);
         dateTextview = findViewById(R.id.dateTextview);
         titleTextview = findViewById(R.id.titleTextview);
         companyTextview = findViewById(R.id.companyTextview);
@@ -100,40 +152,46 @@ public class JobDetails extends AppCompatActivity {
         addressTextview = findViewById(R.id.addressTextview);
         companyTextview2 = findViewById(R.id.companyTextview2);
         contactTextview = findViewById(R.id.contactTextview);
-
+        applyTextView = findViewById(R.id.applyTextView);
+        applyImageView = findViewById(R.id.applyImageView);
+        bookmarkImageView = findViewById(R.id.bookmarkImageView);
+        numberOfApplicants = findViewById(R.id.Number_of_applicants);
+//        shareImageView = findViewById(R.id.shareImageView);
         // Các View liên quan đến chức năng hiển thị/ẩn
         viewOfEmployee = findViewById(R.id.viewOfEmployee);
+        applyButton = findViewById(R.id.applyButton);
         viewOfEmployer = findViewById(R.id.viewOfEmployer);
-
-        editTextview = findViewById(R.id.editButton);
-        editTextview.setOnClickListener(v -> {
-            Intent intent = new Intent(JobDetails.this, RegistrationActivity.class);
-            startActivity(intent);
-        });
         deleteTextView = findViewById(R.id.deleteButton);
-        deleteTextView.setOnClickListener(v -> {
-            // Tạo AlertDialog để xác nhận việc xóa
-            new AlertDialog.Builder(JobDetails.this)
-                    .setMessage("Are you sure you want to delete?")  // Câu hỏi hiển thị trong hộp thoại
-                    .setCancelable(false)  // Không thể hủy bỏ bằng cách nhấn ngoài hộp thoại
-                    .setPositiveButton("Yes", (dialog, id) -> {
-                        // Nếu người dùng nhấn "Có", thực hiện phương thức deleteRecrutment()
-                        deleteRecrutment();
-                    })
-                    .setNegativeButton("No", (dialog, id) -> {
-                        // Nếu người dùng nhấn "Không", chỉ cần đóng hộp thoại
-                        dialog.dismiss();
-                    })
-                    .show();  // Hiển thị hộp thoại
+        editTextview = findViewById(R.id.editButton);
+        numberTextView = findViewById(R.id.number);
+    }
+
+    private void applyJob() {
+        int userId = SharedPrefManager.getInstance(JobDetails.this).getUserId();
+        int jobId = viewModel.getSelectedCompanyJobItem().getJob_id();
+        Log.e("userId", String.valueOf(userId));
+        Log.e("jobId", String.valueOf(jobId));
+        Call<Void> call = apiService.applyJob(userId, jobId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+//                    Log.e("Apply", "Response code: " + response.code());
+                    Toast.makeText(JobDetails.this, "Already applied", Toast.LENGTH_SHORT).show();
+                } else
+                    Log.e("Apply", "Response code: " + response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Apply", "Network error: " + t.getMessage());
+            }
         });
     }
 
     private void deleteRecrutment() {
         int job_id = viewModel.getSelectedJob().getJobId();
-//        Log.e("job_id", String.valueOf(job_id));
-        // Gọi API xóa công việc
         Call<Void> call = apiService.deleteJobDetails(job_id);
-
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -156,13 +214,7 @@ public class JobDetails extends AppCompatActivity {
         });
     }
 
-
     private void displayDetails() {
-//        if (viewModel.getSelectedCompany() != null){
-//            Log.e("selectedCompany", viewModel.getSelectedCompany().getCompanyName());
-//        }else{
-//            Log.e("selectedCompany", "is null");
-//        }
         if (viewModel.getSelectedJob() != null) {
             Job selectedJob = viewModel.getSelectedJob();
             dateTextview.setText(selectedJob.getPostDate());
@@ -173,7 +225,6 @@ public class JobDetails extends AppCompatActivity {
             String formattedNumber = String.format("%,d", number) + " ₩";
             salaryTextview.setText(formattedNumber);
             workDayTextview.setText(selectedJob.getWorkDays());
-//            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
             if (selectedJob.getCanNegotiableDays().equals("Yes")) {
                 canNegotiableDayTextview.setVisibility(View.VISIBLE);
             } else {
@@ -199,6 +250,7 @@ public class JobDetails extends AppCompatActivity {
             addressTextview.setText(viewModel.getSelectedCompany().getAddress());
             companyTextview2.setText(viewModel.getSelectedCompany().getCompanyName());
             contactTextview.setText(viewModel.getSelectedCompany().getContact());
+            numberTextView.setText(String.valueOf(viewModel.getSelectedJob().getNum_applicants()));
         }
         if (viewModel.getSelectedCompanyJobItem() != null) {
             CompanyJobItem selectedJob = viewModel.getSelectedCompanyJobItem();
@@ -239,6 +291,46 @@ public class JobDetails extends AppCompatActivity {
         }
     }
 
+    private void fetchApplicantsAndShowDialog(int jobId) {
+        // Gọi API để lấy danh sách ứng viên
+        Call<List<Applicant>> call = apiService.getApplicants(jobId);
+
+        call.enqueue(new Callback<List<Applicant>>() {
+            @Override
+            public void onResponse(Call<List<Applicant>> call, Response<List<Applicant>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Applicant> applicants = response.body();
+
+                    // Tạo RecyclerView trong Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(JobDetails.this);
+                    View dialogView = getLayoutInflater().inflate(R.layout.dialog_applicant_list, null);
+
+                    RecyclerView recyclerView = dialogView.findViewById(R.id.recyclerViewApplicants);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(JobDetails.this));
+
+                    // Tạo Adapter cho RecyclerView
+                    ApplicantAdapter applicantAdapter = new ApplicantAdapter(JobDetails.this, applicants);
+                    recyclerView.setAdapter(applicantAdapter);
+
+                    // Thiết lập Dialog
+                    builder.setTitle("지원 자")
+                            .setView(dialogView)
+                            .setPositiveButton("Close", (dialog, which) -> dialog.dismiss())
+                            .create()
+                            .show();
+                } else {
+                    Toast.makeText(JobDetails.this, "Không có ứng viên", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Applicant>> call, Throwable t) {
+                Toast.makeText(JobDetails.this, "Lỗi mạng", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -247,6 +339,25 @@ public class JobDetails extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateBookmarkStatus() {
+        int userId = SharedPrefManager.getInstance(JobDetails.this).getUserId();
+        int jobId = viewModel.getSelectedCompanyJobItem().getJob_id();
+        Call<Void> call = apiService.updateBookmarkStatus(userId, jobId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Bookmark", "Response code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Bookmark", "Network error: " + t.getMessage());
+            }
+        });
     }
 
     private String formatTimeToHoursAndMinutes(String time) {
@@ -262,15 +373,6 @@ public class JobDetails extends AppCompatActivity {
             e.printStackTrace();
             return time;  // Nếu có lỗi, trả về thời gian ban đầu
         }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-//        String userType = getIntent().getStringExtra("userType");
-//        if (!"Employer".equals(userType)){
-//            viewModel.reset();
-//        }
     }
 
     @Override

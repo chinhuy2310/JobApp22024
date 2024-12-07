@@ -14,8 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.application22024.employee.EmployeeMain;
 import com.example.application22024.employer.EmployerMain;
-import com.example.application22024.model.User;
-import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,20 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                // Lấy thông tin từ Intent
-//                String nextActivity = getIntent().getStringExtra("userType");
-//
-//                Intent intent = null;
-//
-//                // Tạo Intent để chuyển sang Activity khác
-//                if ("Employer".equals(nextActivity)) {
-//                    intent = new Intent(LoginActivity.this, EmployerMain.class);
-//                } else if ("Employee".equals(nextActivity)) {
-//                    intent = new Intent(LoginActivity.this, EmployeeMain.class);
-//                }
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent); // Bắt đầu chuyển sang Activity khác
-//                finish();
                 Login();
             }
         });
@@ -75,9 +59,6 @@ public class LoginActivity extends AppCompatActivity {
     private void Login() {
         String account = loginAccount.getText().toString().trim();
         String password = loginPassword.getText().toString().trim();
-//        String account ="a";
-//        String password ="a";
-
         // Lấy userType từ Intent
         String expectedUserType = getIntent().getStringExtra("userType"); // "Employer" hoặc "Employee"
         Log.e("user type: ", expectedUserType);
@@ -96,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 //                        Log.e("API Response Error", "Response code: " + response.code());
                     }
                     if (response.isSuccessful() && response.body() != null) {
-                        String message = response.body().getMessage();
+//                        String message = response.body().getMessage();
                         String userType = response.body().getUser_type();
                         int userId = response.body().getUserId();
                         // Lưu userId vào SharedPreferences
@@ -127,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                     }
                 }
-
 
                 @Override
                 public void onFailure(Call<LoginResponse> call, Throwable t) {

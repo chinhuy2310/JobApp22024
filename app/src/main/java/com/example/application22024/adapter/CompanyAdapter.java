@@ -22,7 +22,7 @@ import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.employer.RegistrationActivity;
 import com.example.application22024.model.Company;
 import com.example.application22024.model.Job;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     private Context context;
     private List<Company> companyList;
     ImageView companyImageView;
-    RegistrationViewModel viewModel;
+    DataViewModel viewModel;
     APIService apiService;
 
     // Constructor
@@ -45,7 +45,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         this.context = context;
         this.companyList = companyList != null ? companyList : new ArrayList<>();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
-        viewModel = ((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
+        viewModel = ((MyApplication) context.getApplicationContext()).getDataViewModel();
 
     }
 
@@ -60,30 +60,25 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     @Override
     public void onBindViewHolder(@NonNull CompanyViewHolder holder, int position) {
 //        Log.e("AdapterDebug", "onBindViewHolder for position: " + position);
-
         Company company = companyList.get(position);
 
         holder.companyNameTextView.setText(company.getCompanyName());
         holder.cityTextView.setText(company.getAddress());
         holder.jobPositionsTextView.setText(String.valueOf(company.getJobCount()));
-
-        // Load the image using Picasso
+        holder.numberOfApplicants.setText("모든 지원자 수: "+String.valueOf(company.getTotal_applicants()));
+        // Load the image using Picasso6
         if (company.getCompanyIamge() != null) {
             String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
             String relativePath = company.getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
             Picasso.get().load(fullImageUrl).into(holder.companyImageView);
-//            Log.e("imageUrl", fullImageUrl);
         } else {
-            // Load a default image if the avatar URL is empty
             Picasso.get().load(R.drawable.ic_launcher_background).into(holder.companyImageView);
         }
-//        Log.e("RecruitmentData", "Jobs: " + company.getJobs());
         // Hiển thị hoặc ẩn danh sách bài đăng tuyển
         if (company.isExpanded()) {
             holder.jobListView.setVisibility(View.VISIBLE);
             holder.expandTextView.setText(R.string.expand_text_open);
-//            if (company.getJobs() == null || company.getJobs().isEmpty()) {
             if (company.getJobs() == null) { // Chỉ gọi API nếu jobs chưa được tải
                 // Gọi API để lấy danh sách job từ server
                 fetchJobsForCompany(company, holder);
@@ -104,7 +99,6 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
             company.setExpanded(newExpandedState);
             // Nếu công ty được mở rộng, thu gọn tất cả các công ty khác
             if (newExpandedState) {
-
                 // Duyệt qua tất cả các công ty và thu gọn các công ty khác
                 for (int i = 0; i < companyList.size(); i++) {
                     if (i != position) {
@@ -263,7 +257,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         ImageView companyImageView;
         ImageView optionsImageView;
         RecyclerView jobListView;
-
+        TextView numberOfApplicants;
         public CompanyViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -275,6 +269,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
             jobListView = itemView.findViewById(R.id.jobListView);
             noJobPostsTextView = itemView.findViewById(R.id.noJobPostsTextView);
             expandTextView = itemView.findViewById(R.id.expandTextView);
+            numberOfApplicants =itemView.findViewById(R.id.numberOfApplicants);
         }
     }
 }

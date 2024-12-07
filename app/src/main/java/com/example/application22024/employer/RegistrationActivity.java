@@ -3,7 +3,6 @@ package com.example.application22024.employer;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,7 +15,7 @@ import com.example.application22024.MyApplication;
 import com.example.application22024.R;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -36,7 +35,7 @@ import retrofit2.Response;
 
 public class RegistrationActivity extends AppCompatActivity implements Step4Fragment.OnPostButtonClickListener {
     private Toolbar toolbar;
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     APIService apiService;
 
     @Override
@@ -44,7 +43,7 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
         // Trong RegistrationActivity
-        viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getApplication()).getDataViewModel();
         if (viewModel.getSelectedCompany() == null) {
             Log.e("RegistrationActivity", "SelectedCompany is null");
         } else {

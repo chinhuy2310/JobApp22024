@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +25,14 @@ import com.example.application22024.R;
 import com.example.application22024.RegionDataManager;
 import com.example.application22024.adapter.LeftAdapter;
 import com.example.application22024.adapter.RightAdapter;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Step3Fragment extends Fragment {
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     private EditText addressEditText, detailAddressEditText, descriptionEditText;
 
     @Nullable
@@ -47,7 +45,7 @@ public class Step3Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
         addressEditText = view.findViewById(R.id.editText_address);
         detailAddressEditText = view.findViewById(R.id.editText_detail_address);

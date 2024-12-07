@@ -57,6 +57,7 @@
             android:name=".employer.EmployerMain"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
         <activity android:name=".JobDetails" />
+        <activity android:name=".employee.Profile" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MapActivity" />
     </application>

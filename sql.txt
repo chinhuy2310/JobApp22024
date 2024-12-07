@@ -50,7 +50,6 @@ CREATE TABLE `jobdetails` (
   CONSTRAINT `jobdetails_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`company_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-
 CREATE TABLE `profile` (
   `profile_id` int NOT NULL AUTO_INCREMENT,
   `employee_id` int NOT NULL,
@@ -66,15 +65,15 @@ CREATE TABLE `profile` (
   `preferred_work_location` varchar(255) DEFAULT NULL,
   `preferred_work_duration` varchar(255) DEFAULT NULL,
   `work_type` varchar(255) DEFAULT NULL,
-  `work_schedule` text,
-  `expected_salary` int DEFAULT NULL,
   `salary_type` varchar(50) DEFAULT NULL,
+  `expected_salary` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`profile_id`),
   KEY `employee_id` (`employee_id`),
   CONSTRAINT `profile_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
 
 CREATE TABLE `saved_jobs` (
   `saved_job_id` int NOT NULL AUTO_INCREMENT,
@@ -98,3 +97,14 @@ CREATE TABLE recently_viewed (
     CONSTRAINT fk_recently_viewed_user FOREIGN KEY (user_id) REFERENCES user (user_id) ON DELETE CASCADE,
     CONSTRAINT fk_recently_viewed_job FOREIGN KEY (job_id) REFERENCES jobdetails (job_id) ON DELETE CASCADE
 );
+
+CREATE TABLE applied_jobs (
+    applied_id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    job_id INT NOT NULL,
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (employee_id, job_id),
+    CONSTRAINT fk_applied_jobs_employee FOREIGN KEY (employee_id) REFERENCES user (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_applied_jobs_job FOREIGN KEY (job_id) REFERENCES jobdetails (job_id) ON DELETE CASCADE
+);
+

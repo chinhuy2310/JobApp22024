@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
@@ -26,13 +25,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.squareup.picasso.Picasso;
 
 
 public class Step4Fragment extends Fragment {
     private EditText companyName, representativeName, registerNumber1, registerNumber2;
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     private ImageView companyImage;
 
     public interface OnPostButtonClickListener {
@@ -61,7 +60,7 @@ public class Step4Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
         companyName = view.findViewById(R.id.company_name);
         representativeName = view.findViewById(R.id.name_of_representative);

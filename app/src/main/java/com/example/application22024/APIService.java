@@ -1,5 +1,6 @@
 package com.example.application22024;
 
+import com.example.application22024.model.Applicant;
 import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
@@ -34,7 +35,8 @@ public interface APIService {
 
     @GET("api/companyjobs")
     Call<List<CompanyJobItem>> getCompanyJobs(@Query("userId") int userId);
-
+    @GET("api/getMarkedJobs")
+    Call<List<CompanyJobItem>> getMarkedJobs(@Query("userId") int userId);
     @POST("/api/saved-job")
     Call<Void> updateBookmarkStatus(
             @Query("user_id") int userId,
@@ -43,7 +45,11 @@ public interface APIService {
     @POST("api/recently-viewed")
     Call<Void> saveRecentlyViewed(@Query("user_id") int userId,
                                   @Query("job_id") int jobId);
-
+    @POST("api/apply-job")
+    Call<Void> applyJob(@Query("employeeId") int userId,
+                        @Query("jobId") int jobId);
+    @GET("jobs/{jobId}/applicants")
+    Call<List<Applicant>> getApplicants(@Path("jobId") int jobId);
     @GET("api/get-recently-viewed")
     Call<List<CompanyJobItem>> getRecentlyViewed(@Query("userId") int userId);
 
