@@ -36,8 +36,7 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);  // Gọi layout cho Activity
 
-        int viewMode = getIntent().getIntExtra("view_mode", 0); // Mặc định là 0 (chỉnh sửa)
-
+        String userType = getIntent().getStringExtra("userType");
         // Cấu hình Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);  // Gán Toolbar làm ActionBar
@@ -64,8 +63,7 @@ public class Profile extends AppCompatActivity {
         setupGenderClick(R.id.female, 1);
         initialGenderPosition = selectedGenderPosition; // Ghi lại trạng thái ban đầu
 
-        // Kiểm tra xem có phải chế độ xem không (view-only) không
-        if (viewMode == 1) {
+        if (userType.equals("Employer")) {
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
         }
     }

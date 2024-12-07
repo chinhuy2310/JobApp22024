@@ -65,6 +65,7 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.Appl
         holder.itemView.setOnClickListener(v -> {
             viewModel.setSelectedApplicant(applicant);
             Intent intent = new Intent(context, Profile.class);
+            intent.putExtra("userType", "Employer");
             context.startActivity(intent);
         });
     }
