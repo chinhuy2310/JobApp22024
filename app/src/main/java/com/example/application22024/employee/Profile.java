@@ -1,101 +1,239 @@
 package com.example.application22024.employee;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.application22024.APIService;
+import com.example.application22024.MyApplication;
 import com.example.application22024.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
+import com.example.application22024.RetrofitClientInstance;
+import com.example.application22024.SharedPrefManager;
+import com.example.application22024.model.Applicant;
+import com.example.application22024.model.CircleTransform;
+import com.example.application22024.model.DataViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.squareup.picasso.Picasso;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Profile extends AppCompatActivity {
-    private EditText editTextDate, editbirthday, editText, editText1, editText2, editText3;
+    private ImageView imageView;
+    private EditText editName, editbirthday, editIntroduce, editExperience, editPhoneNumber, editLocation, editPeriod, editWorkType, salary;
     private Calendar calendar;
-    private TextView educationStatus, levelOfEducation;
+    private TextView educationStatus, levelOfEducation, startTime, endTime, salaryType, male, female;
     private boolean isEdited = false;
     private int selectedGenderPosition = -1; // Vị trí ô giới tính được chọn
     private int initialGenderPosition = -1; // Lưu trạng thái giới tính ban đầu
+    private DataViewModel viewModel;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri selectedImageUri; // Để lưu URI của ảnh đã chọn
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);  // Gọi layout cho Activity
+        viewModel = ((MyApplication) getApplication()).getDataViewModel();
 
         String userType = getIntent().getStringExtra("userType");
+
         // Cấu hình Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);  // Gán Toolbar làm ActionBar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Hiển thị nút back
-
-        setupDatePicker();
+        // initViews
+        imageView = findViewById(R.id.image_view);
+        editName = findViewById(R.id.editName);
+        male = findViewById(R.id.male);
+        female = findViewById(R.id.female);
+        editbirthday = findViewById(R.id.editbirthday);
+        editPhoneNumber = findViewById(R.id.editPhoneNumber);
         educationStatus = findViewById(R.id.educationStatus);
         levelOfEducation = findViewById(R.id.levelOfEducation);
+        editExperience = findViewById(R.id.editexperience);
+        editIntroduce = findViewById(R.id.editIntroduce);
+        editLocation = findViewById(R.id.editLocation);
+        editPeriod = findViewById(R.id.editPeriod);
+        editWorkType = findViewById(R.id.editWorkType);
+        startTime = findViewById(R.id.startTime);
+        endTime = findViewById(R.id.endTime);
+        salaryType = findViewById(R.id.salaryType);
+        salary = findViewById(R.id.salary);
 
+        int employeeId = SharedPrefManager.getInstance(this).getUserId();
+        fetchProfile(employeeId);
+
+        if (viewModel.getSelectedApplicant() != null) {
+            Applicant applicant = viewModel.getSelectedApplicant();
+
+            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
+            String relativePath = applicant.getAvatar_url();
+            String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
+            if (!applicant.getAvatar_url().isEmpty()) {
+                Picasso.get().load(fullImageUrl)
+                        .transform(new CircleTransform())
+                        .into(imageView);
+            } else {
+                // Load a default image if the avatar URL is empty
+                Picasso.get().load(R.drawable.ic_launcher_background).into(imageView);
+            }
+            editName.setText(applicant.getFull_name());
+            editbirthday.setText(applicant.getDate_of_birth());
+            editPhoneNumber.setText(applicant.getPhone_number());
+
+            educationStatus.setText(applicant.getEducation_status());
+            levelOfEducation.setText(applicant.getEducation_level());
+            editExperience.setText(applicant.getExperience());
+            editIntroduce.setText(applicant.getIntroduction());
+            editLocation.setText(applicant.getPreferred_work_location());
+            editPeriod.setText(applicant.getPreferred_work_duration());
+            editWorkType.setText(applicant.getWork_type());
+            String expectedWorkTime = applicant.getWork_time();
+            startTime.setText(formatTimeToHoursAndMinutes(expectedWorkTime.split("-")[0]));
+            endTime.setText(formatTimeToHoursAndMinutes(expectedWorkTime.split("-")[1]));
+            salaryType.setText(applicant.getSalary_type());
+            salary.setText(String.format("%,d", applicant.getExpected_salary()) + " ₩");
+        }else{
+            Log.e("Profile", "Selected applicant is null");
+        }
+
+        imageView.setOnClickListener(v -> openImageChooser());
         // Initial values for textviews
-        educationStatus.setText("Option 2");
-        levelOfEducation.setText("Option 1");
+        levelOfEducation.setText("학교");
+        educationStatus.setText("상태");
+        salaryType.setText("시급");
 
-        String previousEducationStatus = educationStatus.getText().toString();
-        String previousLevelOfEducation = levelOfEducation.getText().toString();
+        educationStatus.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"재학", "졸업", "휴학", "중퇴", "수료"},
+                        educationStatus.getText().toString(), educationStatus, () -> isEdited = true));
 
-        educationStatus.setOnClickListener(v -> showBottomSheetDialog1(previousEducationStatus));
-        levelOfEducation.setOnClickListener(v -> showBottomSheetDialog2(previousLevelOfEducation));
+        levelOfEducation.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"중학교", "고등학교", "대학(2~3년제)", "대학(4년제)", "대학원"},
+                        levelOfEducation.getText().toString(), levelOfEducation, () -> isEdited = true));
+        salaryType.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"시급", "월급", "일당", "연봉", "주급", "계약금", "커미션"},
+                        salaryType.getText().toString(), salaryType, () -> isEdited = true));
 
-        editbirthday = findViewById(R.id.editbirthday);
+        // Khởi tạo sự kiện cho RadioButt
+        addTextWatcher(editName);
         addTextWatcher(editbirthday);
+        addTextWatcher(editIntroduce);
+        addTextWatcher(editExperience);
+        addTextWatcher(editPhoneNumber);
+        addTextWatcher(editLocation);
+        addTextWatcher(editPeriod);
+        addTextWatcher(editWorkType);
+        addTextWatcher(salary);
 
         setupGenderClick(R.id.male, 0);
         setupGenderClick(R.id.female, 1);
         initialGenderPosition = selectedGenderPosition; // Ghi lại trạng thái ban đầu
 
-        if (userType.equals("Employer")) {
+        setupDatePicker();
+
+        if ("Employer".equals(userType)) {
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
+            updateGender();
         }
     }
+
+    private void updateGender() {
+        Applicant applicant = viewModel.getSelectedApplicant();
+        if (applicant != null) {
+            String selectedGender = applicant.getGender();
+            if ("남자".equals(selectedGender)) {
+                findViewById(R.id.female).setVisibility(View.GONE);
+            } else if ("여자".equals(selectedGender)) { // Giả sử giá trị là "여자" cho nữ
+                findViewById(R.id.male).setVisibility(View.GONE);
+            }
+        } else {
+            Log.e("Profile", "Applicant is null");
+        }
+    }
+
+
     private void setViewOnlyMode() {
-        // Vô hiệu hóa tất cả các EditText để không thể chỉnh sửa
-        editTextDate.setFocusable(false);
-        editbirthday.setFocusable(false);
-
-        // Vô hiệu hóa các TextView nếu cần
-        educationStatus.setClickable(false);
-        levelOfEducation.setClickable(false);
-
-        // Vô hiệu hóa các sự kiện của các button, TextView hoặc các item khác
-        findViewById(R.id.male).setClickable(false);
-        findViewById(R.id.female).setClickable(false);
+        setTouchListenerForViews(imageView, editName, editbirthday, editIntroduce, editExperience, editPhoneNumber, editLocation, editPeriod, editWorkType, salary, findViewById(R.id.male),
+                findViewById(R.id.female), educationStatus, levelOfEducation, startTime, endTime, salaryType);
     }
 
-    private void showBottomSheetDialog1(String previousValue) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_layout, null);
+    private void fetchProfile(int employeeId) {
+        APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        Call<Applicant> call = apiService.getProfile(employeeId);
+
+        call.enqueue(new Callback<Applicant>() {
+            @Override
+            public void onResponse(Call<Applicant> call, Response<Applicant> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Applicant profile = response.body();
+                    viewModel.setSelectedApplicant(profile);
+                } else {
+                    Log.e("API", "Không tìm thấy thông tin hồ sơ.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Applicant> call, Throwable t) {
+                Log.e("API", "Lỗi khi gọi API: " + t.getMessage());
+            }
+        });
+
+    }
+
+    public void showBottomSheetDialog(Context context, String[] items, String previousValue, TextView targetView, Runnable onValueChanged) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        View bottomSheetView = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_layout, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
         ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"재학", "졸업", " ....."}; // Các tùy chọn
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             String newValue = items[position];
-            educationStatus.setText(newValue);
             if (!newValue.equals(previousValue)) {
-                isEdited = true; // Đánh dấu là đã thay đổi
+                targetView.setText(newValue);
+                onValueChanged.run(); // Gọi hành động khi thay đổi
             }
             bottomSheetDialog.dismiss();
         });
@@ -103,35 +241,14 @@ public class Profile extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-    private void showBottomSheetDialog2(String previousValue) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        View bottomSheetView = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_layout, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        ListView listView = bottomSheetView.findViewById(R.id.listView);
-        String[] items = {"고등", "대학", "1학년", " ....."};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String newValue = items[position];
-            levelOfEducation.setText(newValue);
-            if (!newValue.equals(previousValue)) {
-                isEdited = true; // Đánh dấu là đã thay đổi
-            }
-            bottomSheetDialog.dismiss();
-        });
-
-        bottomSheetDialog.show();
-    }
 
     public void setupDatePicker() {
-        editTextDate = findViewById(R.id.editbirthday);
+
         calendar = Calendar.getInstance();
         // Vô hiệu hóa chế độ nhập liệu cho EditText
-        editTextDate.setFocusable(false);
+        editbirthday.setFocusable(false);
         // Xử lý sự kiện khi nhấn vào EditText
-        editTextDate.setOnClickListener(v -> showDatePickerAlertDialog());
+        editbirthday.setOnClickListener(v -> showDatePickerAlertDialog());
     }
 
     private void showDatePickerAlertDialog() {
@@ -165,7 +282,7 @@ public class Profile extends AppCompatActivity {
             int selectedDay = dayPicker.getValue();
 
             String selectedDate = String.format(Locale.getDefault(), "%04d.%02d.%02d", selectedYear, selectedMonth, selectedDay);
-            editTextDate.setText(selectedDate);
+            editbirthday.setText(selectedDate);
 
             alertDialog.dismiss();
         });
@@ -206,6 +323,126 @@ public class Profile extends AppCompatActivity {
 
     public void saveChanges() {
         isEdited = false;
+
+        String fullName = editName.getText().toString();
+        String gender = selectedGenderPosition == 0 ? "남자" : selectedGenderPosition == 1 ? "여자" : "";
+        String birthday = editbirthday.getText().toString();
+        String phoneNumber = editPhoneNumber.getText().toString();
+        String educationStatusText = educationStatus.getText().toString();
+        String educationLevel = levelOfEducation.getText().toString();
+        String experience = editExperience.getText().toString();
+        String introduction = editIntroduce.getText().toString();
+        String preferredLocation = editLocation.getText().toString();
+        String workDuration = editPeriod.getText().toString();
+        String workType = editWorkType.getText().toString();
+        String startTimeText = startTime.getText().toString();
+        String endTimeText = endTime.getText().toString();
+        String salaryText = salary.getText().toString();
+        String salaryTypeText = salaryType.getText().toString();
+
+        //        // Tạo đối tượng Applicant mới
+//        Applicant applicant = new Applicant();
+//        applicant.setFull_name(fullName);
+//        applicant.setDate_of_birth(birthday);
+//        applicant.setPhone_number(phoneNumber);
+//        applicant.setEducation_status(educationStatusText);
+//        applicant.setEducation_level(educationLevel);
+//        applicant.setExperience(experience);
+//        applicant.setIntroduction(introduction);
+//        applicant.setPreferred_work_location(preferredLocation);
+//        applicant.setPreferred_work_duration(workDuration);
+//        applicant.setWork_type(workType);
+//        applicant.setWork_time(startTimeText + "-" + endTimeText); // Cần ghép thời gian làm việc
+//        applicant.setSalary_type(salaryTypeText);
+//        applicant.setExpected_salary(Integer.parseInt(salaryText.replace(" ₩", "").replace(",", ""))); // Chuyển đổi lương
+//
+//        // Cập nhật vào ViewModel hoặc cơ sở dữ liệu
+//        viewModel.setSelectedApplicant(applicant);  // Nếu bạn dùng ViewModel
+
+        // Đọc ảnh từ bộ nhớ
+        // Tạo MultipartBody.Part cho ảnh nếu có
+        MultipartBody.Part imagePart = null;
+        if (selectedImageUri != null) {
+            try {
+                // Chuyển đổi URI sang File
+                InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                File tempFile = new File(getCacheDir(), "temp_image");
+//                File tempFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "company_image.png");// lưu ảnh dạng png
+                try (OutputStream outputStream = new FileOutputStream(tempFile)) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                }
+
+                // Tạo MultipartBody.Part từ File
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), tempFile);
+                imagePart = MultipartBody.Part.createFormData("avatar", tempFile.getName(), requestBody);
+
+            } catch (IOException e) {
+                Log.e("RegistrationActivity", "Lỗi khi xử lý tệp ảnh: " + e.getMessage());
+                Toast.makeText(this, "Không thể xử lý ảnh. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Chuyển các dữ liệu thành RequestBody
+        RequestBody employeeId = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(SharedPrefManager.getInstance(this).getUserId()));
+        RequestBody fullNameBody = RequestBody.create(MediaType.parse("text/plain"), fullName);
+        RequestBody genderBody = RequestBody.create(MediaType.parse("text/plain"), gender);
+        RequestBody dateOfBirthBody = RequestBody.create(MediaType.parse("text/plain"), birthday);
+        RequestBody phoneNumberBody = RequestBody.create(MediaType.parse("text/plain"), phoneNumber);
+        RequestBody educationStatusBody = RequestBody.create(MediaType.parse("text/plain"), educationStatusText);
+        RequestBody educationLevelBody = RequestBody.create(MediaType.parse("text/plain"), educationLevel);
+        RequestBody experienceBody = RequestBody.create(MediaType.parse("text/plain"), experience);
+        RequestBody introductionBody = RequestBody.create(MediaType.parse("text/plain"), introduction);
+        RequestBody preferredLocationBody = RequestBody.create(MediaType.parse("text/plain"), preferredLocation);
+        RequestBody preferredDurationBody = RequestBody.create(MediaType.parse("text/plain"), workDuration);
+        RequestBody workTypeBody = RequestBody.create(MediaType.parse("text/plain"), workType);
+        RequestBody workTimeBody = RequestBody.create(MediaType.parse("text/plain"), startTimeText + "-" + endTimeText);
+        RequestBody salaryTypeBody = RequestBody.create(MediaType.parse("text/plain"), salaryTypeText);
+        RequestBody expectedSalaryBody = RequestBody.create(MediaType.parse("text/plain"), salaryText.replace(" ₩", "").replace(",", ""));
+
+        // Gửi dữ liệu qua Retrofit
+        APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        Call<Void> call = apiService.saveApplicant(employeeId, fullNameBody, genderBody, dateOfBirthBody, phoneNumberBody,
+                educationStatusBody, educationLevelBody, experienceBody, introductionBody, preferredLocationBody,
+                preferredDurationBody, workTypeBody, workTimeBody, salaryTypeBody, expectedSalaryBody, imagePart);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Applicant saved successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed to save applicant.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Network error.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Mở trình chọn ảnh
+    private void openImageChooser() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    // Xử lý kết quả khi người dùng chọn ảnh
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+            isEdited = true;
+            imageView.setImageURI(selectedImageUri);  // Hiển thị ảnh đã chọn lên ImageView
+        }
     }
 
     private void setupGenderClick(int itemId, int position) {
@@ -241,6 +478,20 @@ public class Profile extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (isEdited) {
+            new AlertDialog.Builder(this)
+                    .setMessage("Do you want to save the changes?")
+                    .setPositiveButton("Save", (dialog, id) -> saveChanges())
+                    .setNegativeButton("Discard", (dialog, id) -> super.onBackPressed())
+                    .setNeutralButton("Cancel", (dialog, id) -> dialog.dismiss())
+                    .show();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -272,4 +523,79 @@ public class Profile extends AppCompatActivity {
         }
     }
 
+    private void showCustomTimePickerDialog(final boolean isStartTime) {
+        // Inflate the custom time picker layout
+        View timePickerView = LayoutInflater.from(this).inflate(R.layout.time_picker_dialog, null);
+        NumberPicker hourPicker = timePickerView.findViewById(R.id.hourPicker);
+        NumberPicker minutePicker = timePickerView.findViewById(R.id.minutePicker);
+        Button confirmButton = timePickerView.findViewById(R.id.confirmButton);
+
+        // Cấu hình NumberPickers
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(23);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+
+        // Định dạng để hiển thị số với 2 chữ số (00, 01, 02, ...)
+        hourPicker.setFormatter(value -> String.format("%02d", value));
+        minutePicker.setFormatter(value -> String.format("%02d", value));
+
+        hourPicker.setValue(0);
+        minutePicker.setValue(0);
+
+        // Set up the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(timePickerView);
+        builder.setCancelable(false); // Không cho phép đóng bằng cách bấm ngoài Dialog
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+        // Xử lý sự kiện cho nút "OK"
+        confirmButton.setOnClickListener(v -> {
+            int selectedHour = hourPicker.getValue();
+            int selectedMinute = minutePicker.getValue();
+
+            String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
+
+            startTime.setText(formattedTime);
+            endTime.setText(formattedTime);
+
+            // Đóng Dialog sau khi chọn giờ
+            dialog.dismiss();
+        });
+    }
+
+    private String formatTimeToHoursAndMinutes(String time) {
+        try {
+            // Định dạng chuỗi thời gian đầu vào
+            SimpleDateFormat inputFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            Date date = inputFormat.parse(time);
+
+            // Định dạng lại chỉ hiển thị giờ và phút
+            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            return outputFormat.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return time;  // Nếu có lỗi, trả về thời gian ban đầu
+        }
+    }
+
+    public void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+
+    // Hàm giúp vô hiệu hóa sự kiện chạm cho các View con
+    private void setTouchListenerForViews(View... views) {
+        for (View view : views) {
+            view.setOnTouchListener((v, event) -> true); // Ngăn chặn mọi thao tác chạm trên các View này
+        }
+    }
 }

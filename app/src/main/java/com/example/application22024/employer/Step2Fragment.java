@@ -92,7 +92,7 @@ public class Step2Fragment extends Fragment {
             viewModel.setWorkDay(workDay.getText().toString());
             viewModel.setRecruitmentEndTime(recruitmentEndTime.getText().toString());
 
-            Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
+//            Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
             if ("Yes".equals(viewModel.getSelectedJob().getCanNegotiableTime())) {
                 checkBoxOption1.setChecked(true);
                 viewModel.setOption1Checked(true);
@@ -204,7 +204,7 @@ public class Step2Fragment extends Fragment {
         if (viewModel.getSelectedJob() != null) {
             // Lấy workField từ ViewModel
             String selectedSalaryType = viewModel.getSelectedJob().getSalaryType();
-            Log.e("Step2Fragment", "Selected Salary Type: " + selectedSalaryType);
+//            Log.e("Step2Fragment", "Selected Salary Type: " + selectedSalaryType);
             // Tìm chỉ số của workField trong mảng options1
             for (int i = 0; i < options1.length; i++) {
                 if (options1[i].equals(selectedSalaryType)) {
@@ -239,26 +239,6 @@ public class Step2Fragment extends Fragment {
         endTime.setOnClickListener(v -> showCustomTimePickerDialog(false)); // End time
     }
 
-    //        //muốn mã ngắn gọn thì sử dụng showTimePickerDialog() thay cho showCustomTimePickerDialog()
-//        private void showTimePickerDialog(final boolean isStartTime) {
-//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//        int minute = calendar.get(Calendar.MINUTE);
-//
-//        TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), new TimePickerDialog.OnTimeSetListener() {
-//            @Override
-//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
-//                if (isStartTime) {
-//                    startTime.setText(formattedTime);
-//                    updateSpinnerAndEditText(hourOfDay, partsOfDay1); // Update Spinner and time for start
-//                } else {
-//                    endTime.setText(formattedTime);
-//                    updateSpinnerAndEditText(hourOfDay, partsOfDay2); // Update Spinner and time for end
-//                }
-//            }
-//        }, hour, minute, true); // Use 24-hour format
-//        timePickerDialog.show();
-//    }
     private void showCustomTimePickerDialog(final boolean isStartTime) {
         // Inflate the custom time picker layout
         View timePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.time_picker_dialog, null);

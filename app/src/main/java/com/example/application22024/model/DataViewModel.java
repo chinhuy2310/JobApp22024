@@ -18,8 +18,8 @@ public class DataViewModel extends ViewModel {
     private boolean isOption3Checked;
     private String address, detailAddress, description;
     private String representativeName, registerNumber;
-    private String employee_id, avatar_url, full_name, gender, date_of_birth, phone_number, education_level, education_status,
-            experience, introduction, preferred_work_location, preferred_work_duration, work_type, salary_type, expected_salary;
+//    private String employee_id, avatar_url, full_name, gender, date_of_birth, phone_number, education_level, education_status,
+//            experience, introduction, preferred_work_location, preferred_work_duration, work_type, salary_type, expected_salary;
     private Uri selectedImageUri;
     //    public RegistrationViewModel(String recruitmentContent, int selectedPosition, int selectedGenderPosition, String startTime, String endTime, String workArrangement, String salaryType, String partOfDay1, String partOfDay2) {
 //    }
@@ -285,6 +285,25 @@ public class DataViewModel extends ViewModel {
         representativeName = null;
         registerNumber = null;
         selectedImageUri = null;
+        selectedCompanyJobItem = null;
+        selectedApplicant = null;
+
+//        employee_id = null;
+//        avatar_url = null;
+//        full_name = null;
+//        gender = null;
+//        date_of_birth = null;
+//        phone_number = null;
+//        education_level = null;
+//        education_status = null;
+//        experience = null;
+//        introduction = null;
+//        preferred_work_location = null;
+//        preferred_work_duration = null;
+//        work_type = null;
+//        salary_type = null;
+//        expected_salary = null;
+
     }
 
 
@@ -296,125 +315,125 @@ public class DataViewModel extends ViewModel {
         this.selectedCompanyJobItem = selectedCompanyJobItem;
     }
 
-    public String getEducation_status() {
-        return education_status;
-    }
-
-    public void setEducation_status(String education_status) {
-        this.education_status = education_status;
-    }
-
-    public String getEmployee_id() {
-        return employee_id;
-    }
-
-    public void setEmployee_id(String employee_id) {
-        this.employee_id = employee_id;
-    }
-
-    public String getAvatar_url() {
-        return avatar_url;
-    }
-
-    public void setAvatar_url(String avatar_url) {
-        this.avatar_url = avatar_url;
-    }
-
-    public String getFull_name() {
-        return full_name;
-    }
-
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getDate_of_birth() {
-        return date_of_birth;
-    }
-
-    public void setDate_of_birth(String date_of_birth) {
-        this.date_of_birth = date_of_birth;
-    }
-
-    public String getPhone_number() {
-        return phone_number;
-    }
-
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
-    }
-
-    public String getEducation_level() {
-        return education_level;
-    }
-
-    public void setEducation_level(String education_level) {
-        this.education_level = education_level;
-    }
-
-    public String getExperience() {
-        return experience;
-    }
-
-    public void setExperience(String experience) {
-        this.experience = experience;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-    public String getPreferred_work_location() {
-        return preferred_work_location;
-    }
-
-    public void setPreferred_work_location(String preferred_work_location) {
-        this.preferred_work_location = preferred_work_location;
-    }
-
-    public String getPreferred_work_duration() {
-        return preferred_work_duration;
-    }
-
-    public void setPreferred_work_duration(String preferred_work_duration) {
-        this.preferred_work_duration = preferred_work_duration;
-    }
-
-    public String getWork_type() {
-        return work_type;
-    }
-
-    public void setWork_type(String work_type) {
-        this.work_type = work_type;
-    }
-
-    public String getSalary_type() {
-        return salary_type;
-    }
-
-    public void setSalary_type(String salary_type) {
-        this.salary_type = salary_type;
-    }
-
-    public String getExpected_salary() {
-        return expected_salary;
-    }
-
-    public void setExpected_salary(String expected_salary) {
-        this.expected_salary = expected_salary;
-    }
+//    public String getEducation_status() {
+//        return education_status;
+//    }
+//
+//    public void setEducation_status(String education_status) {
+//        this.education_status = education_status;
+//    }
+//
+//    public String getEmployee_id() {
+//        return employee_id;
+//    }
+//
+//    public void setEmployee_id(String employee_id) {
+//        this.employee_id = employee_id;
+//    }
+//
+//    public String getAvatar_url() {
+//        return avatar_url;
+//    }
+//
+//    public void setAvatar_url(String avatar_url) {
+//        this.avatar_url = avatar_url;
+//    }
+//
+//    public String getFull_name() {
+//        return full_name;
+//    }
+//
+//    public void setFull_name(String full_name) {
+//        this.full_name = full_name;
+//    }
+//
+//    public String getGender() {
+//        return gender;
+//    }
+//
+//    public void setGender(String gender) {
+//        this.gender = gender;
+//    }
+//
+//    public String getDate_of_birth() {
+//        return date_of_birth;
+//    }
+//
+//    public void setDate_of_birth(String date_of_birth) {
+//        this.date_of_birth = date_of_birth;
+//    }
+//
+//    public String getPhone_number() {
+//        return phone_number;
+//    }
+//
+//    public void setPhone_number(String phone_number) {
+//        this.phone_number = phone_number;
+//    }
+//
+//    public String getEducation_level() {
+//        return education_level;
+//    }
+//
+//    public void setEducation_level(String education_level) {
+//        this.education_level = education_level;
+//    }
+//
+//    public String getExperience() {
+//        return experience;
+//    }
+//
+//    public void setExperience(String experience) {
+//        this.experience = experience;
+//    }
+//
+//    public String getIntroduction() {
+//        return introduction;
+//    }
+//
+//    public void setIntroduction(String introduction) {
+//        this.introduction = introduction;
+//    }
+//
+//    public String getPreferred_work_location() {
+//        return preferred_work_location;
+//    }
+//
+//    public void setPreferred_work_location(String preferred_work_location) {
+//        this.preferred_work_location = preferred_work_location;
+//    }
+//
+//    public String getPreferred_work_duration() {
+//        return preferred_work_duration;
+//    }
+//
+//    public void setPreferred_work_duration(String preferred_work_duration) {
+//        this.preferred_work_duration = preferred_work_duration;
+//    }
+//
+//    public String getWork_type() {
+//        return work_type;
+//    }
+//
+//    public void setWork_type(String work_type) {
+//        this.work_type = work_type;
+//    }
+//
+//    public String getSalary_type() {
+//        return salary_type;
+//    }
+//
+//    public void setSalary_type(String salary_type) {
+//        this.salary_type = salary_type;
+//    }
+//
+//    public String getExpected_salary() {
+//        return expected_salary;
+//    }
+//
+//    public void setExpected_salary(String expected_salary) {
+//        this.expected_salary = expected_salary;
+//    }
 
     public Applicant getSelectedApplicant() {
         return selectedApplicant;

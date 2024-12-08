@@ -30,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
         confirmPW = findViewById(R.id.confirmPW);
         createName = findViewById(R.id.createName);
         createContact = findViewById(R.id.createContact);
-        verifyCode = findViewById(R.id.verifyCode);
+//        verifyCode = findViewById(R.id.verifyCode);
 
         ImageView eyeIcon1 = findViewById(R.id.eye_icon);
         eyeIcon1.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String confirmPw = confirmPW.getText().toString();
                 String userName = createName.getText().toString();
                 String contact = createContact.getText().toString();
-                String Code = verifyCode.getText().toString();
+//                String Code = verifyCode.getText().toString();
 
                 if (account.isEmpty() || password.isEmpty() || userName.isEmpty() || confirmPw.isEmpty() || contact.isEmpty()) {
                     Toast.makeText(SignUpActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();

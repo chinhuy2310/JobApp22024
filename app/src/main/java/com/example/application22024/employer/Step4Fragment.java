@@ -93,7 +93,7 @@ public class Step4Fragment extends Fragment {
                     .error(R.drawable.ic_launcher_background)
                     .into(companyImage);
         } else {
-            Log.e("selectedCompany", "is null");
+//            Log.e("selectedCompany", "is null");
         }
 
 

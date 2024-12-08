@@ -62,7 +62,7 @@ public class Step1Fragment extends Fragment {
             viewModel.setCompanyName(companyNameEditText.getText().toString());
             viewModel.setContact(contactEditText.getText().toString());
         } else {
-            Log.e("selectedCompany", "is null");
+//            Log.e("selectedCompany", "is null");
         }
         if (viewModel.getSelectedJob() != null) {
             jobTitleEditText.setText(viewModel.getSelectedJob().getTitle());
@@ -106,7 +106,7 @@ public class Step1Fragment extends Fragment {
             }
 
         } else {
-            Log.e("selectedJob", "is null");
+//            Log.e("selectedJob", "is null");
         }
         // Gọi phương thức chung cho từng trường
         setTextChangedListener(jobTitleEditText, viewModel::setRecruitmentTitle);

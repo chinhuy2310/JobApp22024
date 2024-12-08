@@ -77,7 +77,7 @@ public class EmployerMain extends AppCompatActivity {
 
 //        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
         int userId = SharedPrefManager.getInstance(this).getUserId();
-        Log.e("userid", String.valueOf(userId));
+//        Log.e("userid", String.valueOf(userId));
         if (userId != -1) {
             // Gọi API để lấy thông tin công ty của Employer dựa trên userId
             getCompanies(userId);
@@ -109,14 +109,14 @@ public class EmployerMain extends AppCompatActivity {
         call.enqueue(new Callback<List<Company>>() {
             @Override
             public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
-                Log.e("get company with userid: ", String.valueOf(userId));
+//                Log.e("get company with userid: ", String.valueOf(userId));
                 if (response.isSuccessful() && response.body() != null) {
                     List<Company> companies = response.body();
                     // Cập nhật danh sách công ty và thông báo adapter thay đổi dữ liệu
                     companyList.clear();  // Xóa danh sách công ty cũ
                     companyList.addAll(companies);
                     swipeRefreshLayout.setRefreshing(false);
-                    Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
+//                    Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
 
                     adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật lại dữ liệu
                     updateUI();  // Cập nhật giao diện (nếu cần)

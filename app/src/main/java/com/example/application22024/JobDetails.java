@@ -87,14 +87,12 @@ public class JobDetails extends AppCompatActivity {
             viewOfEmployee.setVisibility(View.GONE); // Ẩn cho Employer
             viewOfEmployer.setVisibility(View.VISIBLE);
             bookmarkAndShare.setVisibility(View.GONE);
-            if (viewModel.getSelectedJob().getNum_applicants() > 0) {
-                numberOfApplicants.setVisibility(View.VISIBLE);
-                numberOfApplicants.setOnClickListener(v -> {
-                    int jobId = viewModel.getSelectedJob().getJobId();
-                    fetchApplicantsAndShowDialog(jobId);
-                });
 
-            }
+            numberOfApplicants.setVisibility(View.VISIBLE);
+            numberOfApplicants.setOnClickListener(v -> {
+                int jobId = viewModel.getSelectedJob().getJobId();
+                fetchApplicantsAndShowDialog(jobId);
+            });
 
 
             editTextview.setOnClickListener(v -> {
@@ -169,8 +167,8 @@ public class JobDetails extends AppCompatActivity {
     private void applyJob() {
         int userId = SharedPrefManager.getInstance(JobDetails.this).getUserId();
         int jobId = viewModel.getSelectedCompanyJobItem().getJob_id();
-        Log.e("userId", String.valueOf(userId));
-        Log.e("jobId", String.valueOf(jobId));
+//        Log.e("userId", String.valueOf(userId));
+//        Log.e("jobId", String.valueOf(jobId));
         Call<Void> call = apiService.applyJob(userId, jobId);
         call.enqueue(new Callback<Void>() {
             @Override

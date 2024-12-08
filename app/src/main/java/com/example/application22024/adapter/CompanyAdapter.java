@@ -157,7 +157,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     private void showPopupMenu(View v, int position) {
         // Kiểm tra xem position có hợp lệ không
         if (position < 0 || position >= companyList.size()) {
-            Log.e("CompanyAdapter", "Invalid position: " + position);
+//            Log.e("CompanyAdapter", "Invalid position: " + position);
             return;  // Không thực hiện hành động nào nếu position không hợp lệ
         }
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);

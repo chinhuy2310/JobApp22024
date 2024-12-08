@@ -52,7 +52,8 @@ public interface APIService {
     Call<List<Applicant>> getApplicants(@Path("jobId") int jobId);
     @GET("api/get-recently-viewed")
     Call<List<CompanyJobItem>> getRecentlyViewed(@Query("userId") int userId);
-
+    @GET("profile/{employeeId}")
+    Call<Applicant> getProfile(@Path("employeeId") int employeeId);
     @GET("searchCompanyJobs")
     Call<List<CompanyJobItem>> searchCompanyJobs(
             @Query("keyword") String keyword,
@@ -93,6 +94,27 @@ public interface APIService {
             @Part("name_of_representative") RequestBody representativeName,
             @Part("registration_number") RequestBody registrationNumber,
             @Part MultipartBody.Part image // Hình ảnh nếu có
+    );
+
+    @Multipart
+    @POST("saveProfile")
+    Call<Void> saveApplicant(
+            @Part("employee_id") RequestBody employeeId,
+            @Part("full_name") RequestBody fullName,
+            @Part("gender") RequestBody gender,
+            @Part("date_of_birth") RequestBody dateOfBirth,
+            @Part("phone_number") RequestBody phoneNumber,
+            @Part("education_status") RequestBody educationStatus,
+            @Part("education_level") RequestBody educationLevel,
+            @Part("experience") RequestBody experience,
+            @Part("introduction") RequestBody introduction,
+            @Part("preferred_work_location") RequestBody preferredLocation,
+            @Part("preferred_work_duration") RequestBody preferredDuration,
+            @Part("work_type") RequestBody workType,
+            @Part("work_time") RequestBody workTime,
+            @Part("salary_type") RequestBody salaryType,
+            @Part("expected_salary") RequestBody expectedSalary,
+            @Part MultipartBody.Part avatar // Phần để gửi ảnh
     );
 
 }

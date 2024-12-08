@@ -44,11 +44,11 @@ public class RegistrationActivity extends AppCompatActivity implements Step4Frag
         setContentView(R.layout.activity_registration);
         // Trong RegistrationActivity
         viewModel = ((MyApplication) getApplication()).getDataViewModel();
-        if (viewModel.getSelectedCompany() == null) {
-            Log.e("RegistrationActivity", "SelectedCompany is null");
-        } else {
-            Log.e("RegistrationActivity", viewModel.getSelectedCompany().toString());
-        }
+//        if (viewModel.getSelectedCompany() == null) {
+//            Log.e("RegistrationActivity", "SelectedCompany is null");
+//        } else {
+//            Log.e("RegistrationActivity", viewModel.getSelectedCompany().toString());
+//        }
         // Thiết lập Toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

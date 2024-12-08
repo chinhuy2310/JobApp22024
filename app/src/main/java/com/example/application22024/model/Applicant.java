@@ -18,13 +18,14 @@ public class Applicant {
     private String introduction;
     private String preferred_work_location;
     private String preferred_work_duration;
+    private String work_time;
     private String work_type;
     private String salary_type;
     private int expected_salary;
 
     // Getters và Setters
     public String getFull_name() {
-        return full_name;
+        return full_name!= null ? full_name : "";
     }
 
     public void setFull_name(String full_name) {
@@ -32,7 +33,7 @@ public class Applicant {
     }
 
     public String getGender() {
-        return gender;
+        return gender!= null ? gender : "";
     }
 
     public void setGender(String gender) {
@@ -40,7 +41,7 @@ public class Applicant {
     }
 
     public String getDate_of_birth() {
-        return date_of_birth;
+        return date_of_birth!= null ? date_of_birth : "";
     }
 
     public void setDate_of_birth(String date_of_birth) {
@@ -48,7 +49,7 @@ public class Applicant {
     }
 
     public String getPhone_number() {
-        return phone_number;
+        return phone_number != null ? phone_number : "";
     }
 
     public void setPhone_number(String phone_number) {
@@ -56,7 +57,7 @@ public class Applicant {
     }
 
     public String getEducation_level() {
-        return education_level;
+        return education_level != null ? education_level : "";
     }
 
     public void setEducation_level(String education_level) {
@@ -64,7 +65,7 @@ public class Applicant {
     }
 
     public String getEducation_status() {
-        return education_status;
+        return education_status != null ? education_status : "";
     }
 
     public void setEducation_status(String education_status) {
@@ -72,7 +73,7 @@ public class Applicant {
     }
 
     public String getExperience() {
-        return experience;
+        return experience != null ? experience : "";
     }
 
     public void setExperience(String experience) {
@@ -80,7 +81,7 @@ public class Applicant {
     }
 
     public String getIntroduction() {
-        return introduction;
+        return introduction != null ? introduction : "";
     }
 
     public void setIntroduction(String introduction) {
@@ -88,7 +89,7 @@ public class Applicant {
     }
 
     public String getPreferred_work_location() {
-        return preferred_work_location;
+        return preferred_work_location != null ? preferred_work_location : "";
     }
 
     public void setPreferred_work_location(String preferred_work_location) {
@@ -96,7 +97,7 @@ public class Applicant {
     }
 
     public String getPreferred_work_duration() {
-        return preferred_work_duration;
+        return preferred_work_duration != null ? preferred_work_duration : "";
     }
 
     public void setPreferred_work_duration(String preferred_work_duration) {
@@ -104,7 +105,7 @@ public class Applicant {
     }
 
     public String getWork_type() {
-        return work_type;
+        return work_type != null ? work_type : "";
     }
 
     public void setWork_type(String work_type) {
@@ -112,7 +113,7 @@ public class Applicant {
     }
 
     public String getSalary_type() {
-        return salary_type;
+        return salary_type != null ? salary_type : "";
     }
 
     public void setSalary_type(String salary_type) {
@@ -120,7 +121,7 @@ public class Applicant {
     }
 
     public int getExpected_salary() {
-        return expected_salary;
+        return expected_salary != 0 ? expected_salary : 0;
     }
 
     public void setExpected_salary(int expected_salary) {
@@ -154,7 +155,7 @@ public class Applicant {
     }
 
     public String getAvatar_url() {
-        return avatar_url;
+        return avatar_url != null ? avatar_url : "";
     }
 
     public void setAvatar_url(String avatar_url) {
@@ -162,10 +163,18 @@ public class Applicant {
     }
 
     public int getEmployee_id() {
-        return employee_id;
+        return employee_id != 0 ? employee_id : 0;
     }
 
     public void setEmployee_id(int employee_id) {
         this.employee_id = employee_id;
+    }
+
+    public String getWork_time() {
+        return work_time != null ? work_time : "00:00:00-00:00:00";
+    }
+
+    public void setWork_time(String work_time) {
+        this.work_time = work_time;
     }
 }

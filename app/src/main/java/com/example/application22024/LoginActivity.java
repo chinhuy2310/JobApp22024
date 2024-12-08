@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = loginPassword.getText().toString().trim();
         // Lấy userType từ Intent
         String expectedUserType = getIntent().getStringExtra("userType"); // "Employer" hoặc "Employee"
-        Log.e("user type: ", expectedUserType);
+//        Log.e("user type: ", expectedUserType);
         if (!account.isEmpty() && !password.isEmpty()) {
             LoginRequest loginRequest = new LoginRequest(account, password, expectedUserType);
 

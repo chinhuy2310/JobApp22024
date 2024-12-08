@@ -31,6 +31,15 @@ public class Page4 extends Fragment {
                 getActivity().finish();
             }
         });
+
+        Button profile = view.findViewById(R.id.profile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), Profile.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 }
