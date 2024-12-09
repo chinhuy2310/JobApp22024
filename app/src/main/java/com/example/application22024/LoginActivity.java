@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -34,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         loginPassword = findViewById(R.id.password);
 
         // Tìm LinearLayout bằng ID
-        Button loginbutton = findViewById(R.id.buttonLogin);
+        TextView loginbutton = findViewById(R.id.buttonLogin);
         // Thiết lập sự kiện OnClickListener
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                 Login();
             }
         });
-        Button registerbutton = findViewById(R.id.registerbutton);
+        TextView registerbutton = findViewById(R.id.registerbutton);
         registerbutton.setOnClickListener(new View.OnClickListener() {
 
             @Override

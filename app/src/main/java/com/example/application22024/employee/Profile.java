@@ -92,24 +92,7 @@ public class Profile extends AppCompatActivity {
         setSupportActionBar(toolbar);  // Gán Toolbar làm ActionBar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Hiển thị nút back
         // initViews
-        imageView = findViewById(R.id.image_view);
-        editName = findViewById(R.id.editName);
-        male = findViewById(R.id.male);
-        female = findViewById(R.id.female);
-        editbirthday = findViewById(R.id.editbirthday);
-        editPhoneNumber = findViewById(R.id.editPhoneNumber);
-        educationStatus = findViewById(R.id.educationStatus);
-        levelOfEducation = findViewById(R.id.levelOfEducation);
-        editExperience = findViewById(R.id.editexperience);
-        editIntroduce = findViewById(R.id.editIntroduce);
-        editLocation = findViewById(R.id.editLocation);
-        editPeriod = findViewById(R.id.editPeriod);
-        editWorkType = findViewById(R.id.editWorkType);
-        startTime = findViewById(R.id.startTime);
-        endTime = findViewById(R.id.endTime);
-        salaryType = findViewById(R.id.salaryType);
-        salary = findViewById(R.id.salary);
-        saveButton = findViewById(R.id.saveButton);
+        initViews();
 
         editPeriod.setFocusable(false);
         editLocation.setFocusable(false);
@@ -129,32 +112,12 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-
-        imageView.setOnClickListener(v -> openImageChooser());
-        editLocation.setOnClickListener(v->showCustomDialog());
-        saveButton.setOnClickListener(v -> saveChanges());
         // Initial values for textviews
         levelOfEducation.setText("학교");
         educationStatus.setText("상태");
         salaryType.setText("시급");
 
-        educationStatus.setOnClickListener(v ->
-                showBottomSheetDialog(this, new String[]{"재학", "졸업", "휴학", "중퇴", "수료"},
-                        educationStatus.getText().toString(), educationStatus, () -> isEdited = true));
-
-        levelOfEducation.setOnClickListener(v ->
-                showBottomSheetDialog(this, new String[]{"중학교", "고등학교", "대학(2~3년제)", "대학(4년제)", "대학원"},
-                        levelOfEducation.getText().toString(), levelOfEducation, () -> isEdited = true));
-        salaryType.setOnClickListener(v ->
-                showBottomSheetDialog(this, new String[]{"시급", "월급", "일당", "연봉", "주급", "계약금", "커미션"},
-                        salaryType.getText().toString(), salaryType, () -> isEdited = true));
-
-        editPeriod.setOnClickListener(v ->
-                showBottomSheetDialog(this, new String[]{"하루(1일)", "1주일이하", "1주일~1개월", "1개월~3개월", "3개월~6개월", "6개월~1년", "1년이상"},
-                        editPeriod.getText().toString(), editPeriod, () -> isEdited = true));
-        editWorkType.setOnClickListener(v ->
-                showBottomSheetDialog(this, new String[]{"알바", "정규직", "계약직", "인턴", "주말알바", "기타"},
-                        editWorkType.getText().toString(), editWorkType, () -> isEdited = true));
+        setUpClicklistener();
 
         // Khởi tạo sự kiện cho RadioButt
         addTextWatcher(editName);
@@ -178,6 +141,51 @@ public class Profile extends AppCompatActivity {
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
             updateGender();
         }
+
+    }
+
+    private void initViews() {
+        imageView = findViewById(R.id.image_view);
+        editName = findViewById(R.id.editName);
+        male = findViewById(R.id.male);
+        female = findViewById(R.id.female);
+        editbirthday = findViewById(R.id.editbirthday);
+        editPhoneNumber = findViewById(R.id.editPhoneNumber);
+        educationStatus = findViewById(R.id.educationStatus);
+        levelOfEducation = findViewById(R.id.levelOfEducation);
+        editExperience = findViewById(R.id.editexperience);
+        editIntroduce = findViewById(R.id.editIntroduce);
+        editLocation = findViewById(R.id.editLocation);
+        editPeriod = findViewById(R.id.editPeriod);
+        editWorkType = findViewById(R.id.editWorkType);
+        startTime = findViewById(R.id.startTime);
+        endTime = findViewById(R.id.endTime);
+        salaryType = findViewById(R.id.salaryType);
+        salary = findViewById(R.id.salary);
+        saveButton = findViewById(R.id.saveButton);
+    }
+
+    private void setUpClicklistener() {
+        imageView.setOnClickListener(v -> openImageChooser());
+        editLocation.setOnClickListener(v -> showCustomDialog());
+        saveButton.setOnClickListener(v -> saveChanges());
+        educationStatus.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"재학", "졸업", "휴학", "중퇴", "수료"},
+                        educationStatus.getText().toString(), educationStatus, () -> isEdited = true));
+
+        levelOfEducation.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"중학교", "고등학교", "대학(2~3년제)", "대학(4년제)", "대학원"},
+                        levelOfEducation.getText().toString(), levelOfEducation, () -> isEdited = true));
+        salaryType.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"시급", "월급", "일당", "연봉", "주급", "계약금", "커미션"},
+                        salaryType.getText().toString(), salaryType, () -> isEdited = true));
+
+        editPeriod.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"하루(1일)", "1주일이하", "1주일~1개월", "1개월~3개월", "3개월~6개월", "6개월~1년", "1년이상"},
+                        editPeriod.getText().toString(), editPeriod, () -> isEdited = true));
+        editWorkType.setOnClickListener(v ->
+                showBottomSheetDialog(this, new String[]{"알바", "정규직", "계약직", "인턴", "주말알바", "기타"},
+                        editWorkType.getText().toString(), editWorkType, () -> isEdited = true));
     }
 
     private void updateGender() {
@@ -185,9 +193,20 @@ public class Profile extends AppCompatActivity {
         if (applicant != null) {
             String selectedGender = applicant.getGender();
             if ("남자".equals(selectedGender)) {
-                findViewById(R.id.female).setVisibility(View.GONE);
-            } else if ("여자".equals(selectedGender)) { // Giả sử giá trị là "여자" cho nữ
-                findViewById(R.id.male).setVisibility(View.GONE);
+                if ("Employer".equals(getIntent().getStringExtra("userType"))) {
+                    findViewById(R.id.female).setVisibility(View.GONE);
+                } else {
+                    male.setBackgroundColor(Color.BLUE);
+                    male.setTextColor(Color.WHITE);
+                }
+
+            } else if ("여자".equals(selectedGender)) {
+                if ("Employer".equals(getIntent().getStringExtra("userType"))) {
+                    findViewById(R.id.male).setVisibility(View.GONE);
+                } else {
+                    female.setBackgroundColor(Color.BLUE);
+                    female.setTextColor(Color.WHITE);
+                }
             }
         } else {
             Log.e("Profile", "Applicant is null");
@@ -230,7 +249,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void updateUI(Applicant applicant) {
-        String baseUrl = "http://10.0.2.2:3000";
+        String baseUrl = "http://192.168.0.3:3000";
         String fullImageUrl = baseUrl + applicant.getAvatar_url();
         if (!applicant.getAvatar_url().isEmpty()) {
             Picasso.get().load(fullImageUrl)
@@ -244,7 +263,7 @@ public class Profile extends AppCompatActivity {
         editName.setText(applicant.getFull_name());
         editbirthday.setText(applicant.getDate_of_birth());
         editPhoneNumber.setText(applicant.getPhone_number());
-
+        updateGender();
         educationStatus.setText(applicant.getEducation_status());
         levelOfEducation.setText(applicant.getEducation_level());
         editExperience.setText(applicant.getExperience());
@@ -564,6 +583,7 @@ public class Profile extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void showCustomDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_select_location_layout);

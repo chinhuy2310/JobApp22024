@@ -51,7 +51,7 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.Appl
         holder.textViewGender.setText(applicant.getGender());
         holder.textViewAge.setText(String.valueOf(applicant.getAge()) + "세");
         holder.textViewContact.setText(applicant.getPhone_number());
-        String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
+        String baseUrl = "http://192.168.0.3:3000"; // Địa chỉ gốc
         String relativePath = applicant.getAvatar_url();
         String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
         if (!applicant.getAvatar_url().isEmpty()) {
