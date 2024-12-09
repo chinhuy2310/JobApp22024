@@ -2,6 +2,8 @@ package com.example.application22024.model;
 
 import android.net.Uri;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class DataViewModel extends ViewModel {
@@ -9,7 +11,7 @@ public class DataViewModel extends ViewModel {
     private Company selectedCompany;
     private Job selectedJob;
     private CompanyJobItem selectedCompanyJobItem;
-    private Applicant selectedApplicant;
+    private MutableLiveData<Applicant> selectedApplicant = new MutableLiveData<>();
     // Các trường dữ liệu cần thu thập từ người dùng
     private String recruitmentTitle, companyName, contact, selectedRecruitmentField, otherRecruitmentField, selectedGender;
     private String recruitmentCount, selectedSalaryType, salary, startTime, endTime, workType, workPeriod, workDay, recruitmentEndTime;
@@ -435,11 +437,11 @@ public class DataViewModel extends ViewModel {
 //        this.expected_salary = expected_salary;
 //    }
 
-    public Applicant getSelectedApplicant() {
+    public LiveData<Applicant> getSelectedApplicant() {
         return selectedApplicant;
     }
 
-    public void setSelectedApplicant(Applicant selectedApplicant) {
-        this.selectedApplicant = selectedApplicant;
+    public void setSelectedApplicant(Applicant applicant) {
+        selectedApplicant.setValue(applicant);
     }
 }

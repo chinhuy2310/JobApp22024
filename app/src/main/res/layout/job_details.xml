@@ -130,7 +130,7 @@
                         android:id="@+id/salaryTypeTextview"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/circle"
+                        android:background="@drawable/yellow_circle"
                         android:gravity="center"
                         android:text="시급"
                         android:textColor="#9B30FF"
