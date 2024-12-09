@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:color="@android:color/holo_blue_light" /> <!-- Màu chữ khi nhấn -->
+    <item android:color="@android:color/holo_blue_dark" /> <!-- Màu chữ bình thường -->
+</selector>
