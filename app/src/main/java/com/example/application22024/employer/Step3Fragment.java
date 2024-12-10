@@ -93,8 +93,13 @@ public class Step3Fragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             hideKeyboard();
-            // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new Step4Fragment());
+            if(viewModel.getSelectedJob() == null || viewModel.getSelectedCompany() == null || viewModel.getAddress() == null ||
+                    viewModel.getDetailAddress() == null || viewModel.getDescription() == null){
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            }else{
+                // Chuyển sang Fragment tiếp theo
+                ((RegistrationActivity) getActivity()).showNextFragment(new Step4Fragment());
+            }
         });
     }
     private void setTextChangedListener(EditText editText, Consumer<String> setValueMethod) {

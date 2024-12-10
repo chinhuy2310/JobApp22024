@@ -111,13 +111,18 @@ public class Step4Fragment extends Fragment {
             String combinedRegisterNumber = registerNumber1.getText().toString() + "-" + registerNumber2.getText().toString();
 //            Log.e("combinedRegisterNumber", combinedRegisterNumber);
             viewModel.setRegisterNumber(combinedRegisterNumber);
-            if (listener != null) {
-                listener.onPostButtonClicked(); // Gọi phương thức trong Activity
+            if(viewModel.getSelectedCompany() == null || viewModel.getCompanyName() == null ||
+                    viewModel.getRepresentativeName() == null || viewModel.getRegisterNumber() == null){
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            }else {
+                if (listener != null) {
+                    listener.onPostButtonClicked(); // Gọi phương thức trong Activity
+                }
+                // Chuyển sang một Activity khác
+                Intent intent = new Intent(getActivity(), EmployerMain.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
-            // Chuyển sang một Activity khác
-            Intent intent = new Intent(getActivity(), EmployerMain.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
         });
     }
     @Override

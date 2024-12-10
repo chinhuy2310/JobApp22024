@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -206,8 +207,13 @@ public class Step1Fragment extends Fragment {
 
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
+            if(viewModel.getSelectedJob() == null ||viewModel.getSelectedRecruitmentField() == null||
+            viewModel.getSelectedGender() == null || viewModel.getRecruitmentTitle() == null ||
+            viewModel.getCompanyName() == null || viewModel.getContact() == null){
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            }else {
             // Chuyển sang Fragment tiếp theo
-            ((RegistrationActivity) getActivity()).showNextFragment(new Step2Fragment());
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step2Fragment());}
         });
     }
 
