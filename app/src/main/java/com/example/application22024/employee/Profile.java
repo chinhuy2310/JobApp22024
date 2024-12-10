@@ -296,7 +296,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void updateUI(Applicant applicant) {
-        String baseUrl = "http://192.168.0.3:3000";
+        String baseUrl = "http://10.0.2.2:3000";
         String fullImageUrl = baseUrl + applicant.getAvatar_url();
         if (!applicant.getAvatar_url().isEmpty()) {
             Picasso.get().load(fullImageUrl)

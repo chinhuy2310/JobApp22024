@@ -87,7 +87,7 @@ public class Page1AndSearchAdapter extends RecyclerView.Adapter<Page1AndSearchAd
         holder.jobSalaryTextView.setText(String.format("%,d ₩", item.getSalary()));
 
         if (item.getCompany_image() != null) {
-            String fullImageUrl = "http://192.168.0.3:3000" + item.getCompany_image();
+            String fullImageUrl = "http://10.0.2.2:3000" + item.getCompany_image();
             Picasso.get().load(fullImageUrl).into(holder.comapnyImage);
             holder.comapnyImage.setVisibility(View.VISIBLE);
         } else {

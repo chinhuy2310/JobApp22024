@@ -60,10 +60,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                Log.e("login", "login");
                 String userType = getIntent().getStringExtra("userType");
                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                 intent.putExtra("userType", userType);
+                startActivity(intent);
             }
         });
 

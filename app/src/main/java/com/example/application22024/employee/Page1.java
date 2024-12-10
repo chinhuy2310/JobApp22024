@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,6 +48,22 @@ public class Page1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page1, container, false);
+
+
+        ViewFlipper viewFlipper = view.findViewById(R.id.viewFlipper);
+
+// Danh sách các ảnh trong drawable
+        int[] images = {R.drawable.image1, R.drawable.image2, R.drawable.image3,R.drawable.image4,R.drawable.image5};
+
+        for (int image : images) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setImageResource(image);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            viewFlipper.addView(imageView);
+        }
+        viewFlipper.setInAnimation(getContext(), R.anim.fade_in);
+        viewFlipper.setOutAnimation(getContext(), R.anim.fade_out);
+        viewFlipper.startFlipping();
 
         selectLocation = view.findViewById(R.id.selectLocation);
         locationTextView = view.findViewById(R.id.locationTextView);

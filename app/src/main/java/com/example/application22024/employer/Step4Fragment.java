@@ -85,7 +85,7 @@ public class Step4Fragment extends Fragment {
             viewModel.setRepresentativeName(representativeName.getText().toString());
             viewModel.setRegisterNumber(viewModel.getSelectedCompany().getRegistrationNumber());
 
-            String baseUrl = "http://192.168.0.3:3000"; // Địa chỉ gốc
+            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
             String relativePath = viewModel.getSelectedCompany().getCompanyIamge();
             String fullImageUrl = baseUrl + relativePath;
             Picasso.get().load(fullImageUrl)

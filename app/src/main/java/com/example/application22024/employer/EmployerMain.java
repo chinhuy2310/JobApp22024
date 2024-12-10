@@ -72,6 +72,8 @@ public class EmployerMain extends AppCompatActivity {
         LinearLayout menuItem1 = findViewById(R.id.menu_item1);
         LinearLayout menuItem2 = findViewById(R.id.menu_item2);
         LinearLayout menuItem3 = findViewById(R.id.menu_item3);
+        LinearLayout menuItem4 = findViewById(R.id.menu_item4);
+        LinearLayout menuItem5 = findViewById(R.id.menu_item5);
         LinearLayout logout = findViewById(R.id.Logout);
 
         menuItem1.setOnClickListener(v -> {
@@ -80,12 +82,22 @@ public class EmployerMain extends AppCompatActivity {
         });
 
         menuItem2.setOnClickListener(v -> {
-            Toast.makeText(this, "Menu 2 được chọn!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Update soon!", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.END);
         });
 
         menuItem3.setOnClickListener(v -> {
-            Toast.makeText(this, "Menu 3 được chọn!", Toast.LENGTH_SHORT).show();
+            // 启动咨询页面
+            Intent intent = new Intent(EmployerMain.this, ConsultationActivity.class);
+            startActivity(intent);
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+        menuItem4.setOnClickListener(v -> {
+            Toast.makeText(this, "Update soon!", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+        menuItem5.setOnClickListener(v -> {
+            Toast.makeText(this, "Update soon!", Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.END);
         });
         logout.setOnClickListener(v -> {
@@ -93,18 +105,11 @@ public class EmployerMain extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
         });
 
-
-
-        // Set up Navigation Drawer
-//        setupNavigationDrawer();
-
         // Set up RecyclerView
         setupRecyclerView();
 
 
-//        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
         int userId = SharedPrefManager.getInstance(this).getUserId();
-//        Log.e("userid", String.valueOf(userId));
         if (userId != -1) {
             // Gọi API để lấy thông tin công ty của Employer dựa trên userId
             getCompanies(userId);
@@ -112,13 +117,13 @@ public class EmployerMain extends AppCompatActivity {
             // Xử lý nếu không có user_id (lỗi)
             Toast.makeText(this, "User ID not found", Toast.LENGTH_SHORT).show();
         }
+        // cuộn màn hình để làm mới dữ liệu
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getCompanies(userId);
             }
         });
-//        Log.e("CompanyListSize", "Fetched " + companyList.size() + " companies.");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -176,7 +181,7 @@ public class EmployerMain extends AppCompatActivity {
         // Set listener
         openMenuButton.setOnClickListener(v -> {
             if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.openDrawer(GravityCompat.END); // Mở menu bên trái
+                drawerLayout.openDrawer(GravityCompat.END); // Mở menu bên phải
             } else {
                 drawerLayout.closeDrawer(GravityCompat.END); // Đóng menu nếu đang mở
             }
@@ -188,24 +193,6 @@ public class EmployerMain extends AppCompatActivity {
         });
 
     }
-
-    // Set up Navigation Drawer and its item click handling
-//    private void setupNavigationDrawer() {
-//        NavigationView navigationView = findViewById(R.id.navigation_view);
-//        navigationView.setNavigationItemSelectedListener(item -> {
-//            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-//                drawerLayout.closeDrawer(GravityCompat.END);
-//            }
-//            if (item.getItemId() == R.id.addRecruitment) {
-//                showCompanySelectionDialog();
-//                return true;
-//            } else if (item.getItemId() == R.id.Logout) {
-//                showLogoutConfirmation();
-//                return true;
-//            }
-//            return false;
-//        });
-//    }
 
 
     // Set up RecyclerView with its layout and adapter
