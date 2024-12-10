@@ -1,91 +1,86 @@
 package com.example.application22024.employee;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.application22024.First_Activity;
+import com.example.application22024.MyApplication;
 import com.example.application22024.R;
+import com.example.application22024.model.DataViewModel;
 
 public class Page4 extends Fragment {
+    private LinearLayout customerServiceLayout;
+    private LinearLayout calendarLayout;  // 캘린더 레이아웃 추가
+    private LinearLayout profileLayout;   // 프로필 레이아웃 추가
+    private LinearLayout appliedLayout;   // 내 지원 현황 레이아웃 추가
+    private DataViewModel viewModel;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page4, container, false);
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
-        Button userInfoButton = view.findViewById(R.id.user_info);
-        Button editInfoButton = view.findViewById(R.id.edit_info);
-        Button aboutUsButton = view.findViewById(R.id.about_us);
-        Button privacyButton = view.findViewById(R.id.privacy);
-        Button generalButton = view.findViewById(R.id.general);
+        customerServiceLayout = view.findViewById(R.id.CustomerServiceLayout); // 고객센터 레이아웃
+        customerServiceLayout.setOnClickListener(v -> openCustomerServicePage()); // 고객센터 클릭 시 Q&A 페이지로 이동
+
+        // 캘린더 클릭 시 CalendarActivity로 이동
+        calendarLayout = view.findViewById(R.id.calendarLayout); // 캘린더 레이아웃
+        calendarLayout.setOnClickListener(v -> openCalendarPage()); // 캘린더 클릭 시 CalendarActivity로 이동
+
+        // 프로필 클릭 시 ProfileActivity로 이동
+        profileLayout = view.findViewById(R.id.ProfileLayout); // 프로필 레이아웃
+        profileLayout.setOnClickListener(v -> openProfilePage()); // 프로필 클릭 시 ProfileActivity로 이동
+
+        appliedLayout = view.findViewById(R.id.applied);
+        appliedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MyApplicationsActivity.class);
+                startActivity(intent);
+            }
+        });
+        // Khởi tạo Button
         Button logoutButton = view.findViewById(R.id.logout);
-
-        // 用户信息按钮点击事件
-        userInfoButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-            intent.putExtra("user_id", 1); // 传递用户 ID
-            startActivity(intent);
-        });
-
-        // 修改信息按钮点击事件
-        editInfoButton.setOnClickListener(v -> {
-            // 跳转到编辑信息页面
-            Toast.makeText(getActivity(), "Edit Information clicked", Toast.LENGTH_SHORT).show();
-        });
-
-        // 关于我们按钮点击事件
-        aboutUsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AboutUsActivity.class);
-            startActivity(intent);
-        });
-
-        // 隐私按钮点击事件
-        privacyButton.setOnClickListener(v -> {
-            // 显示隐私政策
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Privacy Policy")
-                    .setMessage("This is the privacy policy content.")
-                    .setPositiveButton("OK", null)
-                    .show();
-        });
-
-        // 通用设置按钮点击事件
-        generalButton.setOnClickListener(v -> {
-            // 跳转到通用设置页面
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("General Settings")
-                    .setMessage("Change language, notifications, and other settings.")
-                    .setPositiveButton("OK", null)
-                    .show();
-        });
-
-        // 注销按钮点击事件
-        logoutButton.setOnClickListener(v -> {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to log out?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        Intent intent = new Intent(getActivity(), First_Activity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 清除所有活动
-                        startActivity(intent);
-                        getActivity().finish();
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), First_Activity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa tất cả các hoạt động trước
+                startActivity(intent);
+                viewModel.reset();
+                // Gọi finish() trên Activity đang mở
+                getActivity().finish();
+            }
         });
 
         return view;
+    }
+
+    // 고객센터 페이지로 이동하는 메서드
+    private void openCustomerServicePage() {
+        Intent intent = new Intent(getContext(), CustomerService.class);
+        startActivity(intent);
+    }
+
+    // 캘린더 페이지로 이동하는 메서드
+    private void openCalendarPage() {
+        Intent intent = new Intent(getActivity(), CalendarActivity.class);
+        startActivity(intent);
+    }
+
+    // 프로필 페이지로 이동하는 메서드
+    private void openProfilePage() {
+        Intent intent = new Intent(getActivity(), Profile.class);
+        startActivity(intent);
     }
 }

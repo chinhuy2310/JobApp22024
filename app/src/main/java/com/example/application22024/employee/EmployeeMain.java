@@ -62,7 +62,7 @@ public class EmployeeMain extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 inputMethodManager.hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
-                checkForUnsavedChangesAndSwitch(position);
+
             }
 
             @Override
@@ -74,56 +74,9 @@ public class EmployeeMain extends AppCompatActivity {
             }
         });
 
-        // kiểm tra thay đổi của page2 khi chuyển trang
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager2.SCROLL_STATE_DRAGGING && viewPager.getCurrentItem() == 1) {
-                    Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f1");
-                    if (currentFragment instanceof Page3) {
-                        Page3 page2Fragment = (Page3) currentFragment;
-                        if (page2Fragment.isEdited()) {
-                            isSwipingFromPage2 = true;
-                        }
-                    }
-                } else if (state == ViewPager2.SCROLL_STATE_IDLE && isSwipingFromPage2) {
-                    isSwipingFromPage2 = false;
-                    showSaveAlertDialog((Page3) getSupportFragmentManager().findFragmentByTag("f1"), viewPager.getCurrentItem());
-                }
-            }
-        });
     }
 
-    // kiểm tra thay đổi của page2 khi chuyển trang
-    private void checkForUnsavedChangesAndSwitch(int newPosition) {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentByTag("f" + viewPager.getCurrentItem());
-        if (currentFragment instanceof Page3) {
-            Page3 page3Fragment = (Page3) currentFragment;
-            if (page3Fragment.isEdited()) {
-                showSaveAlertDialog(page3Fragment, newPosition);
-            } else {
-                viewPager.setCurrentItem(newPosition, true);
-            }
-        } else {
-            viewPager.setCurrentItem(newPosition, true);
-        }
-    }
 
-    // hiển thị thông báo xác nhận lưu thông tin đã thay đổi khi chuyển trang
-    private void showSaveAlertDialog(Page3 page3Fragment, int newPosition) {
-        new AlertDialog.Builder(this)
-                .setTitle("Save?")
-                .setMessage("You have unsaved changes. Do you want to save before switching pages?")
-                .setPositiveButton("save", (dialog, which) -> {
-                    page3Fragment.saveChanges();
-                    viewPager.setCurrentItem(newPosition, true);
-                })
-                .setNegativeButton("don't save", (dialog, which) -> {
-                    viewPager.setCurrentItem(newPosition, true);
-                })
-                .setCancelable(false)
-                .show();
-    }
 
     @SuppressLint("MissingSuperCall")
     @Override

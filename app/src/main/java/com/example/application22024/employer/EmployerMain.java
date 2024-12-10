@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.application22024.APIService;
-import com.example.application22024.DatabaseHelper;
 import com.example.application22024.First_Activity;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
@@ -32,7 +31,7 @@ import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.CompanyAdapter;
 import com.example.application22024.model.Company;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -57,13 +56,13 @@ public class EmployerMain extends AppCompatActivity {
 
     private List<Company> companyList;
     private boolean backPressedOnce = false;
-    RegistrationViewModel viewModel;
+    DataViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_employer);
-        viewModel = ((MyApplication) getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getApplication()).getDataViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
 
         // Initialize views
@@ -78,7 +77,7 @@ public class EmployerMain extends AppCompatActivity {
 
 //        int userId = getIntent().getIntExtra("user_id", -1); // Nếu không có user_id thì mặc định là -1
         int userId = SharedPrefManager.getInstance(this).getUserId();
-        Log.e("userid", String.valueOf(userId));
+//        Log.e("userid", String.valueOf(userId));
         if (userId != -1) {
             // Gọi API để lấy thông tin công ty của Employer dựa trên userId
             getCompanies(userId);
@@ -110,14 +109,14 @@ public class EmployerMain extends AppCompatActivity {
         call.enqueue(new Callback<List<Company>>() {
             @Override
             public void onResponse(Call<List<Company>> call, Response<List<Company>> response) {
-                Log.e("get company with userid: ", String.valueOf(userId));
+//                Log.e("get company with userid: ", String.valueOf(userId));
                 if (response.isSuccessful() && response.body() != null) {
                     List<Company> companies = response.body();
                     // Cập nhật danh sách công ty và thông báo adapter thay đổi dữ liệu
                     companyList.clear();  // Xóa danh sách công ty cũ
                     companyList.addAll(companies);
                     swipeRefreshLayout.setRefreshing(false);
-                    Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
+//                    Log.e("CompanyListSize", "Fetched2 " + companyList.size() + " companies.");
 
                     adapter.notifyDataSetChanged();  // Thông báo adapter cập nhật lại dữ liệu
                     updateUI();  // Cập nhật giao diện (nếu cần)
@@ -167,7 +166,12 @@ public class EmployerMain extends AppCompatActivity {
             if (item.getItemId() == R.id.addRecruitment) {
                 showCompanySelectionDialog();
                 return true;
-            } else if (item.getItemId() == R.id.Logout) {
+            } else if (item.getItemId() == R.id.consult) {
+                // 启动咨询页面
+                Intent intent = new Intent(EmployerMain.this, ConsultationActivity.class);
+                startActivity(intent);
+                return true;
+            }else if (item.getItemId() == R.id.Logout) {
                 showLogoutConfirmation();
                 return true;
             }

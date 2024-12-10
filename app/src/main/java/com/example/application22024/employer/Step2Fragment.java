@@ -5,7 +5,6 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -28,11 +26,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.SimpleDateFormat;
@@ -47,7 +44,7 @@ public class Step2Fragment extends Fragment {
     private EditText recruitmentEndTime, startTime, endTime, workType, salary, recruitmentCount, workPeriod, workDay;
     private Spinner partsOfDay1, partsOfDay2, salaryType;
     private Calendar calendar;
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     private CheckBox checkBoxOption1, checkBoxOption2, checkBoxOption3;
 
 
@@ -62,7 +59,7 @@ public class Step2Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
         // Initialize views
         initializeViews(view);
@@ -95,7 +92,7 @@ public class Step2Fragment extends Fragment {
             viewModel.setWorkDay(workDay.getText().toString());
             viewModel.setRecruitmentEndTime(recruitmentEndTime.getText().toString());
 
-            Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
+//            Log.e("", viewModel.getSelectedJob().getCanNegotiableTime());
             if ("Yes".equals(viewModel.getSelectedJob().getCanNegotiableTime())) {
                 checkBoxOption1.setChecked(true);
                 viewModel.setOption1Checked(true);
@@ -183,7 +180,7 @@ public class Step2Fragment extends Fragment {
 
     private void setEventListeners() {
         // Set next button listener
-        nextButton.setOnClickListener(v -> validateAndNavigate());
+        nextButton.setOnClickListener(v -> navigateToNextFragment());
         //
         recruitmentEndTime.setOnClickListener(v -> showDatePickerDialog());
         // Set arrow click listeners to open Spinners
@@ -207,7 +204,7 @@ public class Step2Fragment extends Fragment {
         if (viewModel.getSelectedJob() != null) {
             // Lấy workField từ ViewModel
             String selectedSalaryType = viewModel.getSelectedJob().getSalaryType();
-            Log.e("Step2Fragment", "Selected Salary Type: " + selectedSalaryType);
+//            Log.e("Step2Fragment", "Selected Salary Type: " + selectedSalaryType);
             // Tìm chỉ số của workField trong mảng options1
             for (int i = 0; i < options1.length; i++) {
                 if (options1[i].equals(selectedSalaryType)) {
@@ -242,26 +239,6 @@ public class Step2Fragment extends Fragment {
         endTime.setOnClickListener(v -> showCustomTimePickerDialog(false)); // End time
     }
 
-    //        //muốn mã ngắn gọn thì sử dụng showTimePickerDialog() thay cho showCustomTimePickerDialog()
-//        private void showTimePickerDialog(final boolean isStartTime) {
-//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//        int minute = calendar.get(Calendar.MINUTE);
-//
-//        TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), new TimePickerDialog.OnTimeSetListener() {
-//            @Override
-//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                String formattedTime = String.format("%02d:%02d", hourOfDay, minute);
-//                if (isStartTime) {
-//                    startTime.setText(formattedTime);
-//                    updateSpinnerAndEditText(hourOfDay, partsOfDay1); // Update Spinner and time for start
-//                } else {
-//                    endTime.setText(formattedTime);
-//                    updateSpinnerAndEditText(hourOfDay, partsOfDay2); // Update Spinner and time for end
-//                }
-//            }
-//        }, hour, minute, true); // Use 24-hour format
-//        timePickerDialog.show();
-//    }
     private void showCustomTimePickerDialog(final boolean isStartTime) {
         // Inflate the custom time picker layout
         View timePickerView = LayoutInflater.from(requireContext()).inflate(R.layout.time_picker_dialog, null);
@@ -366,9 +343,6 @@ public class Step2Fragment extends Fragment {
                     String selectedDate = selectedYear + "-" + (selectedMonth + 1) + "-" + selectedDay;
                     recruitmentEndTime.setText(selectedDate);
                 }, year, month, day);
-        // 设置日期范围
-        calendar.add(Calendar.DATE, 1); // 不允许选择今天之前的日期
-        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
 
         datePickerDialog.show();
     }
@@ -388,23 +362,6 @@ public class Step2Fragment extends Fragment {
         }
     }
 
-    //验证输入字段
-    private void validateAndNavigate() {
-        // 获取输入值
-        String recruitmentCountValue = recruitmentCount.getText().toString().trim();
-        String salaryValue = salary.getText().toString().trim();
-        String startTimeValue = startTime.getText().toString().trim();
-        String endTimeValue = endTime.getText().toString().trim();
-
-        // 检查必填字段是否为空
-        if (recruitmentCountValue.isEmpty() || salaryValue.isEmpty() || startTimeValue.isEmpty() || endTimeValue.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 所有字段验证通过，跳转到下一页
-        navigateToNextFragment();
-    }
     public void hideKeyboard() {
         View view = requireActivity().getCurrentFocus();
         if (view != null) {

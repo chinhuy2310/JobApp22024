@@ -7,8 +7,12 @@
     <item android:title="회사/기업 추가" />
     <item android:title="알림 설정" />
     <item android:title="....." />
-    <item android:title="문의 하기" />
-    <item android:title="계정 설정" />
+    <item
+        android:id="@+id/consult"
+        android:title="문의 하기" />
+    <item
+
+        android:title="계정 설정" />
     <item
         android:id="@+id/Logout"
         android:icon="@drawable/ic_logout"

@@ -1,6 +1,5 @@
 package com.example.application22024.employer;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,18 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.model.Company;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 public class Step1Fragment extends Fragment {
 
@@ -36,7 +32,7 @@ public class Step1Fragment extends Fragment {
     private TextView nonBinary, male, female, item1, item2, item3, item4, item5, item6;
     private Button nextButton;
 
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
 
 
     @Nullable
@@ -48,7 +44,7 @@ public class Step1Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
 
         // Các trường nhập liệu
@@ -66,7 +62,7 @@ public class Step1Fragment extends Fragment {
             viewModel.setCompanyName(companyNameEditText.getText().toString());
             viewModel.setContact(contactEditText.getText().toString());
         } else {
-            Log.e("selectedCompany", "is null");
+//            Log.e("selectedCompany", "is null");
         }
         if (viewModel.getSelectedJob() != null) {
             jobTitleEditText.setText(viewModel.getSelectedJob().getTitle());
@@ -110,7 +106,7 @@ public class Step1Fragment extends Fragment {
             }
 
         } else {
-            Log.e("selectedJob", "is null");
+//            Log.e("selectedJob", "is null");
         }
         // Gọi phương thức chung cho từng trường
         setTextChangedListener(jobTitleEditText, viewModel::setRecruitmentTitle);
@@ -210,19 +206,8 @@ public class Step1Fragment extends Fragment {
 
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
-            // 提交表单前，给用户一个确认提示窗口
-            new AlertDialog.Builder(getContext())
-                    .setMessage("Do you confirm the submission of the information?")
-                    .setPositiveButton("YES", (dialog, which) -> {
-
-                        if (isFormValid()){ //检查这些字段是否符合要求
-                            // Chuyển sang Fragment tiếp theo
-                            ((RegistrationActivity) getActivity()).showNextFragment(new Step2Fragment());
-                        }else {
-                            Toast.makeText(getContext(), "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
-                        }})
-                    .setNegativeButton("NO", null)
-                    .show();
+            // Chuyển sang Fragment tiếp theo
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step2Fragment());
         });
     }
 
@@ -359,9 +344,4 @@ public class Step1Fragment extends Fragment {
         }
     }
 
-    private boolean isFormValid() {
-        return !companyNameEditText.getText().toString().isEmpty() &&
-                !contactEditText.getText().toString().isEmpty() &&
-                !jobTitleEditText.getText().toString().isEmpty();
-    }
 }

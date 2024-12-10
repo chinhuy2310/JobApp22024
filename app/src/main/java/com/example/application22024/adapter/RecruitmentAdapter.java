@@ -14,7 +14,7 @@ import com.example.application22024.JobDetails;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
 import com.example.application22024.model.Job;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,12 +25,13 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
 
     private Context context;
     private List<Job> jobList;
-    RegistrationViewModel viewModel;
+    DataViewModel viewModel;
+
     // Constructor
     public RecruitmentAdapter(Context context, List<Job> jobList) {
         this.context = context;
         this.jobList = jobList;
-        viewModel =((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
+        viewModel = ((MyApplication) context.getApplicationContext()).getDataViewModel();
     }
 
     @NonNull
@@ -47,11 +48,16 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
 
         // Bind data to the views
         holder.jobTitleTextView.setText(recruitment.getTitle());
-        holder.salaryTextView.setText(String.valueOf(recruitment.getSalary()));
+        holder.salaryTextView.setText(String.format("%,d ₩", recruitment.getSalary()));
         holder.salaryType.setText(recruitment.getSalaryType());
         holder.recruitmentDeadline.setText(recruitment.getRecruitmentEnd());
         holder.startTime.setText(formatTimeToHoursAndMinutes(recruitment.getWorkHoursStart()));
         holder.endTime.setText(formatTimeToHoursAndMinutes(recruitment.getWorkHoursEnd()));
+        if (recruitment.getNum_applicants() > 0) {
+            holder.numberOfApplicants.setText("지원자 수: " + recruitment.getNum_applicants());
+        }else {
+            holder.numberOfApplicants.setVisibility(View.GONE);
+        }
 
 
         // Xử lý sự kiện click để chuyển sang trang chi tiết của công việc
@@ -80,6 +86,7 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
         TextView startTime;
         TextView endTime;
         TextView salaryType;
+        TextView numberOfApplicants;
 
         public RecruitmentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -89,8 +96,10 @@ public class RecruitmentAdapter extends RecyclerView.Adapter<RecruitmentAdapter.
             startTime = itemView.findViewById(R.id.startTime);
             endTime = itemView.findViewById(R.id.endTime);
             salaryType = itemView.findViewById(R.id.salaryType);
+            numberOfApplicants = itemView.findViewById(R.id.Number_of_applicants);
         }
     }
+
     private String formatTimeToHoursAndMinutes(String time) {
         try {
             // Định dạng chuỗi thời gian đầu vào

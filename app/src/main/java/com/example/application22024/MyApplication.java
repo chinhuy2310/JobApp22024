@@ -4,20 +4,20 @@ import android.app.Application;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 public class MyApplication extends Application {
-    private static RegistrationViewModel registrationViewModel;
+    private static DataViewModel dataViewModel;
 
     @Override
     public void onCreate() {
         super.onCreate();
         // Tạo ViewModel chung cho toàn ứng dụng
-        registrationViewModel = new ViewModelProvider.AndroidViewModelFactory(this)
-                .create(RegistrationViewModel.class);
+        dataViewModel = new ViewModelProvider.AndroidViewModelFactory(this)
+                .create(DataViewModel.class);
     }
 
-    public static RegistrationViewModel getRegistrationViewModel() {
-        return registrationViewModel;
+    public static DataViewModel getDataViewModel() {
+        return dataViewModel;
     }
 }

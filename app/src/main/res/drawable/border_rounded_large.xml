@@ -1,7 +1,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
+    <solid android:color="#C3AADD" />
     <stroke
         android:width="1dp"
-        android:color="#808080" /> <!-- Màu của viền với độ trong suốt -->
+        android:color="#00000000" /> <!-- Màu của viền với độ trong suốt -->
     <corners android:radius="30dp" /> <!-- Độ cong các góc -->
 </shape>

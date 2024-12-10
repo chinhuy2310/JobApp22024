@@ -22,10 +22,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.model.CompanyJobItem;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,173 +36,143 @@ import retrofit2.Response;
 public class Page1AndSearchAdapter extends RecyclerView.Adapter<Page1AndSearchAdapter.ViewHolder> {
 
     private List<CompanyJobItem> companyJobItems;
-    private Context context; // Context để khởi chạy Activity
-    RegistrationViewModel viewModel;
-    APIService apiService;
+    private Context context;
+    private DataViewModel viewModel;
+    private APIService apiService;
     private int layoutType;
+
+    // Map để ánh xạ salaryType với màu sắc
+    private static final Map<String, Integer> SALARY_TYPE_COLORS = new HashMap<>();
+
+    static {
+        SALARY_TYPE_COLORS.put("시급", Color.parseColor("#f76211"));
+        SALARY_TYPE_COLORS.put("일당", Color.parseColor("#11bef7"));
+        SALARY_TYPE_COLORS.put("월급", Color.parseColor("#ef2cf2"));
+        SALARY_TYPE_COLORS.put("연봉", Color.parseColor("#4a43fa"));
+    }
+
+    // Mặc định màu
+    private static final int DEFAULT_COLOR = Color.parseColor("#000000");
+    private static final int BACKGROUND_COLOR = Color.parseColor("#FFFFFF");
 
     public Page1AndSearchAdapter(Context context, List<CompanyJobItem> companyJobItems, int layoutType) {
         this.context = context;
         this.companyJobItems = companyJobItems;
         this.layoutType = layoutType;
-        viewModel = ((MyApplication) context.getApplicationContext()).getRegistrationViewModel();
+        viewModel = ((MyApplication) context.getApplicationContext()).getDataViewModel();
         apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        if (layoutType == 1) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_on_search, parent, false);
-        } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_on_page1, parent, false);
-        }
+        int layoutRes = layoutType == 1 ? R.layout.item_on_search : R.layout.item_on_page1;
+        View view = LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CompanyJobItem item = companyJobItems.get(position);
+        bindJobDetails(holder, item);
+        bindSalaryType(holder, item);
+        bindBookmark(holder, item, position);
+    }
+
+    private void bindJobDetails(ViewHolder holder, CompanyJobItem item) {
+        // Gán các thông tin công ty và công việc vào View
+        holder.companyNameTextView.setText(item.getCompany_name());
+        holder.companyAddressTextView.setText(item.getAddress());
+        holder.jobTitleTextView.setText(item.getTitle());
+        holder.jobSalaryTextView.setText(String.format("%,d ₩", item.getSalary()));
 
         if (item.getCompany_image() != null) {
-            holder.comapnyImage.setVisibility(View.VISIBLE);
-            String baseUrl = "http://10.0.2.2:3000"; // Địa chỉ gốc
-            String relativePath = item.getCompany_image();
-            String fullImageUrl = baseUrl + relativePath; // Ghép URL đầy đủ
+            String fullImageUrl = "http://10.0.2.2:3000" + item.getCompany_image();
             Picasso.get().load(fullImageUrl).into(holder.comapnyImage);
-//            Log.e("imageUrl", fullImageUrl);
+            holder.comapnyImage.setVisibility(View.VISIBLE);
         } else {
-            // Load a default image if the avatar URL is empty
-//            Picasso.get().load(R.drawable.ic_launcher_background).into(holder.comapnyImage);
             holder.comapnyImage.setVisibility(View.GONE);
         }
 
         if (layoutType == 0) {
-            holder.workField.setText(companyJobItems.get(position).getWorkField());
-            holder.workType.setText(companyJobItems.get(position).getWorkType());
-            holder.period.setText(companyJobItems.get(position).getWorkPeriod());
-        } else {
-            Log.e("layoutType", "layoutType is not 0");
+            holder.workField.setText(item.getWorkField());
+            holder.workType.setText(item.getWorkType());
+            holder.period.setText(item.getWorkPeriod());
         }
+    }
 
+    private void bindSalaryType(ViewHolder holder, CompanyJobItem item) {
+        String salaryType = item.getSalaryType();
+        int color = SALARY_TYPE_COLORS.getOrDefault(salaryType, DEFAULT_COLOR);
 
-        // Gán dữ liệu vào các view trong item
-        holder.companyNameTextView.setText(item.getCompany_name());
-        holder.companyAddressTextView.setText(item.getAddress());
-        holder.jobTitleTextView.setText(item.getTitle());
-        int number = item.getSalary();
-        String formattedNumber = String.format("%,d", number) + " ₩";
-        holder.jobSalaryTextView.setText(formattedNumber);
-
-
-        // Tạo một GradientDrawable để làm nền và stroke cho TextView
         GradientDrawable drawable = new GradientDrawable();
-        drawable.setShape(GradientDrawable.RECTANGLE); // Chọn hình dạng chữ nhật
-        drawable.setCornerRadius(16);  // Đặt bán kính góc
-
-        String value = item.getSalaryType();
-
-        // Kiểm tra giá trị chuỗi và thay đổi màu stroke và màu chữ
-        if (value.equals("시급")) {
-            drawable.setStroke(1, Color.parseColor("#f76211"));  // Màu stroke xanh
-//            drawable.setColor(Color.parseColor("#E0E0FF"));  // Màu nền sáng xanh
-            holder.jobSalaryTypeTextView.setTextColor(Color.parseColor("#f76211"));  // Màu chữ xanh
-        } else if (value.equals("일당")) {
-            drawable.setStroke(1, Color.parseColor("#11bef7"));  // Màu stroke vàng
-//            drawable.setColor(Color.parseColor("#FFF9C4"));  // Màu nền sáng vàng
-            holder.jobSalaryTypeTextView.setTextColor(Color.parseColor("#11bef7"));  // Màu chữ vàng
-        } else if (value.equals("월급")) {
-            drawable.setStroke(1, Color.parseColor("#ef2cf2"));  // Màu stroke đỏ
-//            drawable.setColor(Color.parseColor("#FFCDD2"));  // Màu nền sáng đỏ
-            holder.jobSalaryTypeTextView.setTextColor(Color.parseColor("#ef2cf2"));  // Màu chữ đỏ
-        } else if (value.equals("연봉")) {
-            drawable.setStroke(1, Color.parseColor("#4a43fa"));  // Màu stroke đỏ
-//            drawable.setColor(Color.parseColor("#FFCDD2"));  // Màu nền sáng đỏ
-            holder.jobSalaryTypeTextView.setTextColor(Color.parseColor("#4a43fa"));  // Màu chữ đỏ
-        } else {
-            drawable.setStroke(1, Color.parseColor("#000000"));  // Màu stroke đen
-            drawable.setColor(Color.parseColor("#FFFFFF"));  // Màu nền trắng
-            holder.jobSalaryTypeTextView.setTextColor(Color.parseColor("#000000"));  // Màu chữ đen
+        drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setCornerRadius(16);
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//        }
+        if (layoutType == 1) {
+            drawable.setStroke(1, color);
         }
+        drawable.setColor(BACKGROUND_COLOR);
 
-        // Áp dụng GradientDrawable làm background cho TextView
-        holder.jobSalaryTypeTextView.setText(item.getSalaryType());
+        holder.jobSalaryTypeTextView.setTextColor(color);
+        holder.jobSalaryTypeTextView.setText(salaryType);
         holder.jobSalaryTypeTextView.setBackground(drawable);
+    }
 
-
+    private void bindBookmark(ViewHolder holder, CompanyJobItem item, int position) {
         int saved = item.getIs_saved();
         holder.bookmarkImageView.setImageResource(saved == 1 ? R.drawable.ic_bookmark2 : R.drawable.ic_bookmark);
+
         holder.bookmarkImageView.setOnClickListener(v -> {
-            // Cập nhật trạng thái lưu và gửi yêu cầu API
-            int newSavedStatus = saved == 1 ? 0 : 1; // Nếu đang lưu thì xóa, nếu chưa lưu thì lưu
-            item.setIs_saved(newSavedStatus); // Cập nhật lại trạng thái trong item
-
-            // Cập nhật hình ảnh bookmark
+            int newSavedStatus = saved == 1 ? 0 : 1;
+            item.setIs_saved(newSavedStatus);
             holder.bookmarkImageView.setImageResource(newSavedStatus == 1 ? R.drawable.ic_bookmark2 : R.drawable.ic_bookmark);
-            notifyItemChanged(position);  // Cập nhật lại item tại vị trí hiện tại
-
-            // Gửi yêu cầu API để lưu hoặc xóa bài viết
-            updateBookmarkStatus(item); // Cập nhật trạng thái lên server (API)
+            notifyItemChanged(position);
+            updateBookmarkStatus(item);
         });
 
-
         holder.itemView.setOnClickListener(v -> {
-            viewModel.setSelectedCompanyJobItem(companyJobItems.get(position));
+            viewModel.setSelectedCompanyJobItem(item);
             Intent intent = new Intent(context, JobDetails.class);
             intent.putExtra("userType", "Employee");
             context.startActivity(intent);
             saveRecentlyViewed(item);
         });
-
-
     }
 
     private void updateBookmarkStatus(CompanyJobItem item) {
-        int userId = SharedPrefManager.getInstance(context).getUserId(); // Lấy userId từ SharedPreferences
-//        Log.e("Bookmark", "User ID: " + userId);
-        int jobId = item.getJob_id(); // ID của công việc
-        apiService.updateBookmarkStatus(userId, jobId)
-                .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            // Xử lý thành công (Thông báo cho người dùng, hoặc cập nhật giao diện)
-//                            Log.d("Bookmark", "Bookmark updated successfully!");
-                        } else {
-                            // Xử lý lỗi phản hồi không thành công
-                            Log.e("Bookmark", "Response code: " + response.code());
-                        }
-                    }
+        int userId = SharedPrefManager.getInstance(context).getUserId();
+        int jobId = item.getJob_id();
+        apiService.updateBookmarkStatus(userId, jobId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Bookmark", "Response code: " + response.code());
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        // Xử lý khi có lỗi kết nối (Ví dụ: mạng không ổn định)
-                        Log.e("Bookmark", "Network error: " + t.getMessage());
-                    }
-                });
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("Bookmark", "Network error: " + t.getMessage());
+            }
+        });
     }
 
     private void saveRecentlyViewed(CompanyJobItem item) {
         int userId = SharedPrefManager.getInstance(context).getUserId();
-        int jobId = item.getJob_id(); // ID của công việc
-        apiService.saveRecentlyViewed(userId, jobId)
-                .enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            // Xử lý thành công
-                        } else {
-                            // Xử lý lỗi phản hồi không thành công
-                        }
-                    }
+        int jobId = item.getJob_id();
+        apiService.saveRecentlyViewed(userId, jobId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // Xử lý thành công
+            }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        // Xử lý khi có lỗi kết nối (Ví dụ: mạng không ổn định)
-                        Log.e("Bookmark", "Network error: " + t.getMessage());
-                    }
-                });
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("RecentlyViewed", "Network error: " + t.getMessage());
+            }
+        });
     }
 
     @Override
@@ -209,13 +181,8 @@ public class Page1AndSearchAdapter extends RecyclerView.Adapter<Page1AndSearchAd
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView companyNameTextView;
-        TextView companyAddressTextView;
-        TextView jobTitleTextView;
-        TextView jobSalaryTextView;
-        TextView jobSalaryTypeTextView;
+        TextView companyNameTextView, companyAddressTextView, jobTitleTextView, jobSalaryTextView, jobSalaryTypeTextView, workField, workType, period;
         ImageView bookmarkImageView, comapnyImage;
-        TextView workField, workType, period;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -226,7 +193,6 @@ public class Page1AndSearchAdapter extends RecyclerView.Adapter<Page1AndSearchAd
             jobSalaryTypeTextView = itemView.findViewById(R.id.salaryType);
             bookmarkImageView = itemView.findViewById(R.id.bookmark);
             comapnyImage = itemView.findViewById(R.id.companyLogo);
-
             workField = itemView.findViewById(R.id.WorkField);
             workType = itemView.findViewById(R.id.workType);
             period = itemView.findViewById(R.id.period);
