@@ -62,7 +62,7 @@
         <activity android:name=".employee.AddPostActivity" />
         <activity android:name=".employee.CustomerService" />
         <activity android:name=".employee.PostDetailActivity" />
-
+        <activity android:name=".employer.ConsultationActivity" />
     </application>
 
 </manifest>
