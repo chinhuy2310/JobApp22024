@@ -3,8 +3,9 @@
 
     <item
         android:id="@+id/addRecruitment"
+        android:icon="@drawable/ic_add"
         android:title="새 공고 등록" />
-    <item android:title="회사/기업 추가" />
+
     <item android:title="알림 설정" />
     <item android:title="....." />
     <item android:title="문의 하기" />
