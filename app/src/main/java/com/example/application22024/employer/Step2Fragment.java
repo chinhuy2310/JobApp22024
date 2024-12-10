@@ -19,6 +19,9 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Arrays;
 
 
 import androidx.annotation.NonNull;
@@ -33,8 +36,10 @@ import com.example.application22024.model.DataViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Step2Fragment extends Fragment {
@@ -46,7 +51,8 @@ public class Step2Fragment extends Fragment {
     private Calendar calendar;
     private DataViewModel viewModel;
     private CheckBox checkBoxOption1, checkBoxOption2, checkBoxOption3;
-
+    private List<TextView> selectedTextViews = new ArrayList<>();
+    private TextView textView1, textView2, textView3, textView4, textView5, textView6, textView7;
 
     // Inflate layout for fragment
     @Nullable
@@ -81,6 +87,8 @@ public class Step2Fragment extends Fragment {
             workType.setText(viewModel.getSelectedJob().getWorkType());
             workPeriod.setText(viewModel.getSelectedJob().getWorkPeriod());
             workDay.setText(viewModel.getSelectedJob().getWorkDays());
+            String returnedData = viewModel.getSelectedJob().getWorkDays();
+            selectPredefinedOptions(returnedData);
             recruitmentEndTime.setText(viewModel.getSelectedJob().getRecruitmentEnd());
 
             viewModel.setRecruitmentCount(recruitmentCount.getText().toString());
@@ -107,6 +115,7 @@ public class Step2Fragment extends Fragment {
             }
 
         }
+
         // Handle Work Arrangement
         workType.setFocusable(false);
         workType.setOnClickListener(v -> showBottomSheetDialog("workType"));
@@ -121,13 +130,6 @@ public class Step2Fragment extends Fragment {
         checkBoxOption2.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption2Checked(isChecked));
         checkBoxOption3.setOnCheckedChangeListener((buttonView, isChecked) -> viewModel.setOption3Checked(isChecked));
 
-        // Get the selected values from Spinners
-
-//        String selectedPartOfDay1 = partsOfDay1.getSelectedItem().toString();
-//        String selectedPartOfDay2 = partsOfDay2.getSelectedItem().toString();
-//        viewModel.setPartOfDay1(selectedPartOfDay1);
-//        viewModel.setPartOfDay2(selectedPartOfDay2);
-
         // Cập nhật giá trị từ các trường vào ViewModel
         setTextChangedListener(recruitmentCount, viewModel::setRecruitmentCount);
         setTextChangedListener(salary, viewModel::setSalary);
@@ -137,6 +139,72 @@ public class Step2Fragment extends Fragment {
         setTextChangedListener(workPeriod, viewModel::setWorkPeriod);
         setTextChangedListener(workDay, viewModel::setWorkDay);
         setTextChangedListener(recruitmentEndTime, viewModel::setRecruitmentEndTime);
+    }
+
+    // Hàm toggle để chọn hoặc bỏ chọn một ô
+    private void toggleOption(TextView textView) {
+        if (selectedTextViews.contains(textView)) {
+            // Nếu đã chọn, bỏ chọn và đổi lại màu nền
+            selectedTextViews.remove(textView);
+            textView.setBackgroundResource(R.drawable.border_rounded_small);
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+
+        } else {
+            // Nếu chưa chọn, chọn và đổi màu nền
+            selectedTextViews.add(textView);
+            textView.setBackgroundResource(R.drawable.border_rounded_small3);
+            textView.setTextColor(getResources().getColor(android.R.color.white));
+        }
+
+        // Hiển thị kết quả của tất cả các ô đã chọn vào một TextView khác (nếu cần)
+        displaySelectedOptions();
+    }
+
+    // Hàm hiển thị các ô được chọn
+    private void displaySelectedOptions() {
+        StringBuilder selectedText = new StringBuilder();
+
+        // Lặp qua danh sách các TextView đã chọn và lấy text
+        for (TextView textView : selectedTextViews) {
+            selectedText.append(textView.getText().toString()).append(", ");
+        }
+
+        // Hiển thị text vào một TextView khác (nếu cần)
+
+        if (selectedText.length() > 0) {
+            // Loại bỏ dấu ", " thừa ở cuối
+            selectedText.delete(selectedText.length() - 2, selectedText.length());
+        }
+        workDay.setText(selectedText.toString());
+    }
+
+    // Hàm để chọn sẵn các ô dựa trên dữ liệu trả về
+    private void selectPredefinedOptions(String returnedData) {
+        // Chia chuỗi dữ liệu trả về thành các phần tử
+        String[] options = returnedData.split(", ");
+
+        // Kiểm tra và chọn các ô tương ứng với dữ liệu trả về
+        if (Arrays.asList(options).contains(textView1.getText().toString())) {
+            toggleOption(textView1);  // Chọn ô 1
+        }
+        if (Arrays.asList(options).contains(textView2.getText().toString())) {
+            toggleOption(textView2);  // Chọn ô 2
+        }
+        if (Arrays.asList(options).contains(textView3.getText().toString())) {
+            toggleOption(textView3);  // Chọn ô 3
+        }
+        if (Arrays.asList(options).contains(textView4.getText().toString())) {
+            toggleOption(textView4);  // Chọn ô 4
+        }
+        if (Arrays.asList(options).contains(textView5.getText().toString())) {
+            toggleOption(textView5);  // Chọn ô 5
+        }
+        if (Arrays.asList(options).contains(textView6.getText().toString())) {
+            toggleOption(textView6);  // Chọn ô 6
+        }
+        if (Arrays.asList(options).contains(textView7.getText().toString())) {
+            toggleOption(textView7);  // Chọn ô 7
+        }
     }
 
     private void initializeViews(View view) {
@@ -158,6 +226,14 @@ public class Step2Fragment extends Fragment {
         checkBoxOption1 = view.findViewById(R.id.checkBoxOption1);
         checkBoxOption2 = view.findViewById(R.id.checkBoxOption2);
         checkBoxOption3 = view.findViewById(R.id.checkBoxOption3);
+
+        textView1 = view.findViewById(R.id.textView1);
+        textView2 = view.findViewById(R.id.textView2);
+        textView3 = view.findViewById(R.id.textView3);
+        textView4 = view.findViewById(R.id.textView4);
+        textView5 = view.findViewById(R.id.textView5);
+        textView6 = view.findViewById(R.id.textView6);
+        textView7 = view.findViewById(R.id.textView7);
 
     }
 
@@ -187,6 +263,14 @@ public class Step2Fragment extends Fragment {
         arrow.setOnClickListener(v -> salaryType.performClick());
         arrow1.setOnClickListener(v -> partsOfDay1.performClick());
         arrow2.setOnClickListener(v -> partsOfDay2.performClick());
+        // Lắng nghe sự kiện click của các ô
+        textView1.setOnClickListener(v -> toggleOption(textView1));
+        textView2.setOnClickListener(v -> toggleOption(textView2));
+        textView3.setOnClickListener(v -> toggleOption(textView3));
+        textView4.setOnClickListener(v -> toggleOption(textView4));
+        textView5.setOnClickListener(v -> toggleOption(textView5));
+        textView6.setOnClickListener(v -> toggleOption(textView6));
+        textView7.setOnClickListener(v -> toggleOption(textView7));
     }
 
     private void setUpSpinners() {
@@ -222,10 +306,18 @@ public class Step2Fragment extends Fragment {
 
     private void navigateToNextFragment() {
         String selectedSalaryType = salaryType.getSelectedItem().toString();
-        viewModel.setSelectedSalaryType(selectedSalaryType);
-        hideKeyboard();
-        // Navigate to the next fragment
-        ((RegistrationActivity) getActivity()).showNextFragment(new Step3Fragment());
+        if (viewModel.getSelectedJob() == null ||viewModel.getRecruitmentCount() == null ||
+                viewModel.getSalary() == null || viewModel.getStartTime() == null || viewModel.getEndTime() == null ||
+                viewModel.getWorkType() == null || viewModel.getWorkPeriod() == null ||
+                viewModel.getWorkDay() == null || viewModel.getRecruitmentCount() == null) {
+            Toast.makeText(getContext(), "Please fill in all the required information.", Toast.LENGTH_SHORT).show();
+        }else{
+
+            viewModel.setSelectedSalaryType(selectedSalaryType);
+            hideKeyboard();
+            // Navigate to the next fragment
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step3Fragment());
+        }
     }
 
 
@@ -309,10 +401,10 @@ public class Step2Fragment extends Fragment {
         if ("workType".equals(clickedItem)) {
             items = new String[]{"알바", "정규직", "계약직", "인턴", "주말알바", "기타"}; // Danh sách cho workType
         } else {
-            items = new String[]{"하루(1일)", "1주일이하", "1주일~1개월", "1개월~3개월", "3개월~6개월","6개월~1년","1년이상"}; // Danh sách cho workPeriod
+            items = new String[]{"하루(1일)", "1주일이하", "1주일~1개월", "1개월~3개월", "3개월~6개월", "6개월~1년", "1년이상"}; // Danh sách cho workPeriod
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),R.layout.list_item_center, items);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.list_item_center, items);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {

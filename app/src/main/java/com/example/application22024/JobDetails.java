@@ -35,9 +35,9 @@ import retrofit2.Response;
 
 public class JobDetails extends AppCompatActivity {
     private Toolbar toolbar;
-    private TextView dateTextview, titleTextview, companyTextview, salaryTypeTextview, salaryTextview, workDayTextview, startTimeTextview, endTimeTextview;
+    private TextView dateTextview, titleTextview, companyTextview, salaryTypeTextview, salaryTextview, workDayTextview1, startTimeTextview, endTimeTextview;
     private TextView recruitmentCountTextview, genderTextview, deadlineTextview, canNegotiableDayTextview, canNegotiableTimeTextview;
-    private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview, startTime2Textview, endTime2Textview;
+    private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview2, startTime2Textview, endTime2Textview;
     private TextView detailsTextview, addressTextview, companyTextview2, contactTextview;
     private LinearLayout viewOfEmployee, viewOfEmployer, applyButton, bookmarkAndShare;
     private RelativeLayout numberOfApplicants;
@@ -45,6 +45,7 @@ public class JobDetails extends AppCompatActivity {
     private ImageView applyImageView, bookmarkImageView, shareImageView;
     private APIService apiService;
     DataViewModel viewModel;
+    String getWorkDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +133,7 @@ public class JobDetails extends AppCompatActivity {
         companyTextview = findViewById(R.id.companyTextview);
         salaryTypeTextview = findViewById(R.id.salaryTypeTextview);
         salaryTextview = findViewById(R.id.salaryTextview);
-        workDayTextview = findViewById(R.id.work_day);
+        workDayTextview1 = findViewById(R.id.work_day);
         canNegotiableDayTextview = findViewById(R.id.canNegotiableDay);
         startTimeTextview = findViewById(R.id.start_time);
         endTimeTextview = findViewById(R.id.end_time);
@@ -143,7 +144,7 @@ public class JobDetails extends AppCompatActivity {
         salaryTypeTextview2 = findViewById(R.id.salaryTypeTextview2);
         salaryTextview2 = findViewById(R.id.salaryTextview2);
         workPeriodTextview = findViewById(R.id.work_period);
-        workDaysTextview = findViewById(R.id.work_days2);
+        workDaysTextview2 = findViewById(R.id.work_days2);
         startTime2Textview = findViewById(R.id.start_time2);
         endTime2Textview = findViewById(R.id.end_time2);
         detailsTextview = findViewById(R.id.detailsTextview);
@@ -222,7 +223,8 @@ public class JobDetails extends AppCompatActivity {
             int number = selectedJob.getSalary();
             String formattedNumber = String.format("%,d", number) + " ₩";
             salaryTextview.setText(formattedNumber);
-            workDayTextview.setText(selectedJob.getWorkDays());
+            getWorkDay = selectedJob.getWorkDays();
+            displaySelectedItems(getWorkDay);
             if (selectedJob.getCanNegotiableDays().equals("Yes")) {
                 canNegotiableDayTextview.setVisibility(View.VISIBLE);
             } else {
@@ -241,7 +243,7 @@ public class JobDetails extends AppCompatActivity {
             salaryTypeTextview2.setText(selectedJob.getSalaryType());
             salaryTextview2.setText(formattedNumber);
             workPeriodTextview.setText(selectedJob.getWorkPeriod());
-            workDaysTextview.setText(selectedJob.getWorkDays());
+            workDaysTextview2.setText(selectedJob.getWorkDays());
             startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
             endTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
             detailsTextview.setText(selectedJob.getDetails());
@@ -259,7 +261,8 @@ public class JobDetails extends AppCompatActivity {
             int number = selectedJob.getSalary();
             String formattedNumber = String.format("%,d", number) + " ₩";
             salaryTextview.setText(formattedNumber);
-            workDayTextview.setText(selectedJob.getWorkDays());
+            getWorkDay = selectedJob.getWorkDays();
+            displaySelectedItems(getWorkDay);
 //            Log.e("canNegotiableDays", selectedJob.getCanNegotiableDays());
             if (selectedJob.getCan_negotiable_days().equals("Yes")) {
                 canNegotiableDayTextview.setVisibility(View.VISIBLE);
@@ -279,7 +282,7 @@ public class JobDetails extends AppCompatActivity {
             salaryTypeTextview2.setText(selectedJob.getSalaryType());
             salaryTextview2.setText(formattedNumber);
             workPeriodTextview.setText(selectedJob.getWorkPeriod());
-            workDaysTextview.setText(selectedJob.getWorkDays());
+            workDaysTextview2.setText(selectedJob.getWorkDays());
             startTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursStart()));
             endTime2Textview.setText(formatTimeToHoursAndMinutes(selectedJob.getWorkHoursEnd()));
             detailsTextview.setText(selectedJob.getDetails());
@@ -288,7 +291,13 @@ public class JobDetails extends AppCompatActivity {
             contactTextview.setText(selectedJob.getContact());
         }
     }
-
+    private void displaySelectedItems(String getWorkDay) {
+        // Tách chuỗi thành một mảng các mục, phân tách bởi dấu phẩy
+        String[] itemsArray = getWorkDay.split(",");
+        // Hiển thị số lượng các mục đã chọn vào TextView số lượng
+        String selectedCount = "주" + itemsArray.length + "일";
+        workDayTextview1.setText(selectedCount);
+    }
     private void fetchApplicantsAndShowDialog(int jobId) {
         // Gọi API để lấy danh sách ứng viên
         Call<List<Applicant>> call = apiService.getApplicants(jobId);

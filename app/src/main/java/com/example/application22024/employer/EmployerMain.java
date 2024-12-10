@@ -67,9 +67,36 @@ public class EmployerMain extends AppCompatActivity {
 
         // Initialize views
         initViews();
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+//        LinearLayout customDrawerLayout = findViewById(R.id.custom_drawer_layout);
+        LinearLayout menuItem1 = findViewById(R.id.menu_item1);
+        LinearLayout menuItem2 = findViewById(R.id.menu_item2);
+        LinearLayout menuItem3 = findViewById(R.id.menu_item3);
+        LinearLayout logout = findViewById(R.id.Logout);
+
+        menuItem1.setOnClickListener(v -> {
+            showCompanySelectionDialog();
+            drawerLayout.closeDrawer(GravityCompat.END); // Đóng menu sau khi chọn
+        });
+
+        menuItem2.setOnClickListener(v -> {
+            Toast.makeText(this, "Menu 2 được chọn!", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+
+        menuItem3.setOnClickListener(v -> {
+            Toast.makeText(this, "Menu 3 được chọn!", Toast.LENGTH_SHORT).show();
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+        logout.setOnClickListener(v -> {
+            showLogoutConfirmation();
+            drawerLayout.closeDrawer(GravityCompat.END);
+        });
+
+
 
         // Set up Navigation Drawer
-        setupNavigationDrawer();
+//        setupNavigationDrawer();
 
         // Set up RecyclerView
         setupRecyclerView();
@@ -147,7 +174,13 @@ public class EmployerMain extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         // Set listener
-        openMenuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.END));
+        openMenuButton.setOnClickListener(v -> {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.END); // Mở menu bên trái
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.END); // Đóng menu nếu đang mở
+            }
+        });
 
         addNewRecruitment.setOnClickListener(v -> {
             Intent intent = new Intent(EmployerMain.this, RegistrationActivity.class);
@@ -157,22 +190,22 @@ public class EmployerMain extends AppCompatActivity {
     }
 
     // Set up Navigation Drawer and its item click handling
-    private void setupNavigationDrawer() {
-        NavigationView navigationView = findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
-                drawerLayout.closeDrawer(GravityCompat.END);
-            }
-            if (item.getItemId() == R.id.addRecruitment) {
-                showCompanySelectionDialog();
-                return true;
-            } else if (item.getItemId() == R.id.Logout) {
-                showLogoutConfirmation();
-                return true;
-            }
-            return false;
-        });
-    }
+//    private void setupNavigationDrawer() {
+//        NavigationView navigationView = findViewById(R.id.navigation_view);
+//        navigationView.setNavigationItemSelectedListener(item -> {
+//            if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+//                drawerLayout.closeDrawer(GravityCompat.END);
+//            }
+//            if (item.getItemId() == R.id.addRecruitment) {
+//                showCompanySelectionDialog();
+//                return true;
+//            } else if (item.getItemId() == R.id.Logout) {
+//                showLogoutConfirmation();
+//                return true;
+//            }
+//            return false;
+//        });
+//    }
 
 
     // Set up RecyclerView with its layout and adapter

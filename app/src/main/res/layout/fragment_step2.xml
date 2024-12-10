@@ -3,240 +3,339 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.widget.ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="15dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="모집 인원"
-            android:textColor="@color/black" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/RecruitmentCount"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="2"
-                android:singleLine="true" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="15dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="명"
+                android:text="모집 인원"
                 android:textColor="@color/black" />
-        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="급여"
-            android:textColor="@color/black" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/salaryType"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="▼" />
+                <EditText
+                    android:id="@+id/RecruitmentCount"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:singleLine="true" />
 
-            <EditText
-                android:id="@+id/salary"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:singleLine="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="명"
+                    android:textColor="@color/black" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="원"
+                android:text="급여"
                 android:textColor="@color/black" />
-        </LinearLayout>
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="근무 시간"
-            android:textColor="@color/black" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <Spinner
-                android:id="@+id/time1"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/salaryType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent" />
+
+                <TextView
+                    android:id="@+id/arrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="▼" />
+
+                <EditText
+                    android:id="@+id/salary"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="원"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
 
             <TextView
-                android:id="@+id/arrow1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="▼" />
+                android:text="근무 시간"
+                android:textColor="@color/black" />
 
-            <EditText
-                android:id="@+id/startTime"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="00:00" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="5dp"
-                android:text="~"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                <Spinner
+                    android:id="@+id/time1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent" />
 
-            <Spinner
-                android:id="@+id/time2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent" />
+                <TextView
+                    android:id="@+id/arrow1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="▼" />
 
-            <TextView
-                android:id="@+id/arrow2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="▼" />
+                <EditText
+                    android:id="@+id/startTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="00:00" />
 
-            <EditText
-                android:id="@+id/endTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="00:00" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="5dp"
+                    android:text="~"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
-        <CheckBox
-            android:id="@+id/checkBoxOption1"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:text="근무시간 협의 가능"
-            android:textSize="12sp" />
+                <Spinner
+                    android:id="@+id/time2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="근무 형태"
-            android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/arrow2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="▼" />
 
-        <EditText
-            android:id="@+id/work_type"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:singleLine="true" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="근무 기간"
-            android:textColor="@color/black" />
-
-        <EditText
-            android:id="@+id/work_period"
-            android:layout_width="wrap_content"
-            android:minWidth="140dp"
-            android:layout_height="wrap_content"
-            android:hint="1년 이상"
-            android:singleLine="true" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="근무 요일"
-            android:textColor="@color/black" />
-
-        <EditText
-            android:id="@+id/work_day"
-            android:layout_width="wrap_content"
-            android:minWidth="140dp"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:hint="주 5일 " />
-
-        <CheckBox
-            android:id="@+id/checkBoxOption2"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:text="근무요일  협의 가능"
-            android:textSize="12sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="채용 공고 마감일"
-            android:textColor="@color/black" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-            <!-- TextView để hiển thị ngày được chọn -->
-            <EditText
-                android:id="@+id/RecruitmentEndTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_square"
-                android:hint="yyyy/mm/dd"
-                android:paddingHorizontal="10dp"
-                android:textSize="18sp" />
+                <EditText
+                    android:id="@+id/endTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="00:00" />
+            </LinearLayout>
 
             <CheckBox
-                android:id="@+id/checkBoxOption3"
+                android:id="@+id/checkBoxOption1"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:text="마감일 없음"
+                android:text="근무시간 협의 가능"
                 android:textSize="12sp" />
-        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="* 채용 공고는 만료되면 자동으로 삭제됩니다."
-            android:textSize="12sp" />
-        <Button
-            android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/border_rounded_large"
-            android:text="Next" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="근무 형태"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/work_type"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="근무 기간"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/work_period"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="1년 이상"
+                android:minWidth="140dp"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="근무 요일"
+                android:textColor="@color/black" />
+
+            <EditText
+                android:id="@+id/work_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:hint="주 5일 "
+                android:minWidth="140dp"
+                android:singleLine="true" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:gravity="center"
+                android:layout_marginVertical="10dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="월" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="화" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="수" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="목" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="금" />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="토" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_rounded_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="일" />
+            </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/checkBoxOption2"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:text="근무요일  협의 가능"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="채용 공고 마감일"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <!-- TextView để hiển thị ngày được chọn -->
+                <EditText
+                    android:id="@+id/RecruitmentEndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/border_square"
+                    android:hint="yyyy/mm/dd"
+                    android:paddingHorizontal="10dp"
+                    android:textSize="18sp" />
+
+                <CheckBox
+                    android:id="@+id/checkBoxOption3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="마감일 없음"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="* 채용 공고는 만료되면 자동으로 삭제됩니다."
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/button_next"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/border_rounded_large"
+                android:text="Next" />
+        </LinearLayout>
+    </android.widget.ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
