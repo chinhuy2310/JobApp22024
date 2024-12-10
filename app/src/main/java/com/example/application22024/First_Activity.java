@@ -10,9 +10,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.application22024.db.DBUntil;
-import com.example.application22024.employee.LoginEmployeeActivity;
-import com.example.application22024.employer.LoginEmployerActivity;
+import com.example.application22024.employer.RegistrationActivity;
 
 public class First_Activity extends AppCompatActivity {
     @Override
@@ -20,34 +18,31 @@ public class First_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.first_activity);
 
-        //datebase 数据库
-        DBUntil dbUntil = new DBUntil(this);
-        DBUntil.con = dbUntil.getWritableDatabase();
-
-
         // Tìm LinearLayout bằng ID
         LinearLayout employerLayout = findViewById(R.id.employer);
-
         // Thiết lập sự kiện OnClickListener
         employerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // Tạo Intent để chuyển sang Activity khác                 跳转雇主登录页面LoginEmployerActivity
-                Intent intent = new Intent(First_Activity.this, LoginEmployerActivity.class);
-                startActivity(intent); // Bắt đầu chuyển sang Activity khác
-            }
-        });
-
-        LinearLayout employeeLayout = findViewById(R.id.employee);
-        employeeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(First_Activity.this, LoginEmployeeActivity.class);
+            public void onClick(View view) {
+                Intent intent = new Intent(First_Activity.this, LoginActivity.class);
+//                intent.putExtra("nextActivity", "Activity3"); // Chuyển đến Activity3 sau Activity2
+                intent.putExtra("userType", "Employer");
                 startActivity(intent);
             }
         });
 
-        TextView linearLayout = findViewById(R.id.mytextview);
+
+        LinearLayout employeeLayout = findViewById(R.id.employee);
+        employeeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(First_Activity.this, LoginActivity.class);
+                intent.putExtra("userType", "Employee");
+                startActivity(intent);
+            }
+        });
+
+        TextView linearLayout = findViewById(R.id.textview);
 
         // Tính toán 10% chiều cao màn hình
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();

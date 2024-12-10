@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="회사명"
+            android:textColor="@color/black"/>
+        <EditText
+            android:id="@+id/company_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="35dp"
+            android:layout_marginVertical="5dp"
+            android:paddingHorizontal="5dp"
+            android:singleLine="true"
+            android:hint="회사명을 입력해주세요."
+            android:background="@drawable/border_square"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="대표자 성함"
+            android:textColor="@color/black"/>
+        <EditText
+            android:id="@+id/name_of_representative"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/border_square"
+            android:hint="대표자 성함을 입력하세요."
+            android:paddingHorizontal="5dp"
+            android:singleLine="true"
+            android:layout_marginVertical="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="대표자 생년월일"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/register_number"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:inputType="number"
+                android:maxLength="6"
+                android:background="@drawable/border_square"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_gravity="center_vertical"
+                android:text="-"
+                android:textSize="16sp"
+                android:textColor="@color/black"/>
+            <EditText
+                android:id="@+id/register_number2"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border_square"
+                android:singleLine="true"
+                android:inputType="number"
+                android:maxLength="1"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text=" * * * * * *"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사업자등록증 사진"
+            android:textColor="@color/black"/>
+        <LinearLayout
+            android:id="@+id/selectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_rounded_large"
+            android:paddingHorizontal="15dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_plus"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="사진 올리기"
+                android:gravity="center"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
+
+        <Button
+            android:id="@+id/button_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border_rounded_large"
+            android:text="공고 등록" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

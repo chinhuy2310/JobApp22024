@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Application22024</string>
+    <string name="expand_text_open">≙</string>
+    <string name="expand_text_close">≚</string>
 </resources>
