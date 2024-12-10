@@ -37,6 +37,9 @@ public interface APIService {
     Call<List<CompanyJobItem>> getCompanyJobs(@Query("userId") int userId);
     @GET("api/getMarkedJobs")
     Call<List<CompanyJobItem>> getMarkedJobs(@Query("userId") int userId);
+    @GET("getAppliedJobs")
+    Call<List<CompanyJobItem>> getAppliedJobs(@Query("userId") int userId);
+
     @POST("/api/saved-job")
     Call<Void> updateBookmarkStatus(
             @Query("user_id") int userId,
@@ -60,7 +63,6 @@ public interface APIService {
             @Query("location") String location,
             @Query("user_id") int userId
     );
-
     @DELETE("/api/deleteJob/{job_id}")
     Call<Void> deleteJobDetails(@Path("job_id") int jobId);
 

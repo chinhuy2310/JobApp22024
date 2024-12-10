@@ -97,6 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {      // Registration successful
                             Toast.makeText(SignUpActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                            intent.putExtra("userType", userType);
                             startActivity(intent);
                             finish();
                         } else {

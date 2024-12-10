@@ -293,52 +293,52 @@ app.post('/saveProfile', upload.single('avatar'), (req, res) => {
   } = req.body;
 
   const avatarUrl = req.file ? `/uploads/${req.file.filename}` : null; // Lấy đường dẫn ảnh đã tải lên
-console.log(avatarUrl);
+  console.log("Avatar: " + avatarUrl);
+
   // Kiểm tra xem employee_id có tồn tại trong database không
   const checkSql = `SELECT * FROM profile WHERE employee_id = ?`;
   db.query(checkSql, [employee_id], (err, result) => {
       if (err) throw err;
 
       if (result.length > 0) {
-          // Nếu tồn tại, kiểm tra và xóa ảnh cũ nếu có
-          const existingAvatarUrl = result[0].avatar_url;
-          if (existingAvatarUrl) {
-              const filePath = path.join(__dirname, existingAvatarUrl); // Đường dẫn đầy đủ của ảnh cũ
+          // Nếu tồn tại, kiểm tra và xóa ảnh cũ nếu có, chỉ khi avatarUrl mới được tải lên
+          if (avatarUrl && result[0].avatar_url) {
+              const filePath = path.join(__dirname, result[0].avatar_url); // Đường dẫn đầy đủ của ảnh cũ
               fs.unlink(filePath, (err) => {
                   if (err) console.log("Error deleting file: " + err);
               });
           }
 
-          // Cập nhật thông tin ứng viên
-          const updateSql = `UPDATE profile SET
-              full_name = ?,
-              gender =?,
-              date_of_birth = ?,
-              phone_number = ?,
-              education_status = ?,
-              education_level = ?,
-              experience = ?,
-              introduction = ?,
-              preferred_work_location = ?,
-              preferred_work_duration = ?,
-              work_type = ?,
-              work_time = ?,
-              salary_type = ?,
-              expected_salary = ?,
-              avatar_url = ?
-          WHERE employee_id = ?`;
+          // Cập nhật thông tin ứng viên, chỉ cập nhật avatar_url nếu avatarUrl mới tồn tại
+          const updateSql = avatarUrl
+              ? `UPDATE profile SET
+                  full_name = ?, gender = ?, date_of_birth = ?, phone_number = ?, education_status = ?, education_level = ?,
+                  experience = ?, introduction = ?, preferred_work_location = ?, preferred_work_duration = ?,
+                  work_type = ?, work_time = ?, salary_type = ?, expected_salary = ?, avatar_url = ?
+              WHERE employee_id = ?`
 
-          db.query(updateSql, [full_name, gender, date_of_birth, phone_number, education_status,
-              education_level, experience, introduction, preferred_work_location,
-              preferred_work_duration, work_type, work_time, salary_type, expected_salary,
-              avatarUrl, employee_id], (err, result) => {
-                  if (err) throw err;
-                  res.send('Applicant data updated successfully');
-              });
+              : `UPDATE profile SET
+                  full_name = ?, gender = ?, date_of_birth = ?, phone_number = ?, education_status = ?,
+                  education_level = ?, experience = ?, introduction = ?, preferred_work_location = ?,
+                  preferred_work_duration = ?, work_type = ?, work_time = ?, salary_type = ?, expected_salary = ?
+              WHERE employee_id = ?`;
+
+          const params = avatarUrl
+              ? [full_name, gender, date_of_birth, phone_number, education_status, education_level, experience,
+                  introduction, preferred_work_location, preferred_work_duration, work_type, work_time,
+                  salary_type, expected_salary, avatarUrl, employee_id]
+              : [full_name, gender, date_of_birth, phone_number, education_status, education_level, experience,
+                  introduction, preferred_work_location, preferred_work_duration, work_type, work_time,
+                  salary_type, expected_salary, employee_id];
+
+          db.query(updateSql, params, (err, result) => {
+              if (err) throw err;
+              res.send('Applicant data updated successfully');
+          });
 
       } else {
           // Nếu không tồn tại, thêm mới thông tin ứng viên
-          const insertSql = `INSERT INTO profile (employee_id, full_name, gender,date_of_birth, phone_number,
+          const insertSql = `INSERT INTO profile (employee_id, full_name, gender, date_of_birth, phone_number,
               education_status, education_level, experience, introduction,
               preferred_work_location, preferred_work_duration, work_type,
               work_time, salary_type, expected_salary, avatar_url)
@@ -354,6 +354,7 @@ console.log(avatarUrl);
       }
   });
 });
+
 
 // lấy toàn bộ công việc cho employee
 app.get('/api/companyjobs', (req, res) => {
@@ -424,7 +425,42 @@ app.get('/api/getMarkedJobs', (req, res) => {
     res.json(results);  // Trả kết quả về phía client (Android)
   });
 });
+// lấy công việc đã đăng kí/
+app.get('/getAppliedJobs', (req, res) => {
+  // Lấy user_id từ query string (người dùng sẽ gửi qua URL)
+  const userId = req.query.userId;
+  // Kiểm tra nếu user_id không được gửi
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+  // Truy vấn SQL với user_id để lấy các công việc đã đăng kí
+  const query = `
+   SELECT
+    c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
+      j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
+      j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
+    CASE WHEN sj.user_id IS NOT NULL THEN 1 ELSE 0 END AS is_saved
+FROM
+    company c
+JOIN
+    jobdetails j ON c.company_id = j.company_id
+JOIN
+    applied_jobs aj ON j.job_id = aj.job_id
+LEFT JOIN
+    saved_jobs sj ON j.job_id = sj.job_id AND sj.user_id = ?
+WHERE
+    aj.employee_id = ?;
+  `;
 
+  // Thực thi truy vấn với user_id
+  db.query(query, [userId,userId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);  // Trả kết quả về phía client (Android)
+  });
+});
 // lấy công việc đề xuất
 app.get('/api/getsuggessjobs', (req, res) => {
   // Lấy user_id từ query string (người dùng sẽ gửi qua URL)

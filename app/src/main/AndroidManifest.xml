@@ -31,7 +31,7 @@
 
         <activity
             android:name=".employer.RegistrationActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"  />
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
         <activity
             android:name=".employee.EmployeeMain"
@@ -50,16 +50,19 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
-        <activity
-            android:name=".employer.EmployerMain"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".employer.EmployerMain" />
         <activity android:name=".JobDetails" />
         <activity android:name=".employee.Profile" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MapActivity" />
+
+        <activity android:name=".employee.CalendarActivity" />
+        <activity android:name=".employee.MyApplicationsActivity" />
+        <activity android:name=".employee.AddPostActivity" />
+        <activity android:name=".employee.CustomerService" />
+        <activity android:name=".employee.PostDetailActivity" />
+
     </application>
 
 </manifest>

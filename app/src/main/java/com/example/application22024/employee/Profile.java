@@ -139,7 +139,6 @@ public class Profile extends AppCompatActivity {
         if ("Employer".equals(userType)) {
             saveButton.setVisibility(View.GONE);
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
-            updateGender();
         }
 
     }
@@ -196,14 +195,15 @@ public class Profile extends AppCompatActivity {
                 if ("Employer".equals(getIntent().getStringExtra("userType"))) {
                     findViewById(R.id.female).setVisibility(View.GONE);
                 } else {
+                    selectedGenderPosition = 0;
                     male.setBackgroundColor(Color.BLUE);
                     male.setTextColor(Color.WHITE);
                 }
-
             } else if ("여자".equals(selectedGender)) {
                 if ("Employer".equals(getIntent().getStringExtra("userType"))) {
                     findViewById(R.id.male).setVisibility(View.GONE);
                 } else {
+                    selectedGenderPosition = 1;
                     female.setBackgroundColor(Color.BLUE);
                     female.setTextColor(Color.WHITE);
                 }
@@ -220,6 +220,53 @@ public class Profile extends AppCompatActivity {
         // Set time pickers for start and end time
         startTime.setOnClickListener(v -> showCustomTimePickerDialog(true)); // Start time
         endTime.setOnClickListener(v -> showCustomTimePickerDialog(false)); // End time
+    }
+
+    private void showCustomTimePickerDialog(final boolean isStartTime) {
+        // Inflate the custom time picker layout
+        View timePickerView = LayoutInflater.from(this).inflate(R.layout.time_picker_dialog, null);
+        NumberPicker hourPicker = timePickerView.findViewById(R.id.hourPicker);
+        NumberPicker minutePicker = timePickerView.findViewById(R.id.minutePicker);
+        Button confirmButton = timePickerView.findViewById(R.id.confirmButton);
+
+        // Cấu hình NumberPickers
+        hourPicker.setMinValue(0);
+        hourPicker.setMaxValue(23);
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(59);
+
+        // Định dạng để hiển thị số với 2 chữ số (00, 01, 02, ...)
+        hourPicker.setFormatter(value -> String.format("%02d", value));
+        minutePicker.setFormatter(value -> String.format("%02d", value));
+
+        hourPicker.setValue(0);
+        minutePicker.setValue(0);
+
+        // Set up the AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(timePickerView);
+        builder.setCancelable(false); // Không cho phép đóng bằng cách bấm ngoài Dialog
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Xử lý sự kiện cho nút "OK"
+        confirmButton.setOnClickListener(v -> {
+            int selectedHour = hourPicker.getValue();
+            int selectedMinute = minutePicker.getValue();
+
+            String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
+
+            // Chỉ cập nhật TextView tương ứng
+            if (isStartTime) {
+                startTime.setText(formattedTime);
+            } else {
+                endTime.setText(formattedTime);
+            }
+
+            // Đóng Dialog sau khi chọn giờ
+            dialog.dismiss();
+        });
     }
 
     private void setViewOnlyMode() {
@@ -263,7 +310,6 @@ public class Profile extends AppCompatActivity {
         editName.setText(applicant.getFull_name());
         editbirthday.setText(applicant.getDate_of_birth());
         editPhoneNumber.setText(applicant.getPhone_number());
-        updateGender();
         educationStatus.setText(applicant.getEducation_status());
         levelOfEducation.setText(applicant.getEducation_level());
         editExperience.setText(applicant.getExperience());
@@ -276,6 +322,7 @@ public class Profile extends AppCompatActivity {
         endTime.setText(formatTimeToHoursAndMinutes(expectedWorkTime.split("-")[1]));
         salaryType.setText(applicant.getSalary_type());
         salary.setText(String.format("%,d", applicant.getExpected_salary()) + " ₩");
+        updateGender();
     }
 
 
@@ -460,7 +507,7 @@ public class Profile extends AppCompatActivity {
         RequestBody workTypeBody = RequestBody.create(MediaType.parse("text/plain"), workType);
         RequestBody workTimeBody = RequestBody.create(MediaType.parse("text/plain"), startTimeText + "-" + endTimeText);
         RequestBody salaryTypeBody = RequestBody.create(MediaType.parse("text/plain"), salaryTypeText);
-        RequestBody expectedSalaryBody = RequestBody.create(MediaType.parse("text/plain"), salaryText.replace(" ₩", "").replace(",", ""));
+        RequestBody expectedSalaryBody = RequestBody.create(MediaType.parse("text/plain"), salaryText.replace(" ₩", "").replace(".", ""));
 
         // Gửi dữ liệu qua Retrofit
         APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
@@ -639,49 +686,6 @@ public class Profile extends AppCompatActivity {
         dialog.show();
     }
 
-    private void showCustomTimePickerDialog(final boolean isStartTime) {
-        // Inflate the custom time picker layout
-        View timePickerView = LayoutInflater.from(this).inflate(R.layout.time_picker_dialog, null);
-        NumberPicker hourPicker = timePickerView.findViewById(R.id.hourPicker);
-        NumberPicker minutePicker = timePickerView.findViewById(R.id.minutePicker);
-        Button confirmButton = timePickerView.findViewById(R.id.confirmButton);
-
-        // Cấu hình NumberPickers
-        hourPicker.setMinValue(0);
-        hourPicker.setMaxValue(23);
-        minutePicker.setMinValue(0);
-        minutePicker.setMaxValue(59);
-
-        // Định dạng để hiển thị số với 2 chữ số (00, 01, 02, ...)
-        hourPicker.setFormatter(value -> String.format("%02d", value));
-        minutePicker.setFormatter(value -> String.format("%02d", value));
-
-        hourPicker.setValue(0);
-        minutePicker.setValue(0);
-
-        // Set up the AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(timePickerView);
-        builder.setCancelable(false); // Không cho phép đóng bằng cách bấm ngoài Dialog
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-
-        // Xử lý sự kiện cho nút "OK"
-        confirmButton.setOnClickListener(v -> {
-            int selectedHour = hourPicker.getValue();
-            int selectedMinute = minutePicker.getValue();
-
-            String formattedTime = String.format("%02d:%02d", selectedHour, selectedMinute);
-
-            startTime.setText(formattedTime);
-            endTime.setText(formattedTime);
-
-            // Đóng Dialog sau khi chọn giờ
-            dialog.dismiss();
-        });
-    }
 
     private String formatTimeToHoursAndMinutes(String time) {
         try {

@@ -60,10 +60,10 @@ public class ApplicantAdapter extends RecyclerView.Adapter<ApplicantAdapter.Appl
                     .into(holder.employeeAvatar);
         } else {
             // Load a default image if the avatar URL is empty
-            Picasso.get().load(R.drawable.ic_launcher_background).into(holder.employeeAvatar);
+            Picasso.get().load(R.drawable.user_icon2).into(holder.employeeAvatar);
         }
         holder.itemView.setOnClickListener(v -> {
-            viewModel.setSelectedApplicant(applicant);
+            viewModel.setSelectedApplicant(applicants.get(position));
             Intent intent = new Intent(context, Profile.class);
             intent.putExtra("userType", "Employer");
             context.startActivity(intent);

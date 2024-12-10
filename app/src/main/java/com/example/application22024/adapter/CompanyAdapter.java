@@ -164,6 +164,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         popupMenu.inflate(R.menu.options_menu);
         popupMenu.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.addNewRecuitment) {
+                viewModel.setSelectedJob(null);
                 // Khi chọn "Thêm tuyển dụng", chuyển sang AddRecruitmentActivity
                 Intent intent = new Intent(context, RegistrationActivity.class);
                 viewModel.setSelectedCompany(companyList.get(position));
