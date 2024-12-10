@@ -14,9 +14,10 @@ public class Company {
     private String registration_number;
     private String company_image;
     private int job_count;  // Trường mới cho số lượng bài đăng
+    private int total_applicants;
     private boolean isExpanded = false; // Trạng thái mở rộng
     private List<Job> jobs = new ArrayList<>();
-    public Company(int company_id, String company_name, String name_of_representative, String address, String contact, String registration_number,String company_image, int job_count) {
+    public Company(int company_id, String company_name, String name_of_representative, String address, String contact, String registration_number,String company_image, int job_count, int total_applicants) {
         this.company_id = company_id;
         this.company_name = company_name;
         this.name_of_representative = name_of_representative;
@@ -25,7 +26,7 @@ public class Company {
         this.registration_number = registration_number;
         this.company_image = company_image;
         this.job_count = job_count;
-
+        this.total_applicants = total_applicants;
     }
 
 
@@ -122,4 +123,11 @@ public class Company {
     }
 
 
+    public int getTotal_applicants() {
+        return total_applicants;
+    }
+
+    public void setTotal_applicants(int total_applicants) {
+        this.total_applicants = total_applicants;
+    }
 }

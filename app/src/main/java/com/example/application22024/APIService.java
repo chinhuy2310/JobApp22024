@@ -1,5 +1,6 @@
 package com.example.application22024;
 
+import com.example.application22024.model.Applicant;
 import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
@@ -34,6 +35,10 @@ public interface APIService {
 
     @GET("api/companyjobs")
     Call<List<CompanyJobItem>> getCompanyJobs(@Query("userId") int userId);
+    @GET("api/getMarkedJobs")
+    Call<List<CompanyJobItem>> getMarkedJobs(@Query("userId") int userId);
+    @GET("getAppliedJobs")
+    Call<List<CompanyJobItem>> getAppliedJobs(@Query("userId") int userId);
 
     @POST("/api/saved-job")
     Call<Void> updateBookmarkStatus(
@@ -43,17 +48,21 @@ public interface APIService {
     @POST("api/recently-viewed")
     Call<Void> saveRecentlyViewed(@Query("user_id") int userId,
                                   @Query("job_id") int jobId);
-
+    @POST("api/apply-job")
+    Call<Void> applyJob(@Query("employeeId") int userId,
+                        @Query("jobId") int jobId);
+    @GET("jobs/{jobId}/applicants")
+    Call<List<Applicant>> getApplicants(@Path("jobId") int jobId);
     @GET("api/get-recently-viewed")
     Call<List<CompanyJobItem>> getRecentlyViewed(@Query("userId") int userId);
-
+    @GET("profile/{employeeId}")
+    Call<Applicant> getProfile(@Path("employeeId") int employeeId);
     @GET("searchCompanyJobs")
     Call<List<CompanyJobItem>> searchCompanyJobs(
             @Query("keyword") String keyword,
             @Query("location") String location,
             @Query("user_id") int userId
     );
-
     @DELETE("/api/deleteJob/{job_id}")
     Call<Void> deleteJobDetails(@Path("job_id") int jobId);
 
@@ -87,6 +96,27 @@ public interface APIService {
             @Part("name_of_representative") RequestBody representativeName,
             @Part("registration_number") RequestBody registrationNumber,
             @Part MultipartBody.Part image // Hình ảnh nếu có
+    );
+
+    @Multipart
+    @POST("saveProfile")
+    Call<Void> saveApplicant(
+            @Part("employee_id") RequestBody employeeId,
+            @Part("full_name") RequestBody fullName,
+            @Part("gender") RequestBody gender,
+            @Part("date_of_birth") RequestBody dateOfBirth,
+            @Part("phone_number") RequestBody phoneNumber,
+            @Part("education_status") RequestBody educationStatus,
+            @Part("education_level") RequestBody educationLevel,
+            @Part("experience") RequestBody experience,
+            @Part("introduction") RequestBody introduction,
+            @Part("preferred_work_location") RequestBody preferredLocation,
+            @Part("preferred_work_duration") RequestBody preferredDuration,
+            @Part("work_type") RequestBody workType,
+            @Part("work_time") RequestBody workTime,
+            @Part("salary_type") RequestBody salaryType,
+            @Part("expected_salary") RequestBody expectedSalary,
+            @Part MultipartBody.Part avatar // Phần để gửi ảnh
     );
 
 }

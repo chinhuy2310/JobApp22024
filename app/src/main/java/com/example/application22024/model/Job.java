@@ -18,7 +18,7 @@ public class Job {
     private String WorkDays;
     private String WorkPeriod;
     private String can_negotiable_days;
-
+    private int num_applicants;
     private String Details;
     private Company company;
 
@@ -157,4 +157,11 @@ public class Job {
         this.Details = details;
     }
 
-  }
+    public int getNum_applicants() {
+        return num_applicants;
+    }
+
+    public void setNum_applicants(int num_applicants) {
+        this.num_applicants = num_applicants;
+    }
+}

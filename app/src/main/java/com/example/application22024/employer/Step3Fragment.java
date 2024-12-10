@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,14 +25,14 @@ import com.example.application22024.R;
 import com.example.application22024.RegionDataManager;
 import com.example.application22024.adapter.LeftAdapter;
 import com.example.application22024.adapter.RightAdapter;
-import com.example.application22024.model.RegistrationViewModel;
+import com.example.application22024.model.DataViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Step3Fragment extends Fragment {
-    private RegistrationViewModel viewModel;
+    private DataViewModel viewModel;
     private EditText addressEditText, detailAddressEditText, descriptionEditText;
 
     @Nullable
@@ -47,7 +45,7 @@ public class Step3Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = ((MyApplication) getActivity().getApplication()).getRegistrationViewModel();
+        viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
 
         addressEditText = view.findViewById(R.id.editText_address);
         detailAddressEditText = view.findViewById(R.id.editText_detail_address);
@@ -95,10 +93,8 @@ public class Step3Fragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             hideKeyboard();
-            if (validateForm()) {// 表单验证
-                // Chuyển sang Fragment tiếp theo
-                ((RegistrationActivity) getActivity()).showNextFragment(new Step4Fragment());
-            }
+            // Chuyển sang Fragment tiếp theo
+            ((RegistrationActivity) getActivity()).showNextFragment(new Step4Fragment());
         });
     }
     private void setTextChangedListener(EditText editText, Consumer<String> setValueMethod) {
@@ -194,26 +190,5 @@ public class Step3Fragment extends Fragment {
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
-    }
-
-    //验证每个输入框是否符合要求
-    private boolean validateForm() {
-        // 检查地址字段是否为空
-        if (addressEditText.getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Please select an address.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        // 检查详细地址字段是否为空
-        if (detailAddressEditText.getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Please enter detailed address.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        // 检查描述字段是否为空
-        if (descriptionEditText.getText().toString().isEmpty()) {
-            Toast.makeText(getContext(), "Please enter a description.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
     }
 }

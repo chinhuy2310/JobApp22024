@@ -2,7 +2,6 @@ package com.example.application22024.employee;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,15 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.application22024.APIService;
-import com.example.application22024.DatabaseHelper;
 
 import com.example.application22024.MapActivity;
 import com.example.application22024.R;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.Page1AndSearchAdapter;
-import com.example.application22024.employer.EmployerMain;
-import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
 
 import java.util.ArrayList;
@@ -51,8 +47,9 @@ public class Page1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page1, container, false);
 
-        selectLocation = view.findViewById(R.id.selectLocation);
-        locationTextView = view.findViewById(R.id.locationTextView);
+        //selectLocation = view.findViewById(R.id.selectLocation);
+        //locationTextView = view.findViewById(R.id.locationTextView);
+
         // TextView để hiển thị địa chỉ
         selectLocation.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), MapActivity.class);

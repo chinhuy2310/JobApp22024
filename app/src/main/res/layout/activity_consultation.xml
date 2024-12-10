@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/consult_er_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_200"
+        app:navigationIcon="@drawable/back"
+        app:title="문의 하기"
+        app:titleTextColor="@color/white" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:src="@drawable/consult_view" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/purple_700"
+        android:text="APP 사용해 주셔서 감사합니다."
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+
+    <TextView
+        android:id="@+id/consultationContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:padding="8dp"
+        android:text="만약 질문이 있으시면 아래 연락처를 통해 저희에게 문의해 주세요."
+        android:textSize="25sp"
+        android:textColor="@color/purple_700"
+        android:gravity="center" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/consultationContent"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:text="이메일: xxxx@gmail.com"
+        android:textColor="@color/purple_700"
+        android:textSize="20dp"
+        android:gravity="center" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/purple_700"
+        android:padding="8dp"
+        android:text="고객센터 전화: 111111"
+        android:textSize="20dp"
+        android:gravity="center" />
+
+</LinearLayout>

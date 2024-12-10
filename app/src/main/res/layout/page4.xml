@@ -1,123 +1,174 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <!-- Header Section -->
-    <TextView
-        android:id="@+id/headerText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Settings"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:padding="16dp" />
-
-    <!-- Information Section -->
+    <!-- 사용자 이름 및 설정 -->
     <LinearLayout
+        android:id="@+id/userInfoSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="?android:attr/colorBackground"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
-            android:layout_width="match_parent"
+        <!-- 사용자 이름 -->
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="User Information"
-            android:id="@+id/user_info"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:drawableEnd="@drawable/ic_next"
-            android:paddingVertical="12dp"
-            android:textColor="#000000"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="start|center_vertical"
-            android:paddingStart="16dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/edit_info"
-            android:text="Edit Information"
-            android:textColor="#000000"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:drawableEnd="@drawable/ic_next"
-            android:paddingVertical="12dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="start|center_vertical"
-            android:paddingStart="16dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/about_us"
-            android:text="About Us"
-            android:textColor="#000000"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:drawableEnd="@drawable/ic_next"
-            android:paddingVertical="12dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="start|center_vertical"
-            android:paddingStart="16dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-
-        <Button
-            android:id="@+id/privacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Privacy"
-            android:textColor="#000000"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:drawableEnd="@drawable/ic_next"
-            android:paddingVertical="12dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="start|center_vertical"
-            android:paddingStart="16dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#D3D3D3" />
-
-        <Button
-            android:id="@+id/general"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="General"
-            android:textColor="#000000"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:drawableEnd="@drawable/ic_next"
-            android:paddingVertical="12dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="start|center_vertical"
-            android:paddingStart="16dp" />
+            android:layout_weight="1"
+            android:text="구직"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
 
     </LinearLayout>
 
-    <!-- Logout Button -->
+    <!-- 주요 섹션 -->
+    <LinearLayout
+        android:id="@+id/quickAccessSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/userInfoSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 고객센터 -->
+        <LinearLayout
+            android:id="@+id/CustomerServiceLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_customer_service"
+                android:contentDescription="고객센터" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="고객센터"
+                android:textSize="14sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- vmfhvlf -->
+        <LinearLayout
+            android:id="@+id/ProfileLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_profile"
+                android:contentDescription="프로필" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이력서 관리"
+                android:textSize="14sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- 캘린더 -->
+        <LinearLayout
+            android:id="@+id/calendarLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:paddingTop="4dp"
+                android:src="@drawable/ic_calendar2"
+                android:contentDescription="캘린더" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="캘린더"
+                android:textSize="14sp"
+                android:gravity="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 관리 섹션 -->
+    <LinearLayout
+        android:id="@+id/managementSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/quickAccessSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 내 지원 현황 카드 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:id="@+id/applied"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_application"
+                    android:contentDescription="내 지원 현황" />
+
+                <TextView
+                    android:id="@+id/myApplications"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="내 지원 현황"
+                    android:textSize="16sp"
+                    android:paddingLeft="20dp"
+                    android:textColor="#000000"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </LinearLayout>
+
+    <!-- 로그아웃 버튼 -->
     <Button
         android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_margin="16dp"
-        android:paddingVertical="12dp" />
+        android:text="로그아웃"
+        android:textColor="@color/white"
+        android:backgroundTint="#d94e3f"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
