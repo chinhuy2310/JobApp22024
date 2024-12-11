@@ -30,8 +30,7 @@
             android:value="5f301f0b001c8c2a2c63473d48b78772" />
 
         <activity
-            android:name=".employer.RegistrationActivity"
-            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+            android:name=".employer.RegistrationActivity" />
 
         <activity
             android:name=".employee.EmployeeMain"
