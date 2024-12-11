@@ -306,7 +306,7 @@ public class Step2Fragment extends Fragment {
 
     private void navigateToNextFragment() {
         String selectedSalaryType = salaryType.getSelectedItem().toString();
-        if (viewModel.getSelectedJob() == null ||viewModel.getRecruitmentCount() == null ||
+        if (viewModel.getRecruitmentCount() == null ||
                 viewModel.getSalary() == null || viewModel.getStartTime() == null || viewModel.getEndTime() == null ||
                 viewModel.getWorkType() == null || viewModel.getWorkPeriod() == null ||
                 viewModel.getWorkDay() == null || viewModel.getRecruitmentCount() == null) {

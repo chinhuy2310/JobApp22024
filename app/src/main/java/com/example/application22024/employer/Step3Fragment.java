@@ -93,7 +93,7 @@ public class Step3Fragment extends Fragment {
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
             hideKeyboard();
-            if(viewModel.getSelectedJob() == null || viewModel.getSelectedCompany() == null || viewModel.getAddress() == null ||
+            if( viewModel.getSelectedCompany() == null || viewModel.getAddress() == null ||
                     viewModel.getDetailAddress() == null || viewModel.getDescription() == null){
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }else{

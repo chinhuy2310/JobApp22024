@@ -207,7 +207,7 @@ public class Step1Fragment extends Fragment {
 
         Button nextButton = view.findViewById(R.id.button_next);
         nextButton.setOnClickListener(v -> {
-            if(viewModel.getSelectedJob() == null ||viewModel.getSelectedRecruitmentField() == null||
+            if(
             viewModel.getSelectedGender() == null || viewModel.getRecruitmentTitle() == null ||
             viewModel.getCompanyName() == null || viewModel.getContact() == null){
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();

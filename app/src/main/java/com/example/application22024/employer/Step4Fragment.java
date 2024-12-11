@@ -111,7 +111,7 @@ public class Step4Fragment extends Fragment {
             String combinedRegisterNumber = registerNumber1.getText().toString() + "-" + registerNumber2.getText().toString();
 //            Log.e("combinedRegisterNumber", combinedRegisterNumber);
             viewModel.setRegisterNumber(combinedRegisterNumber);
-            if(viewModel.getSelectedCompany() == null || viewModel.getCompanyName() == null ||
+            if(viewModel.getCompanyName() == null ||
                     viewModel.getRepresentativeName() == null || viewModel.getRegisterNumber() == null){
                 Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }else {
