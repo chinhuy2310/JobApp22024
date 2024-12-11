@@ -3,6 +3,8 @@ package com.example.application22024.employer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -67,6 +69,7 @@ public class Step4Fragment extends Fragment {
             androidx.appcompat.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setDisplayShowTitleEnabled(false); // Ẩn tiêu đề
+                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
             }
         }
 

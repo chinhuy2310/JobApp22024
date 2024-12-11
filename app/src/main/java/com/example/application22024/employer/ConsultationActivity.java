@@ -18,6 +18,7 @@ public class ConsultationActivity extends AppCompatActivity {
         //实现左上角按钮返回功能
         Toolbar toolbar = findViewById(R.id.consult_er_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

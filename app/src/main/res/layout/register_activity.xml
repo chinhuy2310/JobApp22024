@@ -95,6 +95,7 @@
                     android:layout_height="60dp"
                     android:layout_marginVertical="20dp"
                     android:drawableLeft="@drawable/ic_mail"
+                    android:singleLine="true"
                     android:hint="Mail or phone number"
                     android:maxLines="1" />
 

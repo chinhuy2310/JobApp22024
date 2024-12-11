@@ -507,7 +507,7 @@ public class Profile extends AppCompatActivity {
         RequestBody workTypeBody = RequestBody.create(MediaType.parse("text/plain"), workType);
         RequestBody workTimeBody = RequestBody.create(MediaType.parse("text/plain"), startTimeText + "-" + endTimeText);
         RequestBody salaryTypeBody = RequestBody.create(MediaType.parse("text/plain"), salaryTypeText);
-        RequestBody expectedSalaryBody = RequestBody.create(MediaType.parse("text/plain"), salaryText.replace(" ₩", "").replace(".", ""));
+        RequestBody expectedSalaryBody = RequestBody.create(MediaType.parse("text/plain"), salaryText.replace(" ₩", "").replace(",", ""));
 
         // Gửi dữ liệu qua Retrofit
         APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
