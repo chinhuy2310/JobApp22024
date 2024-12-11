@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,6 +47,13 @@ public class Step3Fragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = ((MyApplication) getActivity().getApplication()).getDataViewModel();
+        if (getActivity() != null) {
+            // Lấy ActionBar từ Activity
+            androidx.appcompat.app.ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(false); // Ẩn tiêu đề
+            }
+        }
 
         addressEditText = view.findViewById(R.id.editText_address);
         detailAddressEditText = view.findViewById(R.id.editText_detail_address);
