@@ -1,12 +1,14 @@
 package com.example.application22024;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +49,12 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         viewModel = ((MyApplication) getApplication()).getDataViewModel();
+
+        // Cấu hình Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);  // Gán Toolbar làm ActionBar
+        getSupportActionBar().setTitle(null);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Hiển thị nút back
 
         recyclerView = findViewById(R.id.recyclerView);
         messageInput = findViewById(R.id.messageInput);
@@ -149,5 +157,14 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(ChatActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Xử lý khi người dùng nhấn nút quay lại
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
