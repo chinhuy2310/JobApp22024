@@ -50,10 +50,11 @@
                 android:value="" />
         </activity>
         <activity android:name=".LoginActivity" />
+        <activity android:name=".SignUpActivity" />
         <activity android:name=".employer.EmployerMain" />
         <activity android:name=".JobDetails" />
+        <activity android:name=".ChatActivity"/>
         <activity android:name=".employee.Profile" />
-        <activity android:name=".SignUpActivity" />
         <activity android:name=".MapActivity" />
 
         <activity android:name=".employee.CalendarActivity" />
@@ -62,6 +63,7 @@
         <activity android:name=".employee.CustomerService" />
         <activity android:name=".employee.PostDetailActivity" />
         <activity android:name=".employer.ConsultationActivity" />
+
     </application>
 
 </manifest>

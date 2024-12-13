@@ -1,12 +1,18 @@
 const express = require('express');
 const multer = require('multer');
 const moment = require('moment');
-
 const path = require('path');
 // const nodemailer = require('nodemailer');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
+const http = require('http');
+const socketIo = require('socket.io');
+const fs = require('fs');
 const app = express();
+
+// Tạo server HTTP để chạy Socket.io
+const server = http.createServer(app);
+const io = socketIo(server);
 
 // Cấu hình body-parser
 app.use(bodyParser.json());
@@ -20,7 +26,7 @@ const db = mysql.createConnection({
     password: '1234',
     database: 'jobapp',
     dateStrings: true
-  }); 
+  });
   // Kết nối đến MySQL
 db.connect((err) => {
   if (err) {
@@ -47,7 +53,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Tạo thư mục uploads nếu chưa có
-const fs = require('fs');
 if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
@@ -90,7 +95,7 @@ app.post('/signup', (req, res) => {
       });
   });
 });
-  
+
   // Đăng nhập người dùng
 app.post('/login', (req, res) => {
     const { account, password, userType } = req.body;
@@ -98,38 +103,104 @@ app.post('/login', (req, res) => {
     if (!account || !password || !userType) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-  
+
     // Kiểm tra tài khoản trong cơ sở dữ liệu
     const query = 'SELECT * FROM user WHERE account = ? ';
     db.query(query, [account,password], (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Database error' });
       }
-  
+
       if (results.length === 0) {
         return res.status(400).json({ message: 'Invalid account or password' });
       }
-  
+
       const user = results[0];
-  
+
       // Kiểm tra loại người dùng
       if (user.user_type !== userType) {
         return res.status(403).json({ message: 'User type mismatch' });
       }
-  
+
       // Kiểm tra mật khẩu
       if (user.password !== password) {
         return res.status(400).json({ message: 'Invalid account or password' });
       }
-    
+
       return res.json({
         message: 'Login successful',
         user_id: user.user_id,
         user_type: user.user_type
       });
-      
+
+    });
+});
+
+// Lấy lịch sử tin nhắn giữa hai người dùng
+app.get('/messages/:userId/:otherUserId', (req, res) => {
+  const { userId, otherUserId } = req.params;
+  // Kiểm tra đầu vào (có thể cần thêm logic kiểm tra hợp lệ)
+  if (!userId || !otherUserId || isNaN(userId) || isNaN(otherUserId)) {
+    return res.status(400).json({ message: 'Invalid user IDs' });
+  }
+
+  const query = `
+    SELECT * FROM messages
+    WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)
+    ORDER BY sent_at ASC
+  `;
+
+  db.query(query, [userId, otherUserId, otherUserId, userId], (err, results) => {
+    if (err) {
+      console.error('SQL Error:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No messages found' });
+    }
+// Thêm trường 'type' vào mỗi tin nhắn
+const messagesWithType = results.map(message => {
+  return {
+    ...message,
+    type: message.sender_id == userId ? 'Sent' : 'Received'
+  };
+});
+
+// Trả về danh sách tin nhắn với trường 'type'
+res.json({ messages: messagesWithType });
+  });
+});
+
+
+// Sự kiện gửi tin nhắn
+io.on('connection', (socket) => {
+  console.log('A user connected: ' + socket.id);
+
+  // Lắng nghe sự kiện "sendMessage"
+  socket.on('sendMessage', (messageData) => {
+    const { sender_id, receiver_id, content } = messageData;
+
+    // Chèn tin nhắn vào cơ sở dữ liệu
+    const insertQuery = `
+      INSERT INTO messages (sender_id, receiver_id, content)
+      VALUES (?, ?, ?)
+    `;
+    db.query(insertQuery, [sender_id, receiver_id, content], (err, result) => {
+      if (err) {
+        console.error('SQL Error:', err);
+        return;
+      }
+
+      // Gửi tin nhắn tới tất cả các kết nối
+      io.emit('receiveMessage', messageData);
     });
   });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
 
 // lấy dữ liệu company của người đăng nhập
 app.get('/companies/:userId', (req, res) => {
@@ -140,7 +211,7 @@ app.get('/companies/:userId', (req, res) => {
 
     // Truy vấn các công ty cùng số lượng bài đăng của từng công ty
     const query = `
-        SELECT 
+        SELECT
         c.company_id,
         c.company_name,
         c.name_of_representative,
@@ -282,7 +353,6 @@ app.get('/profile/:employeeId', (req, res) => {
   });
 });
 
-
 // lưu thông tin employee
 app.post('/saveProfile', upload.single('avatar'), (req, res) => {
   const {
@@ -355,7 +425,6 @@ app.post('/saveProfile', upload.single('avatar'), (req, res) => {
   });
 });
 
-
 // lấy toàn bộ công việc cho employee
 app.get('/api/companyjobs', (req, res) => {
   // Lấy user_id từ query string (người dùng sẽ gửi qua URL)
@@ -369,7 +438,7 @@ app.get('/api/companyjobs', (req, res) => {
   // Truy vấn SQL với user_id
   const query = `
     SELECT
-      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      c.company_id, c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
       j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -402,7 +471,7 @@ app.get('/api/getMarkedJobs', (req, res) => {
   // Truy vấn SQL với user_id để lấy các công việc đã lưu
   const query = `
     SELECT
-      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      c.company_id, c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
       j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -436,7 +505,7 @@ app.get('/getAppliedJobs', (req, res) => {
   // Truy vấn SQL với user_id để lấy các công việc đã đăng kí
   const query = `
    SELECT
-    c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+    c.company_id,c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
       j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -491,7 +560,7 @@ app.get('/api/getsuggessjobs', (req, res) => {
     // Truy vấn tìm kiếm công việc dựa trên thông tin profile
     const jobQuery = `
       SELECT
-        c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+        c.company_id, c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
         j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
         j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
         j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -570,7 +639,7 @@ app.get('/searchCompanyJobs', (req, res) => {
   // Truy vấn SQL với điều kiện tìm kiếm
   const query = `
     SELECT
-      c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+      c.company_id, c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
       j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
       j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
       j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -647,7 +716,6 @@ app.post('/api/saved-job', (req, res) => {
   });
 });
 
-
 // Endpoint lưu "Đã xem gần đây"
 app.post("/api/recently-viewed", (req, res) => {
   const { user_id, job_id } = req.query;
@@ -683,7 +751,7 @@ app.get('/api/get-recently-viewed', (req, res) => {
   // Truy vấn SQL
   const query = `
     SELECT
-  c.company_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
+  c.company_id, c.employer_id, c.company_name, c.name_of_representative, c.address, c.contact, c.company_image,
   j.job_id, j.Title, j.Salary, j.SalaryType, j.WorkHoursStart, j.WorkHoursEnd, j.can_negotiable_time,
   j.RecruitmentGender, j.RecruitmentCount, j.WorkType, j.WorkField, j.WorkDays, j.WorkPeriod,
   j.can_negotiable_days, j.Details, j.RecruitmentEnd, j.PostDate,
@@ -885,7 +953,7 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
     Details,
     RecruitmentEnd,
   } = req.body;
- 
+
   // Lấy đường dẫn file ảnh (nếu có)
   const companyImagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
@@ -893,9 +961,9 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
     // Cập nhật thông tin công ty
     let updateCompanyQuery = `
       UPDATE company
-      SET company_name = ?, name_of_representative = ?, registration_number = ?, 
+      SET company_name = ?, name_of_representative = ?, registration_number = ?,
           address = ?, contact = ?`;
-    
+
     // Chỉ cập nhật cột company_image nếu có ảnh mới
     if (companyImagePath) {
       updateCompanyQuery += `, company_image = ?`;
@@ -917,7 +985,7 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
           const fs = require('fs');
           const path = require('path');
           const fullOldImagePath = path.join(__dirname, oldImagePath);
-          
+
           // Xóa ảnh cũ nếu tồn tại
           fs.exists(fullOldImagePath,(exists) => {
             if (exists) {
@@ -931,7 +999,7 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
             }
           });
         }
-        
+
         // Thực hiện cập nhật thông tin công ty
         db.query(updateCompanyQuery, [
           company_name,
@@ -971,8 +1039,8 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
   } else {
     // Tạo công ty mới
     const insertCompanyQuery = `
-      INSERT INTO company (employer_id, company_name, name_of_representative, registration_number, 
-          address, contact, company_image) 
+      INSERT INTO company (employer_id, company_name, name_of_representative, registration_number,
+          address, contact, company_image)
       VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
     db.query(
@@ -1002,10 +1070,10 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
     if (job_id) {
       const updateJobQuery = `
         UPDATE jobdetails
-        SET Title = ?, Salary = ?, SalaryType = ?, WorkHoursStart = ?, 
-            WorkHoursEnd = ?, can_negotiable_time = ?, RecruitmentGender = ?, 
-            RecruitmentCount = ?, WorkType = ?, WorkField = ?, WorkDays = ?, 
-            WorkPeriod = ?, can_negotiable_days = ?,  
+        SET Title = ?, Salary = ?, SalaryType = ?, WorkHoursStart = ?,
+            WorkHoursEnd = ?, can_negotiable_time = ?, RecruitmentGender = ?,
+            RecruitmentCount = ?, WorkType = ?, WorkField = ?, WorkDays = ?,
+            WorkPeriod = ?, can_negotiable_days = ?,
             Details = ?, RecruitmentEnd = ?
         WHERE job_id = ? AND company_id = ?`;
 
@@ -1041,8 +1109,8 @@ app.post("/submit_registration", upload.single("company_image"), (req, res) => {
       );
     } else {
       const insertJobQuery = `
-        INSERT INTO jobdetails (company_id, Title, Salary, SalaryType, WorkHoursStart, WorkHoursEnd, 
-            can_negotiable_time, RecruitmentGender, RecruitmentCount, WorkType, WorkField, WorkDays, 
+        INSERT INTO jobdetails (company_id, Title, Salary, SalaryType, WorkHoursStart, WorkHoursEnd,
+            can_negotiable_time, RecruitmentGender, RecruitmentCount, WorkType, WorkField, WorkDays,
             WorkPeriod, can_negotiable_days, Details, RecruitmentEnd)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
@@ -1096,7 +1164,7 @@ function handleJobData(req, company_id, res) {
       WorkField: req.body.WorkField,
       WorkDays: req.body.WorkDays,
       WorkPeriod: req.body.WorkPeriod,
-      can_negotiable_days: req.body.can_negotiable_days,  
+      can_negotiable_days: req.body.can_negotiable_days,
       Details: req.body.Details,
       RecruitmentEnd: req.body.RecruitmentEnd
   };
@@ -1135,10 +1203,10 @@ app.get('/user', (req, res) => {
       res.status(200).json( results );
     });
 });
-  
+
 
 // Khởi động server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running at http://<địa_chỉ_IP>:${PORT}`);
 });

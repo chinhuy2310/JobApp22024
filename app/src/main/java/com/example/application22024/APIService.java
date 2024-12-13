@@ -4,6 +4,7 @@ import com.example.application22024.model.Applicant;
 import com.example.application22024.model.Company;
 import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.Job;
+import com.example.application22024.model.Message;
 
 import java.util.List;
 
@@ -39,7 +40,11 @@ public interface APIService {
     Call<List<CompanyJobItem>> getMarkedJobs(@Query("userId") int userId);
     @GET("getAppliedJobs")
     Call<List<CompanyJobItem>> getAppliedJobs(@Query("userId") int userId);
-
+    @GET("messages/{userId}/{otherUserId}")
+    Call<MessageResponse> getMessages(
+            @Path("userId") int senderId,
+            @Path("otherUserId") int receiverId
+    );
     @POST("/api/saved-job")
     Call<Void> updateBookmarkStatus(
             @Query("user_id") int userId,
@@ -174,5 +179,16 @@ class SignupRequest {
         this.userName = userName;
         this.contact = contact;
         this.userType = userType;
+    }
+}
+class MessageResponse {
+    private List<Message> messages;
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }

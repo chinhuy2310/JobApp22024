@@ -39,7 +39,7 @@ public class JobDetails extends AppCompatActivity {
     private TextView recruitmentCountTextview, genderTextview, deadlineTextview, canNegotiableDayTextview, canNegotiableTimeTextview;
     private TextView salaryTypeTextview2, salaryTextview2, workPeriodTextview, workDaysTextview2, startTime2Textview, endTime2Textview;
     private TextView detailsTextview, addressTextview, companyTextview2, contactTextview;
-    private LinearLayout viewOfEmployee, viewOfEmployer, applyButton, bookmarkAndShare;
+    private LinearLayout viewOfEmployee, viewOfEmployer, applyButton, bookmarkAndShare,chatTextView;
     private RelativeLayout numberOfApplicants;
     private TextView deleteTextView, editTextview, applyTextView, numberTextView;
     private ImageView applyImageView, bookmarkImageView, shareImageView;
@@ -78,7 +78,10 @@ public class JobDetails extends AppCompatActivity {
                     Toast.makeText(JobDetails.this, "Already saved", Toast.LENGTH_SHORT).show();
                 }
             });
-
+            chatTextView.setOnClickListener(v -> {
+                Intent intent = new Intent(JobDetails.this, ChatActivity.class);
+                startActivity(intent);
+            });
             applyButton.setOnClickListener(v -> {
                 applyJob();
                 applyImageView.setImageResource(R.drawable.ic_apply);
@@ -100,6 +103,8 @@ public class JobDetails extends AppCompatActivity {
                 Intent intent = new Intent(JobDetails.this, RegistrationActivity.class);
                 startActivity(intent);
             });
+
+
 
             deleteTextView.setOnClickListener(v -> {
                 // Tạo AlertDialog để xác nhận việc xóa
@@ -163,6 +168,7 @@ public class JobDetails extends AppCompatActivity {
         deleteTextView = findViewById(R.id.deleteButton);
         editTextview = findViewById(R.id.editButton);
         numberTextView = findViewById(R.id.number);
+        chatTextView = findViewById(R.id.callButton);
     }
 
     private void applyJob() {

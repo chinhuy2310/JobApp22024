@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.2' // OkHttp library
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
+    implementation 'io.socket:socket.io-client:2.0.0'
 
     implementation 'com.kakao.maps.open:android:2.12.8'
 

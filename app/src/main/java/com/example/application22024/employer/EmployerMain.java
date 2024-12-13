@@ -294,6 +294,7 @@ public class EmployerMain extends AppCompatActivity {
                     SharedPrefManager.getInstance(this).clear();
                     Intent intent = new Intent(EmployerMain.this, First_Activity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    viewModel.reset();
                     startActivity(intent);
                     finish();
                 })

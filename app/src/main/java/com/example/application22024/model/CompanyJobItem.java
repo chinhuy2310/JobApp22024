@@ -2,6 +2,7 @@ package com.example.application22024.model;
 
 public class CompanyJobItem {
     private int company_id;
+    private int employer_id;
     private String company_name;
     private String name_of_representative;
     private String address;
@@ -210,5 +211,13 @@ public class CompanyJobItem {
 
     public void setIs_saved(int is_saved) {
         this.is_saved = is_saved;
+    }
+
+    public int getEmployer_id() {
+        return employer_id;
+    }
+
+    public void setEmployer_id(int employer_id) {
+        this.employer_id = employer_id;
     }
 }

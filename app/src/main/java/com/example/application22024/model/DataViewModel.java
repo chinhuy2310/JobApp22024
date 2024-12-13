@@ -12,6 +12,7 @@ public class DataViewModel extends ViewModel {
     private Job selectedJob;
     private CompanyJobItem selectedCompanyJobItem;
     private MutableLiveData<Applicant> selectedApplicant = new MutableLiveData<>();
+
     // Các trường dữ liệu cần thu thập từ người dùng
     private String recruitmentTitle, companyName, contact, selectedRecruitmentField, otherRecruitmentField, selectedGender;
     private String recruitmentCount, selectedSalaryType, salary, startTime, endTime, workType, workPeriod, workDay, recruitmentEndTime;
@@ -286,7 +287,7 @@ public class DataViewModel extends ViewModel {
         registerNumber = null;
         selectedImageUri = null;
         selectedCompanyJobItem = null;
-        selectedApplicant = null;
+        selectedApplicant = new MutableLiveData<>();
 
     }
 

@@ -567,6 +567,7 @@
             android:visibility="visible">
 
             <LinearLayout
+                android:id="@+id/callButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -576,13 +577,13 @@
                 <ImageView
                     android:layout_width="20sp"
                     android:layout_height="20sp"
-                    android:src="@drawable/ic_call" />
+                    android:src="@drawable/ic_message" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="전화하기"
+                    android:text="Send Message"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>

@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application22024.APIService;
+import com.example.application22024.ChatActivity;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
 
@@ -70,7 +71,7 @@ public class Profile extends AppCompatActivity {
     private ImageView imageView;
     private EditText editName, editbirthday, editIntroduce, editExperience, editPhoneNumber, editLocation, editPeriod, editWorkType, salary;
     private Calendar calendar;
-    private TextView educationStatus, levelOfEducation, startTime, endTime, salaryType, male, female;
+    private TextView educationStatus, levelOfEducation, startTime, endTime, salaryType, male, female,sendMessage;
     Button saveButton;
     private boolean isEdited = false;
     private int selectedGenderPosition = -1; // Vị trí ô giới tính được chọn
@@ -100,17 +101,21 @@ public class Profile extends AppCompatActivity {
 
         setupTimePicker();
 
-        int employeeId = SharedPrefManager.getInstance(this).getUserId();
-        fetchProfile(employeeId);
+//        int employeeId = SharedPrefManager.getInstance(this).getUserId();
+//        fetchProfile(employeeId);
 
-        viewModel.getSelectedApplicant().observe(this, applicant -> {
-            if (applicant != null) {
-                // Cập nhật UI sau khi dữ liệu được tải
-                updateUI(applicant);
-            } else {
-                Log.e("Profile", "Selected applicant is null");
-            }
-        });
+        if (viewModel.getSelectedApplicant() != null) {
+            viewModel.getSelectedApplicant().observe(this, applicant -> {
+                if (applicant != null) {
+                    updateUI(applicant); // Cập nhật giao diện
+                } else {
+                    Log.e("Profile", "Selected applicant is null");
+                }
+            });
+        } else {
+            Log.e("Profile", "viewModel.getSelectedApplicant() is null");
+        }
+
 
         // Initial values for textviews
         levelOfEducation.setText("학교");
@@ -139,10 +144,40 @@ public class Profile extends AppCompatActivity {
         if ("Employer".equals(userType)) {
             saveButton.setVisibility(View.GONE);
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
+        }else {
+            int employeeId = SharedPrefManager.getInstance(this).getUserId();
+            fetchProfile(employeeId);
         }
 
     }
+    private void fetchProfile(int employeeId) {
+        APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
+        Call<Applicant> call = apiService.getProfile(employeeId);
 
+        call.enqueue(new Callback<Applicant>() {
+            @Override
+            public void onResponse(Call<Applicant> call, Response<Applicant> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    viewModel.setSelectedApplicant(response.body());
+                    viewModel.getSelectedApplicant().observe(Profile.this, applicant -> {
+                        if (applicant != null) {
+                            updateUI(applicant); // Cập nhật giao diện
+                        } else {
+                            Log.e("Profile", "Selected applicant is null");
+                        }
+                    });
+
+                } else {
+                    Log.e("API", "Không tìm thấy thông tin hồ sơ.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Applicant> call, Throwable t) {
+                Log.e("API", "Lỗi khi gọi API: " + t.getMessage());
+            }
+        });
+    }
     private void initViews() {
         imageView = findViewById(R.id.image_view);
         editName = findViewById(R.id.editName);
@@ -162,12 +197,18 @@ public class Profile extends AppCompatActivity {
         salaryType = findViewById(R.id.salaryType);
         salary = findViewById(R.id.salary);
         saveButton = findViewById(R.id.saveButton);
+        sendMessage = findViewById(R.id.sendMessage);
     }
 
     private void setUpClicklistener() {
         imageView.setOnClickListener(v -> openImageChooser());
         editLocation.setOnClickListener(v -> showCustomDialog());
         saveButton.setOnClickListener(v -> saveChanges());
+        sendMessage.setOnClickListener(v -> {
+            Intent intent = new Intent(Profile.this, ChatActivity.class);
+            startActivity(intent);
+        });
+
         educationStatus.setOnClickListener(v ->
                 showBottomSheetDialog(this, new String[]{"재학", "졸업", "휴학", "중퇴", "수료"},
                         educationStatus.getText().toString(), educationStatus, () -> isEdited = true));
@@ -274,26 +315,7 @@ public class Profile extends AppCompatActivity {
                 findViewById(R.id.female), educationStatus, levelOfEducation, startTime, endTime, salaryType);
     }
 
-    private void fetchProfile(int employeeId) {
-        APIService apiService = RetrofitClientInstance.getRetrofitInstance().create(APIService.class);
-        Call<Applicant> call = apiService.getProfile(employeeId);
 
-        call.enqueue(new Callback<Applicant>() {
-            @Override
-            public void onResponse(Call<Applicant> call, Response<Applicant> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    viewModel.setSelectedApplicant(response.body());
-                } else {
-                    Log.e("API", "Không tìm thấy thông tin hồ sơ.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Applicant> call, Throwable t) {
-                Log.e("API", "Lỗi khi gọi API: " + t.getMessage());
-            }
-        });
-    }
 
     private void updateUI(Applicant applicant) {
         String baseUrl = "http://10.0.2.2:3000";
@@ -446,25 +468,6 @@ public class Profile extends AppCompatActivity {
         String salaryText = salary.getText().toString();
         String salaryTypeText = salaryType.getText().toString();
 
-        //        // Tạo đối tượng Applicant mới
-//        Applicant applicant = new Applicant();
-//        applicant.setFull_name(fullName);
-//        applicant.setDate_of_birth(birthday);
-//        applicant.setPhone_number(phoneNumber);
-//        applicant.setEducation_status(educationStatusText);
-//        applicant.setEducation_level(educationLevel);
-//        applicant.setExperience(experience);
-//        applicant.setIntroduction(introduction);
-//        applicant.setPreferred_work_location(preferredLocation);
-//        applicant.setPreferred_work_duration(workDuration);
-//        applicant.setWork_type(workType);
-//        applicant.setWork_time(startTimeText + "-" + endTimeText); // Cần ghép thời gian làm việc
-//        applicant.setSalary_type(salaryTypeText);
-//        applicant.setExpected_salary(Integer.parseInt(salaryText.replace(" ₩", "").replace(",", ""))); // Chuyển đổi lương
-//
-//        // Cập nhật vào ViewModel hoặc cơ sở dữ liệu
-//        viewModel.setSelectedApplicant(applicant);  // Nếu bạn dùng ViewModel
-
         // Đọc ảnh từ bộ nhớ
         // Tạo MultipartBody.Part cho ảnh nếu có
         MultipartBody.Part imagePart = null;
@@ -473,7 +476,6 @@ public class Profile extends AppCompatActivity {
                 // Chuyển đổi URI sang File
                 InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                 File tempFile = new File(getCacheDir(), "temp_image");
-//                File tempFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "company_image.png");// lưu ảnh dạng png
                 try (OutputStream outputStream = new FileOutputStream(tempFile)) {
                     byte[] buffer = new byte[4096];
                     int bytesRead;
