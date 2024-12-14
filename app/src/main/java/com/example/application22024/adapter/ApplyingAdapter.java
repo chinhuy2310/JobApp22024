@@ -12,18 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.application22024.JobDetails;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
-import com.example.application22024.employer.RegistrationActivity;
 import com.example.application22024.model.CompanyJobItem;
 import com.example.application22024.model.DataViewModel;
 
 import java.util.List;
 
-public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ViewHolder> {
+public class ApplyingAdapter extends RecyclerView.Adapter<ApplyingAdapter.ViewHolder> {
     private List<CompanyJobItem> appliedJobs;
     private DataViewModel viewModel;
     private Context context;
 
-    public ApplicationAdapter(Context context, List<CompanyJobItem> appliedJobs) {
+    public ApplyingAdapter(Context context, List<CompanyJobItem> appliedJobs) {
         this.context = context;
         this.appliedJobs = appliedJobs;
         viewModel = ((MyApplication) context.getApplicationContext()).getDataViewModel(); // Truyền context

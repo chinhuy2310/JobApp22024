@@ -75,7 +75,9 @@ public class EmployeeMain extends AppCompatActivity {
         });
 
     }
-
+    public void goToFragment(int fragmentIndex) {
+        viewPager.setCurrentItem(fragmentIndex, true); // Chuyển tới fragment thứ fragmentIndex
+    }
 
 
     @SuppressLint("MissingSuperCall")

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.application22024.FAQActivity;
 import com.example.application22024.First_Activity;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
@@ -68,7 +69,7 @@ public class Page4 extends Fragment {
 
     // 고객센터 페이지로 이동하는 메서드
     private void openCustomerServicePage() {
-        Intent intent = new Intent(getContext(), CustomerService.class);
+        Intent intent = new Intent(getContext(), FAQActivity.class);
         startActivity(intent);
     }
 

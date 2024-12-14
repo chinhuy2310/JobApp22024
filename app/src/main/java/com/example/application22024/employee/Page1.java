@@ -25,6 +25,7 @@ import com.example.application22024.R;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
 import com.example.application22024.adapter.Page1AndSearchAdapter;
+import com.example.application22024.employer.EmployerMain;
 import com.example.application22024.model.CompanyJobItem;
 
 import java.util.ArrayList;
@@ -43,13 +44,13 @@ public class Page1 extends Fragment {
     private APIService apiService;
     private static final int MAP_REQUEST_CODE = 1;
 
-    private TextView locationTextView;
+    private TextView locationTextView,btnAll;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page1, container, false);
 
-
+        setupViewFlipper();
         ViewFlipper viewFlipper = view.findViewById(R.id.viewFlipper);
 
 // Danh sách các ảnh trong drawable
@@ -64,6 +65,15 @@ public class Page1 extends Fragment {
         viewFlipper.setInAnimation(getContext(), R.anim.fade_in);
         viewFlipper.setOutAnimation(getContext(), R.anim.fade_out);
         viewFlipper.startFlipping();
+
+
+        btnAll = view.findViewById(R.id.btnSeeAll);
+        btnAll.setOnClickListener(v -> {
+            if (getActivity() instanceof EmployeeMain) {
+                ((EmployeeMain) getActivity()).goToFragment(1); // Chuyển sang Fragment 2
+            }
+        });
+
 
         selectLocation = view.findViewById(R.id.selectLocation);
         locationTextView = view.findViewById(R.id.locationTextView);
@@ -81,6 +91,7 @@ public class Page1 extends Fragment {
 
         loadCompanyJobData();
         getRecentlyViewed();
+
         adapter = new Page1AndSearchAdapter(getContext(), companyJobItems, 0);
 
         recyclerView.setAdapter(adapter);
@@ -90,6 +101,9 @@ public class Page1 extends Fragment {
         setupRecyclerView(recyclerView, viewPager);
         setupRecyclerView(recyclerView2, viewPager);
         return view;
+    }
+
+    private void setupViewFlipper() {
     }
 
 

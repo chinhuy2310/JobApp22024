@@ -29,8 +29,6 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="5f301f0b001c8c2a2c63473d48b78772" />
 
-        <activity
-            android:name=".employer.RegistrationActivity" />
 
         <activity
             android:name=".employee.EmployeeMain"
@@ -52,17 +50,17 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".employer.EmployerMain" />
+        <activity android:name=".employer.RegistrationActivity" />
         <activity android:name=".JobDetails" />
-        <activity android:name=".ChatActivity"/>
+        <activity android:name=".ChatActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity android:name=".employee.Profile" />
+        <activity android:name=".FAQActivity" />
         <activity android:name=".MapActivity" />
 
         <activity android:name=".employee.CalendarActivity" />
         <activity android:name=".employee.MyApplicationsActivity" />
-        <activity android:name=".employee.AddPostActivity" />
-        <activity android:name=".employee.CustomerService" />
-        <activity android:name=".employee.PostDetailActivity" />
-        <activity android:name=".employer.ConsultationActivity" />
+
 
     </application>
 

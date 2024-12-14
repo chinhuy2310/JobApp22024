@@ -10,11 +10,9 @@ import com.example.application22024.APIService;
 import com.example.application22024.R;
 import com.example.application22024.RetrofitClientInstance;
 import com.example.application22024.SharedPrefManager;
-import com.example.application22024.adapter.ApplicationAdapter;
+import com.example.application22024.adapter.ApplyingAdapter;
 import com.example.application22024.model.CompanyJobItem;
-import com.example.application22024.model.Job;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,7 +22,7 @@ import retrofit2.Response;
 public class MyApplicationsActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private ApplicationAdapter applicationAdapter;
+    private ApplyingAdapter applyingAdapter;
     APIService apiService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,8 @@ public class MyApplicationsActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<CompanyJobItem> appliedJobs = response.body();
                     // Adapter에 데이터 설정
-                    applicationAdapter = new ApplicationAdapter(MyApplicationsActivity.this, appliedJobs);
-                    recyclerView.setAdapter(applicationAdapter);
+                    applyingAdapter = new ApplyingAdapter(MyApplicationsActivity.this, appliedJobs);
+                    recyclerView.setAdapter(applyingAdapter);
                 }
             }
             @Override

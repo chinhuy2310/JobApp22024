@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.application22024.APIService;
+import com.example.application22024.FAQActivity;
 import com.example.application22024.First_Activity;
 import com.example.application22024.MyApplication;
 import com.example.application22024.R;
@@ -88,7 +89,7 @@ public class EmployerMain extends AppCompatActivity {
 
         menuItem3.setOnClickListener(v -> {
             // 启动咨询页面
-            Intent intent = new Intent(EmployerMain.this, ConsultationActivity.class);
+            Intent intent = new Intent(EmployerMain.this, FAQActivity.class);
             startActivity(intent);
             drawerLayout.closeDrawer(GravityCompat.END);
         });
@@ -227,6 +228,7 @@ public class EmployerMain extends AppCompatActivity {
         String[] options = {"Choose an existing company", "Create new"};
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
+                viewModel.setSelectedJob(null);
                 // Hiển thị danh sách công ty
                 showCompanyPickerDialog();
             } else if (which == 1) {
@@ -262,6 +264,7 @@ public class EmployerMain extends AppCompatActivity {
             Company selectedCompany = companyList.get(which);
             Toast.makeText(this, "Selected: " + selectedCompany.getCompanyName(), Toast.LENGTH_SHORT).show();
             viewModel.setSelectedCompany(selectedCompany);
+            viewModel.setSelectedJob(null);
             // Có thể chuyển đến màn hình đăng tuyển với thông tin công ty
             Intent intent = new Intent(EmployerMain.this, RegistrationActivity.class);
             startActivity(intent);

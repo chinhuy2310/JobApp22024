@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
 <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ViewFlipper
@@ -17,6 +12,11 @@
         android:inAnimation="@android:anim/slide_in_left"
         android:outAnimation="@android:anim/slide_out_right"
         android:layout_gravity="center" />
+    <androidx.core.widget.NestedScrollView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <!-- LinearLayout chứa tất cả các thành phần -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,9 +28,9 @@
         <LinearLayout
             android:id="@+id/fixedHeader"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:background="@drawable/top_border"
+            android:minHeight="110dp"
             android:orientation="vertical"
             android:paddingHorizontal="10dp">
 
@@ -117,21 +117,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_gravity="bottom"
                 android:layout_marginLeft="20sp"
                 android:text="추천"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/btnSeeAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
@@ -145,9 +144,8 @@
         <!-- Thẻ cuộn ngang thứ nhất -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:layout_weight="7">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/SuggestedJob"
@@ -160,18 +158,16 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_weight="1"
             android:text="최근 보기"
             android:textColor="@color/black"
             android:textSize="20sp" />
         <!-- Thẻ cuộn ngang thứ hai -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:gravity="center_vertical"
-            android:layout_weight="7">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recentJob"
@@ -182,7 +178,7 @@
         </LinearLayout>
 
     </LinearLayout>
-
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>
 
-</androidx.core.widget.NestedScrollView>
+

@@ -145,6 +145,7 @@ public class Profile extends AppCompatActivity {
             saveButton.setVisibility(View.GONE);
             setViewOnlyMode(); // Tắt các chức năng chỉnh sửa nếu chế độ chỉ xem
         }else {
+            sendMessage.setVisibility(View.GONE);
             int employeeId = SharedPrefManager.getInstance(this).getUserId();
             fetchProfile(employeeId);
         }
