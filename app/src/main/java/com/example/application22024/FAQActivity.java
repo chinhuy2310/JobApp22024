@@ -48,13 +48,13 @@ public class FAQActivity extends AppCompatActivity implements FAQAdapter.OnButto
         recyclerView.setAdapter(chatAdapter);
 
         // Gửi tin nhắn đầu tiên (Chọn chủ đề hỗ trợ)
-        sendBotMessage("Vấn đề bạn cần hỗ trợ là gì?", Arrays.asList(
-                "Cách sử dụng ứng dụng",
-                "Tìm kiếm việc làm",
-                "Hồ sơ ứng viên",
-                "Nhà tuyển dụng",
-                "Nộp hồ sơ và phỏng vấn",
-                "Hỗ trợ người dùng"
+        sendBotMessage("어떤 문제에 대해 지원이 필요하신가요?", Arrays.asList(
+                "앱 사용 방법",
+                "구직",
+                "지원자 프로필",
+                "채용 담당자",
+                "지원서 제출 및 면접",
+                "사용자 지원"
         ));
     }
 
@@ -75,17 +75,17 @@ public class FAQActivity extends AppCompatActivity implements FAQAdapter.OnButto
         // Kiểm tra câu hỏi trong danh sách
         if (questionsMap.containsKey(buttonText)) {
             // Gửi câu hỏi cho bot
-            sendBotMessage("Bạn cần giúp gì về " + buttonText + "?", questionsMap.get(buttonText));
+            sendBotMessage(buttonText + "에 대해 어떤 도움이 필요하신가요?", questionsMap.get(buttonText));
         } else if (answersMap.containsKey(buttonText)) {
             // Gửi câu trả lời từ bot
-            sendBotMessage(answersMap.get(buttonText).get(0)+"\n"+"Bạn cần hỗ trợ vấn đề khác không?",
+            sendBotMessage(answersMap.get(buttonText).get(0) + "\n" + "다른 문제에 대해 지원이 필요하신가요?",
                     Arrays.asList(
-                            "Cách sử dụng ứng dụng",
-                            "Tìm kiếm việc làm",
-                            "Hồ sơ ứng viên",
-                            "Nhà tuyển dụng",
-                            "Nộp hồ sơ và phỏng vấn",
-                            "Hỗ trợ người dùng"
+                            "앱 사용 방법",
+                            "구직",
+                            "지원자 프로필",
+                            "채용 담당자",
+                            "지원서 제출 및 면접",
+                            "사용자 지원"
                     ));
         }
     }
@@ -104,47 +104,49 @@ public class FAQActivity extends AppCompatActivity implements FAQAdapter.OnButto
 
         // Câu hỏi và trả lời cho mỗi chủ đề
         List<String> usageQuestions = Arrays.asList(
-                "Làm thế nào để tạo hồ sơ tìm việc?",
-                "Làm sao để lọc kết quả tìm kiếm?",
-                "Làm thế nào để lưu công việc yêu thích?",
-                "Tôi có thể chỉnh sửa thông tin cá nhân không?"
+                "구직 프로필을 어떻게 만들 수 있나요?",
+                "검색 결과를 어떻게 필터링하나요?",
+                "좋아하는 직업을 어떻게 저장하나요?",
+                "개인 정보를 수정할 수 있나요?"
         );
-        questionsMap.put("Cách sử dụng ứng dụng", usageQuestions);
+        questionsMap.put("앱 사용 방법", usageQuestions);
 
         List<String> usageAnswers = Arrays.asList(
-                "Để tạo hồ sơ tìm việc, bạn vào phần 'Hồ sơ' và điền các thông tin cần thiết.",
-                "Bạn có thể sử dụng bộ lọc ở trên để tìm các công việc theo các tiêu chí khác nhau.",
-                "Để lưu công việc yêu thích, chỉ cần nhấn vào biểu tượng trái tim trên mỗi công việc.",
-                "Bạn có thể chỉnh sửa thông tin cá nhân trong phần 'Cài đặt'."
+                "구직 프로필을 만들려면 '프로필' 섹션으로 가서 필요한 정보를 입력하세요.",
+                "위의 필터를 사용하여 다양한 기준에 따라 직업을 찾을 수 있습니다.",
+                "좋아하는 직업을 저장하려면 각 직업의 하트 아이콘을 클릭하세요.",
+                "개인 정보는 '설정' 섹션에서 수정할 수 있습니다."
         );
         // Mỗi câu hỏi cần có câu trả lời tương ứng
-        answersMap.put("Làm thế nào để tạo hồ sơ tìm việc?", Arrays.asList(usageAnswers.get(0)));
-        answersMap.put("Làm sao để lọc kết quả tìm kiếm?", Arrays.asList(usageAnswers.get(1)));
-        answersMap.put("Làm thế nào để lưu công việc yêu thích?", Arrays.asList(usageAnswers.get(2)));
-        answersMap.put("Tôi có thể chỉnh sửa thông tin cá nhân không?", Arrays.asList(usageAnswers.get(3)));
+        answersMap.put ("구직 프로필을 어떻게 만들 수 있나요?", Arrays.asList(usageAnswers.get(0)));
+        answersMap.put("검색 결과를 어떻게 필터링하나요?", Arrays.asList(usageAnswers.get(1)));
+        answersMap.put("좋아하는 직업을 어떻게 저장하나요?", Arrays.asList(usageAnswers.get(2)));
+        answersMap.put("개인 정보를 수정할 수 있나요?", Arrays.asList(usageAnswers.get(3)));
 
         // Thêm các chủ đề khác, câu hỏi và câu trả lời tương tự
         // Ví dụ với "Tìm kiếm việc làm"
         List<String> searchQuestions = Arrays.asList(
-                "Làm thế nào để tìm công việc bán thời gian?",
-                "Tôi muốn tìm việc ở gần tôi, phải làm sao?",
-                "Có cách nào nhận thông báo việc làm mới không?",
-                "Tôi muốn tìm công việc lương cao, làm thế nào?"
+                "파트타임 직업을 어떻게 찾나요?",
+                "내 근처에서 일자리를 찾으려면 어떻게 해야 하나요?",
+                "새로운 일자리 알림을 받을 수 있나요?",
+                "높은 급여의 직업을 찾으려면 어떻게 해야 하나요?"
         );
-        questionsMap.put("Tìm kiếm việc làm", searchQuestions);
+        questionsMap.put("구직", searchQuestions);
 
         List<String> searchAnswers = Arrays.asList(
-                "Để tìm công việc bán thời gian, bạn có thể chọn bộ lọc 'Bán thời gian' khi tìm kiếm.",
-                "Để tìm việc gần bạn, bạn có thể bật định vị và cho phép ứng dụng truy cập vị trí của bạn.",
-                "Ứng dụng sẽ gửi thông báo về công việc mới khi bạn bật thông báo trong cài đặt ứng dụng.",
-                "Để tìm công việc lương cao, bạn có thể sắp xếp kết quả tìm kiếm theo mức lương cao nhất."
+                "파트타임 직업을 찾으려면 검색 시 '파트타임' 필터를 선택하세요.",
+                "내 근처에서 일자리를 찾으려면 위치 서비스를 활성화하고 앱이 위치에 접근할 수 있도록 허용하세요.",
+                "앱에서 알림을 활성화하면 새로운 일자리에 대한 알림을 받을 수 있습니다.",
+                "높은 급여의 직업을 찾으려면 검색 결과를 급여가 높은 순으로 정렬하세요."
         );
-        answersMap.put("Làm thế nào để tìm công việc bán thời gian?", Arrays.asList(searchAnswers.get(0)));
-        answersMap.put("Tôi muốn tìm việc ở gần tôi, phải làm sao?", Arrays.asList(searchAnswers.get(1)));
-        answersMap.put("Có cách nào nhận thông báo việc làm mới không?", Arrays.asList(searchAnswers.get(2)));
-        answersMap.put("Tôi muốn tìm công việc lương cao, làm thế nào?", Arrays.asList(searchAnswers.get(3)));
+        answersMap.put("파트타임 직업을 어떻게 찾나요?", Arrays.asList(searchAnswers.get(0)));
+        answersMap.put("내 근처에서 일자리를 찾으려면 어떻게 해야 하나요?", Arrays.asList(searchAnswers.get(1)));
+        answersMap.put("새로운 일자리 알림을 받을 수 있나요?", Arrays.asList(searchAnswers.get(2)));
+        answersMap.put("높은 급여의 직업을 찾으려면 어떻게 해야 하나요?", Arrays.asList(searchAnswers.get(3)));
 
         // Các chủ đề khác sẽ làm tương tự
+
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
